@@ -16,11 +16,11 @@ package eidolon.console.input
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class InputArgument(
-    val name: String,
-    val mode: Int = InputArgument.OPTIONAL,
-    val description: Option[String] = None,
-    val default: Option[Any] = None)
+case class InputArgument(
+    name: String,
+    mode: Int = InputArgument.OPTIONAL,
+    description: Option[String] = None,
+    default: Option[Any] = None)
   extends InputParameter {
 
   require(isValidMode, "Argument mode \"%d\" is not valid.".format(mode))
@@ -47,11 +47,11 @@ class InputArgument(
       !isRequired || default.isEmpty
     }
 
-    def validateArrayDefault = {
-      !isArray || default.getOrElse(None).isInstanceOf[Array[Any]]
+    def validateTraversableDefault = {
+      !isArray || default.getOrElse(None).isInstanceOf[Traversable[Any]]
     }
 
-    validateRequiredDefault && validateArrayDefault
+    validateRequiredDefault && validateTraversableDefault
   }
 }
 

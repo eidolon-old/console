@@ -1,5 +1,5 @@
 /**
- * This file is part of the "Default (Template) Project" project.
+ * This file is part of the "eidolon/console" project.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the LICENSE is distributed on an "AS IS" BASIS,
@@ -12,8 +12,8 @@
 package eidolon.console.exception
 
 /**
- * Invalid Input Argument Exception
+ * Invalid Argument Exception
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class InvalidInputArgumentException(message: String = "") extends Exception(message)
+case class InvalidArgumentException(message: String = "") extends Exception(message)

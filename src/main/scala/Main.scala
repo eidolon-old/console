@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-import eidolon.console.input.ArgsInputParser
+import eidolon.console.input._
 
 /**
  * Main
@@ -17,8 +17,13 @@ import eidolon.console.input.ArgsInputParser
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object Main extends App {
-  val parser = new ArgsInputParser(args)
+  val definition = new InputDefinition()
+    .withArgument(new InputArgument("tester"))
+    .withOption(new InputOption("tester", Some("t")))
+
+  val parser = new ArgsInputParser(args, definition)
   val parsed = parser.parse()
 
+  println(definition)
   println(parsed)
 }

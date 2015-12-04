@@ -16,37 +16,42 @@ package eidolon.console.input
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ArgsInputParser(
-    args: Array[String])
+final class ArgsInputParser(
+    private val args: Array[String],
+    private val definition: InputDefinition)
   extends InputParser {
 
-  override def parse(): Array[InputParameter] = {
+  override def parse(): Set[InputParameter] = {
     args
-      .takeWhile({
-        case token if token == "--" => false
-        case _ => true
-      })
+      .takeWhile(_ != "--")
       .map({
         case token if token == "" =>
-          parseArgument(token + ": argument (empty)")
+          parseArgument(token)
         case token if token.startsWith("--") =>
-          parseLongOption(token + ": long option")
+          parseLongOption(token)
         case token if token.startsWith("-") && token != "-" =>
-          parseShortOption(token + ": short option")
+          parseShortOption(token)
         case token =>
-          parseArgument(token + ": argument")
+          parseArgument(token)
       })
+      .toSet
   }
 
   private def parseArgument(token: String): InputArgument = {
-    new InputArgument(token, InputArgument.IS_ARRAY, default = Some(Array("Testing")))
+    new InputArgument(token, InputArgument.IS_ARRAY, default = Some(Seq("Testing")))
   }
 
   private def parseShortOption(token: String): InputOption = {
-    new InputOption(Some(token), None, InputOption.VALUE_REQUIRED)
+    new InputOption(token, None, InputOption.VALUE_REQUIRED)
   }
 
   private def parseLongOption(token: String): InputOption = {
-    new InputOption(Some(token), None, InputOption.VALUE_NONE)
+    val name = token.drop(2)
+
+    if (!definition.hasOption(name)) {
+      throw new RuntimeException("The option '--%s' does not exist.".format(name))
+    }
+
+    definition.getOption(name).get
   }
 }

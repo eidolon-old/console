@@ -16,12 +16,12 @@ package eidolon.console.input
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class InputOption(
-    val name: Option[String] = None,
-    val shortName: Option[String] = None,
-    val mode: Int = InputOption.VALUE_NONE,
-    val description: Option[String] = None,
-    val defaultValue: Option[Any] = None)
+case class InputOption(
+    name: String,
+    shortName: Option[String] = None,
+    mode: Int = InputOption.VALUE_NONE,
+    description: Option[String] = None,
+    defaultValue: Option[Any] = None)
   extends InputParameter {
 
   require(isValidName, "Option name \"%s\" is not valid.".format(name))
@@ -55,11 +55,11 @@ class InputOption(
   }
 
   private def isValidName: Boolean = {
-    name.getOrElse("").length > 0 || (name.isEmpty && shortName.getOrElse("").length == 1)
+    name.length > 0
   }
 
   private def isValidShortName: Boolean = {
-    shortName.getOrElse("").length == 1 || (shortName.isEmpty && name.getOrElse("").length > 0)
+    shortName.isEmpty || shortName.getOrElse("").length == 1
   }
 
   private def isValidDefaultValue: Boolean = {

@@ -22,5 +22,5 @@ trait InputParser {
    *
    * @return Parsed Array of InputArguments
    */
-  def parse(): Array[InputParameter]
+  def parse(): Set[InputParameter]
 }
