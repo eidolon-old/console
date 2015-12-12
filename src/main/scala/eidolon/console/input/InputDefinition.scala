@@ -34,6 +34,13 @@ final case class InputDefinition(
     options.get(name)
   }
 
+  def getOptionByShortName(shortName: String): Option[InputOption] = {
+    for {
+      name <- shortOptions.get(shortName)
+      option <- getOption(name)
+    } yield option
+  }
+
   def hasOption(name: String): Boolean = {
     options.contains(name)
   }

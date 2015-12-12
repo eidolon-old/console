@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.exception
+package eidolon.console.input.validation
 
 /**
- * Invalid Argument Exception
+ * Invalid Argument
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class InvalidArgumentException(message: String = "") extends Exception(message)
+case class InvalidArgument(override val token: String) extends InvalidParameter(token)

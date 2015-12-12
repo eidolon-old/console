@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input
+package eidolon.console.input.validation
 
 /**
- * Input Parameter
+ * Invalid Option
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-abstract class InputParameter(val name: String)
+case class InvalidOption(override val token: String) extends InvalidParameter(token)

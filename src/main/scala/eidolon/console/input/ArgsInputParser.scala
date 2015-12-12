@@ -11,6 +11,8 @@
 
 package eidolon.console.input
 
+import eidolon.console.input.validation._
+
 /**
  * Args Input Parser
  *
@@ -21,37 +23,44 @@ final class ArgsInputParser(
     private val definition: InputDefinition)
   extends InputParser {
 
-  override def parse(): Set[InputParameter] = {
-    args
+  override def parse(): InputParserResult = {
+    val (errors, parsed) = args
       .takeWhile(_ != "--")
       .map({
-        case token if token == "" =>
-          parseArgument(token)
         case token if token.startsWith("--") =>
-          parseLongOption(token)
+          parseLongOption(token.drop(2))
         case token if token.startsWith("-") && token != "-" =>
-          parseShortOption(token)
+          parseShortOption(token.drop(1))
         case token =>
           parseArgument(token)
       })
-      .toSet
+      .toList
+      .partition(_.isLeft)
+
+    new InputParserResult(
+      errors.map(_.left.get),
+      parsed.map(_.right.get)
+    )
   }
 
-  private def parseArgument(token: String): InputArgument = {
-    new InputArgument(token, InputArgument.IS_ARRAY, default = Some(Seq("Testing")))
-  }
-
-  private def parseShortOption(token: String): InputOption = {
-    new InputOption(token, None, InputOption.VALUE_REQUIRED)
-  }
-
-  private def parseLongOption(token: String): InputOption = {
-    val name = token.drop(2)
-
-    if (!definition.hasOption(name)) {
-      throw new RuntimeException("The option '--%s' does not exist.".format(name))
+  private def parseArgument(token: String): Either[InvalidArgument, InputArgument] = {
+    definition.getArgument(token) match {
+      case Some(argument) => Right(argument)
+      case _ => Left(new InvalidArgument(token))
     }
+  }
 
-    definition.getOption(name).get
+  private def parseShortOption(token: String): Either[InvalidOption, InputOption] = {
+    definition.getOptionByShortName(token) match {
+      case Some(option) => Right(option)
+      case _ => Left(new InvalidOption(token))
+    }
+  }
+
+  private def parseLongOption(token: String): Either[InvalidOption, InputOption] = {
+    definition.getOption(token) match {
+      case Some(option) => Right(option)
+      case _ => Left(new InvalidOption(token))
+    }
   }
 }

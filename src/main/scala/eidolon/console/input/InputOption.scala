@@ -17,12 +17,12 @@ package eidolon.console.input
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 case class InputOption(
-    name: String,
+    override val name: String,
     shortName: Option[String] = None,
     mode: Int = InputOption.VALUE_NONE,
     description: Option[String] = None,
     defaultValue: Option[Any] = None)
-  extends InputParameter {
+  extends InputParameter(name) {
 
   require(isValidName, "Option name \"%s\" is not valid.".format(name))
   require(isValidShortName, "Option short name \"%s\" is not valid.".format(shortName))

@@ -17,11 +17,11 @@ package eidolon.console.input
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 case class InputArgument(
-    name: String,
+    override val name: String,
     mode: Int = InputArgument.OPTIONAL,
     description: Option[String] = None,
     default: Option[Any] = None)
-  extends InputParameter {
+  extends InputParameter(name) {
 
   require(isValidMode, "Argument mode \"%d\" is not valid.".format(mode))
   require(isValidDefault, "Argument default is not valid.")

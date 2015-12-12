@@ -1,5 +1,5 @@
 /**
- * This file is part of the "Default (Template) Project" project.
+ * This file is part of the "eidolon/console" project.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the LICENSE is distributed on an "AS IS" BASIS,
@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.exception
+package eidolon.console.input.validation
+
+import eidolon.console.input.InputParameter
 
 /**
- * Invalid Input Argument Exception
+ * Input Parser Result
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class InvalidInputArgumentException(message: String = "") extends Exception(message)
+case class InputParserResult(errors: List[InvalidParameter], parsed: List[InputParameter])

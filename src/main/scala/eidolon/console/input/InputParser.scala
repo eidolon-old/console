@@ -11,6 +11,8 @@
 
 package eidolon.console.input
 
+import eidolon.console.input.validation.InputParserResult
+
 /**
  * Input Parser
  *
@@ -22,5 +24,5 @@ trait InputParser {
    *
    * @return Parsed Array of InputArguments
    */
-  def parse(): Set[InputParameter]
+  def parse(): InputParserResult
 }
