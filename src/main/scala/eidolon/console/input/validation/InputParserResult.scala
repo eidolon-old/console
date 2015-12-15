@@ -11,11 +11,41 @@
 
 package eidolon.console.input.validation
 
-import eidolon.console.input.InputParameter
+import eidolon.console.input.{InputOption, InputArgument, InputParameter}
 
 /**
  * Input Parser Result
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class InputParserResult(invalid: List[InvalidParameter], valid: List[InputParameter])
+case class InputParserResult(
+    invalid: List[InvalidParameter] = List(),
+    valid: List[InputParameter] = List()) {
+
+  private lazy val invalidArgumentCount = invalid
+    .foldLeft(0)((count, item) => item match {
+      case argument if argument.isInstanceOf[InvalidArgument] => count + 1
+      case _ => count
+    })
+
+  private lazy val invalidOptionCount = invalid
+    .foldLeft(0)((count, item) => item match {
+      case option if option.isInstanceOf[InvalidOption] => count + 1
+      case _ => count
+    })
+
+  private lazy val validArgumentCount = valid
+    .foldLeft(0)((count, item) => item match {
+      case argument if argument.isInstanceOf[InputArgument] => count + 1
+      case _ => count
+    })
+
+  private lazy val validOptionCount = valid
+    .foldLeft(0)((count, item) => item match {
+      case option if option.isInstanceOf[InputOption] => count + 1
+      case _ => count
+    })
+
+  lazy val argumentCount = invalidArgumentCount + validArgumentCount
+  lazy val optionCount = invalidOptionCount + validOptionCount
+}

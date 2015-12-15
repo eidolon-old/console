@@ -23,67 +23,52 @@ final class ArgsInputParser(
     private val definition: InputDefinition)
   extends InputParser {
 
-  private var arguments = List[String]()
-//  private var options = Map[String, ]
-
   type ParsedInput = Either[InvalidParameter, InputParameter]
   type ParsedInputList = List[ParsedInput]
 
   override def parse(): InputParserResult = {
-    val parsedInput = parseInputArgs()
-    val testing = foldTest()
+    val testing = parseInputArgs()
 
-    val (invalid, valid) = parsedInput
-      .partition(_.isLeft)
-
-    new InputParserResult(
-      invalid.map(_.left.get).distinct,
-      valid.map(_.right.get).distinct
-    )
+    testing
   }
 
-  // todo: Aggregate, InputParserAggregate? ParserResultAggregate? Needs proper types.
-  private case class FoldTestResult(args: List[String] = List[String](), opts: List[String] = List[String]())
-
-  private def foldTest(): FoldTestResult = {
+  private def parseInputArgs(): InputParserResult = {
     args
       .takeWhile(_ != "--")
-      .foldLeft(new FoldTestResult())((result, arg) => {
-        new FoldTestResult(result.args :+ arg, result.opts)
+      .foldLeft(new InputParserResult())((aggregate, arg) => {
+        val result = arg match {
+          case token if token.startsWith("--") =>
+            parseLongOption(aggregate, token)
+          case token if token.startsWith("-") && token != "-" =>
+            parseShortOption(aggregate, token)
+          case token =>
+            parseArgument(aggregate, token)
+        }
+
+        result match {
+          case Right(parameter) =>
+            new InputParserResult(aggregate.invalid, aggregate.valid :+ parameter)
+          case Left(error) =>
+            new InputParserResult(aggregate.invalid :+ error, aggregate.valid)
+        }
       })
   }
 
-  private def parseInputArgs(): ParsedInputList = {
-    args
-      .takeWhile(_ != "--")
-      .map({
-        case token if token.startsWith("--") =>
-          parseLongOption(token)
-        case token if token.startsWith("-") && token != "-" =>
-          parseShortOption(token)
-        case token =>
-          parseArgument(token)
-      })
-      .toList
-  }
-
-  private def parseArgument(token: String): ParsedInput = {
-    val index = arguments.size
-
-    definition.getArgument(index) match {
+  private def parseArgument(aggregate: InputParserResult, token: String): ParsedInput = {
+    definition.getArgument(aggregate.argumentCount) match {
       case Some(argument) => Right(argument)
       case _ => Left(new InvalidArgument(token))
     }
   }
 
-  private def parseShortOption(token: String): ParsedInput = {
+  private def parseShortOption(aggregate: InputParserResult, token: String): ParsedInput = {
     definition.getOptionByShortName(token.drop(1)) match {
       case Some(option) => Right(option)
       case _ => Left(new InvalidOption(token))
     }
   }
 
-  private def parseLongOption(token: String): ParsedInput = {
+  private def parseLongOption(aggregate: InputParserResult, token: String): ParsedInput = {
     definition.getOption(token.drop(2)) match {
       case Some(option) => Right(option)
       case _ => Left(new InvalidOption(token))
