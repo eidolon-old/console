@@ -10,7 +10,7 @@
  */
 
 import eidolon.console.input._
-import eidolon.console.input.validation.{InvalidOption, InvalidArgument}
+import eidolon.console.input.validation._
 
 /**
  * Main
@@ -21,27 +21,28 @@ object Main extends App {
   val definition = new InputDefinition()
     .withArgument(new InputArgument("tester"))
     .withOption(new InputOption("tester", Some("t")))
+    .withOption(new InputOption("doodoodoo", mode = InputOption.VALUE_REQUIRED))
 
   val parser = new ArgsInputParser(args, definition)
   val result = parser.parse()
 
-  // println(definition)
   println("Invalid parameters:")
-  println(result.errors.map({
+  println(result.invalid.map({
+    case argument if argument.isInstanceOf[DuplicateArgument] =>
+      s"Duplicate argument: ${argument.token}"
     case argument if argument.isInstanceOf[InvalidArgument] =>
-      s"Argument: ${argument.token}"
+      s"Invalid argument: ${argument.token}"
+    case option if option.isInstanceOf[DuplicateOption] =>
+      s"Duplicate option: ${option.token}"
     case option if option.isInstanceOf[InvalidOption] =>
-      s"Option: ${option.token}"
+      s"Invalid option: ${option.token}"
   }))
 
   println("Valid parameters:")
-  println(result.parsed.map({
+  println(result.valid.map({
     case argument if argument.isInstanceOf[InputArgument] =>
       s"Argument: ${argument.name}"
     case option if option.isInstanceOf[InputOption] =>
       s"Option: ${option.name}"
   }))
-
-  println("Number of duplicates:")
-  println(result.parsed.size - result.parsed.distinct.size)
 }

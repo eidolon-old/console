@@ -26,10 +26,6 @@ case class InputArgument(
   require(isValidMode, "Argument mode \"%d\" is not valid.".format(mode))
   require(isValidDefault, "Argument default is not valid.")
 
-  def isArray: Boolean = {
-    InputArgument.IS_ARRAY == (InputArgument.IS_ARRAY & mode)
-  }
-
   def isOptional: Boolean = {
     InputArgument.OPTIONAL == (InputArgument.OPTIONAL & mode)
   }
@@ -39,24 +35,15 @@ case class InputArgument(
   }
 
   private def isValidMode: Boolean = {
-    (1 to 7).contains(mode)
+    (1 to 3).contains(mode)
   }
 
   private def isValidDefault: Boolean = {
-    def validateRequiredDefault = {
-      !isRequired || default.isEmpty
-    }
-
-    def validateTraversableDefault = {
-      !isArray || default.getOrElse(None).isInstanceOf[Traversable[Any]]
-    }
-
-    validateRequiredDefault && validateTraversableDefault
+    !isRequired || default.isEmpty
   }
 }
 
 object InputArgument {
   val REQUIRED = 1
   val OPTIONAL = 2
-  val IS_ARRAY = 4
 }

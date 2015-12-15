@@ -67,11 +67,15 @@ case class InputOption(
       !isNoValue || defaultValue.isEmpty
     }
 
+    def validateRequiredDefaultValue = {
+      !isRequiredValue || defaultValue.isEmpty
+    }
+
     def validateArrayDefaultValue = {
       !isArrayValue || defaultValue.getOrElse(None).isInstanceOf[Array[Any]]
     }
 
-    validateNoneDefaultValue && validateArrayDefaultValue
+    validateNoneDefaultValue && validateRequiredDefaultValue && validateArrayDefaultValue
   }
 
   override def equals(copy: Any): Boolean = { copy match {

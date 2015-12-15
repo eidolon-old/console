@@ -17,8 +17,8 @@ package eidolon.console.input
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 final case class InputDefinition(
-    private val arguments: Map[String, InputArgument] = Map(),
-    private val options: Map[String, InputOption] = Map()) {
+    arguments: Map[String, InputArgument] = Map(),
+    options: Map[String, InputOption] = Map()) {
 
   private val shortOptions = getShortOptionsFromOptions(options)
 

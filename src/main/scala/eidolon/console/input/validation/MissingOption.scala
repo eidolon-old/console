@@ -11,11 +11,9 @@
 
 package eidolon.console.input.validation
 
-import eidolon.console.input.InputParameter
-
 /**
- * Input Parser Result
+ * Missing Option
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class InputParserResult(invalid: List[InvalidParameter], valid: List[InputParameter])
+case class MissingOption(override val token: String) extends MissingParameter(token)

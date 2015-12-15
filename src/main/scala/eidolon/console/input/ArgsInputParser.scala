@@ -20,45 +20,62 @@ import eidolon.console.input.validation._
  */
 final class ArgsInputParser(
     private val args: Array[String],
-    private val definition: InputDefinition)
+    val definition: InputDefinition)
   extends InputParser {
 
+  type ParsedInput = Either[InvalidParameter, InputParameter]
+  type ParsedInputList = List[ParsedInput]
+
   override def parse(): InputParserResult = {
-    val (errors, parsed) = args
+    val parsedInput = parseInputArgs()
+    val missing = detectMissingArguments(parsedInput)
+
+    val (invalid, valid) = parsedInput
+      .partition(_.isLeft)
+
+    new InputParserResult(
+      invalid.map(_.left.get).distinct,
+      valid.map(_.right.get).distinct
+    )
+  }
+
+  private def detectMissingArguments(parsedInputList: ParsedInputList): ParsedInputList = {
+    definition.arguments.values
+      .filter((argument) => { argument.isRequired && !args.contains(argument.name) })
+      .map((argument) => { Left(new MissingArgument(argument.name)) })
+      .toList
+  }
+
+  private def parseInputArgs(): ParsedInputList = {
+    args
       .takeWhile(_ != "--")
       .map({
         case token if token.startsWith("--") =>
-          parseLongOption(token.drop(2))
+          parseLongOption(token)
         case token if token.startsWith("-") && token != "-" =>
-          parseShortOption(token.drop(1))
+          parseShortOption(token)
         case token =>
           parseArgument(token)
       })
       .toList
-      .partition(_.isLeft)
-
-    new InputParserResult(
-      errors.map(_.left.get),
-      parsed.map(_.right.get)
-    )
   }
 
-  private def parseArgument(token: String): Either[InvalidArgument, InputArgument] = {
+  private def parseArgument(token: String): ParsedInput = {
     definition.getArgument(token) match {
       case Some(argument) => Right(argument)
       case _ => Left(new InvalidArgument(token))
     }
   }
 
-  private def parseShortOption(token: String): Either[InvalidOption, InputOption] = {
-    definition.getOptionByShortName(token) match {
+  private def parseShortOption(token: String): ParsedInput = {
+    definition.getOptionByShortName(token.drop(1)) match {
       case Some(option) => Right(option)
       case _ => Left(new InvalidOption(token))
     }
   }
 
-  private def parseLongOption(token: String): Either[InvalidOption, InputOption] = {
-    definition.getOption(token) match {
+  private def parseLongOption(token: String): ParsedInput = {
+    definition.getOption(token.drop(2)) match {
       case Some(option) => Right(option)
       case _ => Left(new InvalidOption(token))
     }
