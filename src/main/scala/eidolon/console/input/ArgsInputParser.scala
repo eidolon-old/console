@@ -20,15 +20,18 @@ import eidolon.console.input.validation._
  */
 final class ArgsInputParser(
     private val args: Array[String],
-    val definition: InputDefinition)
+    private val definition: InputDefinition)
   extends InputParser {
+
+  private var arguments = List[String]()
+//  private var options = Map[String, ]
 
   type ParsedInput = Either[InvalidParameter, InputParameter]
   type ParsedInputList = List[ParsedInput]
 
   override def parse(): InputParserResult = {
     val parsedInput = parseInputArgs()
-    val missing = detectMissingArguments(parsedInput)
+    val testing = foldTest()
 
     val (invalid, valid) = parsedInput
       .partition(_.isLeft)
@@ -39,11 +42,15 @@ final class ArgsInputParser(
     )
   }
 
-  private def detectMissingArguments(parsedInputList: ParsedInputList): ParsedInputList = {
-    definition.arguments.values
-      .filter((argument) => { argument.isRequired && !args.contains(argument.name) })
-      .map((argument) => { Left(new MissingArgument(argument.name)) })
-      .toList
+  // todo: Aggregate, InputParserAggregate? ParserResultAggregate? Needs proper types.
+  private case class FoldTestResult(args: List[String] = List[String](), opts: List[String] = List[String]())
+
+  private def foldTest(): FoldTestResult = {
+    args
+      .takeWhile(_ != "--")
+      .foldLeft(new FoldTestResult())((result, arg) => {
+        new FoldTestResult(result.args :+ arg, result.opts)
+      })
   }
 
   private def parseInputArgs(): ParsedInputList = {
@@ -61,7 +68,9 @@ final class ArgsInputParser(
   }
 
   private def parseArgument(token: String): ParsedInput = {
-    definition.getArgument(token) match {
+    val index = arguments.size
+
+    definition.getArgument(index) match {
       case Some(argument) => Right(argument)
       case _ => Left(new InvalidArgument(token))
     }

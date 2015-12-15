@@ -20,8 +20,11 @@ import eidolon.console.input.validation._
 object Main extends App {
   val definition = new InputDefinition()
     .withArgument(new InputArgument("tester"))
+    .withArgument(new InputArgument("abc"))
     .withOption(new InputOption("tester", Some("t")))
     .withOption(new InputOption("doodoodoo", mode = InputOption.VALUE_REQUIRED))
+
+  val two = definition.arguments.values.toList.headOption
 
   val parser = new ArgsInputParser(args, definition)
   val result = parser.parse()

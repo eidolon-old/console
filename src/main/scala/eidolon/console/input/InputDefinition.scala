@@ -22,12 +22,12 @@ final case class InputDefinition(
 
   private val shortOptions = getShortOptionsFromOptions(options)
 
-  def getArgument(name: String): Option[InputArgument] = {
-    arguments.get(name)
+  def getArgument(index: Int): Option[InputArgument] = {
+    arguments.values.toList.lift(index)
   }
 
-  def hasArgument(name: String): Boolean = {
-    arguments.contains(name)
+  def hasArgument(index: Int): Boolean = {
+    arguments.values.toList.lift(index).isDefined
   }
 
   def getOption(name: String): Option[InputOption] = {
