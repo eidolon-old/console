@@ -12,8 +12,8 @@
 package eidolon.console.input.validation
 
 /**
- * Missing Option
+ * Valid Parameter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class MissingOption(override val token: String) extends MissingParameter(token)
+abstract class ValidParameter(val name: String)

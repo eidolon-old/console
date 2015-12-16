@@ -12,8 +12,11 @@
 package eidolon.console.input.validation
 
 /**
- * Missing Argument
+ * ValidOption
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class MissingArgument(override val token: String) extends MissingParameter(token)
+case class ValidOption(
+    override val name: String,
+    value: Option[List[String]] = None)
+  extends ValidParameter(name)

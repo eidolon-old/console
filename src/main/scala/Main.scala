@@ -29,23 +29,5 @@ object Main extends App {
   val parser = new ArgsInputParser(args, definition)
   val result = parser.parse()
 
-  println("Invalid parameters:")
-  println(result.invalid.map({
-    case argument if argument.isInstanceOf[DuplicateArgument] =>
-      s"Duplicate argument: ${argument.token}"
-    case argument if argument.isInstanceOf[InvalidArgument] =>
-      s"Invalid argument: ${argument.token}"
-    case option if option.isInstanceOf[DuplicateOption] =>
-      s"Duplicate option: ${option.token}"
-    case option if option.isInstanceOf[InvalidOption] =>
-      s"Invalid option: ${option.token}"
-  }))
-
-  println("Valid parameters:")
-  println(result.valid.map({
-    case argument if argument.isInstanceOf[InputArgument] =>
-      s"Argument: ${argument.name}"
-    case option if option.isInstanceOf[InputOption] =>
-      s"Option: ${option.name}"
-  }))
+  println(result)
 }

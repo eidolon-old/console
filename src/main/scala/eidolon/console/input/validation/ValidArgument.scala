@@ -12,8 +12,11 @@
 package eidolon.console.input.validation
 
 /**
- * Duplicate Option
+ * Valid Argument
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class DuplicateOption(override val token: String) extends DuplicateParameter(token)
+case class ValidArgument(
+    override val name: String,
+    value: List[String])
+  extends ValidParameter(name)

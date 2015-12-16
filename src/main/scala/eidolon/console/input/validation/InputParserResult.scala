@@ -11,7 +11,7 @@
 
 package eidolon.console.input.validation
 
-import eidolon.console.input.{InputOption, InputArgument, InputParameter}
+import eidolon.console.input._
 
 /**
  * Input Parser Result
@@ -20,32 +20,15 @@ import eidolon.console.input.{InputOption, InputArgument, InputParameter}
  */
 case class InputParserResult(
     invalid: List[InvalidParameter] = List(),
-    valid: List[InputParameter] = List()) {
+    valid: List[ValidParameter] = List()) {
 
-  private lazy val invalidArgumentCount = invalid
-    .foldLeft(0)((count, item) => item match {
-      case argument if argument.isInstanceOf[InvalidArgument] => count + 1
-      case _ => count
-    })
+  private val invalidArguments = invalid.filter(_.isInstanceOf[InvalidArgument])
+  private val invalidOptions = invalid.filter(_.isInstanceOf[InvalidOption])
+  private val validArguments = valid.filter(_.isInstanceOf[ValidArgument])
+  private val validOptions = valid.filter(_.isInstanceOf[ValidOption])
 
-  private lazy val invalidOptionCount = invalid
-    .foldLeft(0)((count, item) => item match {
-      case option if option.isInstanceOf[InvalidOption] => count + 1
-      case _ => count
-    })
+  lazy val argumentCount = invalidArguments.size + validArguments.size
+  lazy val optionCount = invalidOptions.size + validOptions.size
 
-  private lazy val validArgumentCount = valid
-    .foldLeft(0)((count, item) => item match {
-      case argument if argument.isInstanceOf[InputArgument] => count + 1
-      case _ => count
-    })
-
-  private lazy val validOptionCount = valid
-    .foldLeft(0)((count, item) => item match {
-      case option if option.isInstanceOf[InputOption] => count + 1
-      case _ => count
-    })
-
-  lazy val argumentCount = invalidArgumentCount + validArgumentCount
-  lazy val optionCount = invalidOptionCount + validOptionCount
+  lazy val argumentNames = validArguments.map(_.name) ++: invalidArguments.map(_.token)
 }
