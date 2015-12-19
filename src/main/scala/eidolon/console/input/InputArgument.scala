@@ -20,11 +20,15 @@ case class InputArgument(
     override val name: String,
     mode: Int = InputArgument.OPTIONAL,
     description: Option[String] = None,
-    default: Option[Any] = None)
+    default: Option[List[String]] = None)
   extends InputParameter(name) {
 
   require(isValidMode, "Argument mode \"%d\" is not valid.".format(mode))
   require(isValidDefault, "Argument default is not valid.")
+
+  def hasDefault: Boolean = {
+    default.nonEmpty
+  }
 
   def isOptional: Boolean = {
     InputArgument.OPTIONAL == (InputArgument.OPTIONAL & mode)

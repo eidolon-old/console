@@ -10,7 +10,6 @@
  */
 
 import eidolon.console.input._
-import eidolon.console.input.validation._
 
 /**
  * Main
@@ -19,15 +18,26 @@ import eidolon.console.input.validation._
  */
 object Main extends App {
   val definition = new InputDefinition()
-    .withArgument(new InputArgument("tester"))
-    .withArgument(new InputArgument("abc"))
-    .withOption(new InputOption("tester", Some("t")))
-    .withOption(new InputOption("doodoodoo", mode = InputOption.VALUE_REQUIRED))
-
-  val two = definition.arguments.values.toList.headOption
+    .withArgument(new InputArgument("first", mode = InputArgument.REQUIRED))
+    .withArgument(new InputArgument("second", mode = InputArgument.REQUIRED))
+    .withArgument(new InputArgument("hasDefault", default = Some(List("defaultTestValue"))))
+    .withOption(new InputOption("optional", Some("o")))
+    .withOption(new InputOption("required", mode = InputOption.VALUE_REQUIRED))
 
   val parser = new ArgsInputParser(args, definition)
   val result = parser.parse()
 
-  println(result)
+  result match {
+    case Left(errors) => {
+      println("Errors:")
+      println(errors)
+    }
+    case Right(input) => {
+      println("Arguments:")
+      println(input.arguments)
+
+      println("Options:")
+      println(input.options)
+    }
+  }
 }

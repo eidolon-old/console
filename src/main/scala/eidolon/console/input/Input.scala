@@ -11,18 +11,20 @@
 
 package eidolon.console.input
 
-import eidolon.console.input.validation.InvalidParameter
-
 /**
- * Input Parser
+ * Input
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait InputParser {
-  /**
-   * Parse raw input arguments into InputArguments and return all of them as a list.
-   *
-   * @return Parsed Array of InputArguments
-   */
-  def parse(): Either[List[InvalidParameter], Input]
+case class Input(
+    private val _arguments: Map[String, List[String]],
+    private val _options: Map[String, Option[List[String]]]) {
+
+  def arguments: Map[String, List[String]] = {
+    _arguments
+  }
+
+  def options: Map[String, Option[List[String]]] = {
+    _options
+  }
 }

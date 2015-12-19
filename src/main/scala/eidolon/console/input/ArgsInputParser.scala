@@ -24,12 +24,33 @@ final class ArgsInputParser(
   extends InputParser {
 
   type ParsedInput = Either[InvalidParameter, ValidParameter]
-  type ParsedInputList = List[ParsedInput]
 
-  override def parse(): InputParserResult = {
-    val parsedArgs = args
+  override def parse(): Either[List[InvalidParameter], Input] = {
+    val parsedInputArgs = parseInputArgs(args)
+    val missingArgs = findMissingArgs(parsedInputArgs)
+
+    val missingRequired = missingArgs.filter(a => a.isRequired).map(a => new InvalidArgument(a.name))
+    val missingDefaults = missingArgs.filter(a => a.hasDefault).map(a => new ValidArgument(a.name, a.default.get))
+
+    val result = new ArgsInputParserAggregate(
+      parsedInputArgs.invalid ++: missingRequired,
+      parsedInputArgs.valid ++: missingDefaults
+    )
+
+    if (result.invalid.nonEmpty) {
+      Left(result.invalid)
+    } else {
+      Right(new Input(
+        result.validArguments.map(argument => argument.name -> argument.value).toMap,
+        result.validOptions.map(option => option.name -> option.value).toMap
+      ))
+    }
+  }
+
+  private def parseInputArgs(args: Array[String]): ArgsInputParserAggregate = {
+    args
       .takeWhile(_ != "--")
-      .foldLeft(new InputParserResult())((aggregate, arg) => {
+      .foldLeft(new ArgsInputParserAggregate())((aggregate, arg) => {
         val result = arg match {
           case token if token.startsWith("--") =>
             parseLongOption(aggregate, token)
@@ -41,41 +62,62 @@ final class ArgsInputParser(
 
         result match {
           case Right(parameter) =>
-            new InputParserResult(aggregate.invalid, aggregate.valid :+ parameter)
+            new ArgsInputParserAggregate(aggregate.invalid, aggregate.valid :+ parameter)
           case Left(error) =>
-            new InputParserResult(aggregate.invalid :+ error, aggregate.valid)
+            new ArgsInputParserAggregate(aggregate.invalid :+ error, aggregate.valid)
         }
       })
-
-    val missingArgs = definition.arguments.values
-      .filter((argument) => { !parsedArgs.argumentNames.contains(argument.name) })
-      .map((argument) => { new InvalidArgument(argument.name) })
-      .toList
-
-    new InputParserResult(
-      parsedArgs.invalid ++: missingArgs,
-      parsedArgs.valid
-    )
   }
 
-  private def parseArgument(aggregate: InputParserResult, token: String): ParsedInput = {
+  private def findMissingArgs(parsedArgs: ArgsInputParserAggregate): List[InputArgument] = {
+    definition.arguments.values
+      .filter((argument) => { !parsedArgs.argumentNames.contains(argument.name) })
+      .toList
+  }
+
+  private def parseArgument(aggregate: ArgsInputParserAggregate, token: String): ParsedInput = {
     definition.getArgument(aggregate.argumentCount) match {
       case Some(argument) => Right(new ValidArgument(argument.name, List(token)))
       case _ => Left(new InvalidArgument(token))
     }
   }
 
-  private def parseShortOption(aggregate: InputParserResult, token: String): ParsedInput = {
+  private def parseShortOption(aggregate: ArgsInputParserAggregate, token: String): ParsedInput = {
     definition.getOptionByShortName(token.drop(1)) match {
       case Some(option) => Right(new ValidOption(option.name))
       case _ => Left(new InvalidOption(token))
     }
   }
 
-  private def parseLongOption(aggregate: InputParserResult, token: String): ParsedInput = {
+  private def parseLongOption(aggregate: ArgsInputParserAggregate, token: String): ParsedInput = {
     definition.getOption(token.drop(2)) match {
       case Some(option) => Right(new ValidOption(option.name))
       case _ => Left(new InvalidOption(token))
     }
+  }
+
+  /**
+   * Args input parser aggregate object to contain the current parse state
+   *
+   * @param invalid Invalid parameters
+   * @param valid Valid parameters
+   */
+  private class ArgsInputParserAggregate(
+    val invalid: List[InvalidParameter] = List(),
+    val valid: List[ValidParameter] = List()) {
+
+    lazy val invalidArguments = invalid.filter(_.isInstanceOf[InvalidArgument]).asInstanceOf[List[InvalidArgument]]
+    lazy val invalidOptions = invalid.filter(_.isInstanceOf[InvalidOption]).asInstanceOf[List[InvalidOption]]
+    lazy val validArguments = valid.filter(_.isInstanceOf[ValidArgument]).asInstanceOf[List[ValidArgument]]
+    lazy val validOptions = valid.filter(_.isInstanceOf[ValidOption]).asInstanceOf[List[ValidOption]]
+
+    lazy val argumentCount = invalidArguments.size + validArguments.size
+    lazy val optionCount = invalidOptions.size + validOptions.size
+
+    lazy val invalidCount = invalidArguments.size + invalidOptions.size
+    lazy val validCount = validArguments.size + validOptions.size
+
+    lazy val argumentNames = validArguments.map(_.name) ++: invalidArguments.map(_.token)
+    lazy val optionNames = validOptions.map(_.name) ++: invalidArguments.map(_.token)
   }
 }
