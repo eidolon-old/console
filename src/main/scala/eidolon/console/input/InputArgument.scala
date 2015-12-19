@@ -20,7 +20,7 @@ case class InputArgument(
     override val name: String,
     mode: Int = InputArgument.OPTIONAL,
     description: Option[String] = None,
-    default: Option[List[String]] = None)
+    default: Option[String] = None)
   extends InputParameter(name) {
 
   require(isValidMode, "Argument mode \"%d\" is not valid.".format(mode))

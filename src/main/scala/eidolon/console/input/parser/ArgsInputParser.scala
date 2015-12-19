@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input
+package eidolon.console.input.parser
 
+import eidolon.console.input._
 import eidolon.console.input.validation._
 
 /**
@@ -77,7 +78,7 @@ final class ArgsInputParser(
 
   private def parseArgument(aggregate: ArgsInputParserAggregate, token: String): ParsedInput = {
     definition.getArgument(aggregate.argumentCount) match {
-      case Some(argument) => Right(new ValidArgument(argument.name, List(token)))
+      case Some(argument) => Right(new ValidArgument(argument.name, token))
       case _ => Left(new InvalidArgument(token))
     }
   }

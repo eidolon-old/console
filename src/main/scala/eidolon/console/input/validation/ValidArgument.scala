@@ -18,5 +18,5 @@ package eidolon.console.input.validation
  */
 case class ValidArgument(
     override val name: String,
-    value: List[String])
+    value: String)
   extends ValidParameter(name)

@@ -10,6 +10,7 @@
  */
 
 import eidolon.console.input._
+import eidolon.console.input.parser.ArgsInputParser
 
 /**
  * Main
@@ -20,7 +21,7 @@ object Main extends App {
   val definition = new InputDefinition()
     .withArgument(new InputArgument("first", mode = InputArgument.REQUIRED))
     .withArgument(new InputArgument("second", mode = InputArgument.REQUIRED))
-    .withArgument(new InputArgument("hasDefault", default = Some(List("defaultTestValue"))))
+    .withArgument(new InputArgument("hasDefault", default = Some("defaultTestValue")))
     .withOption(new InputOption("optional", Some("o")))
     .withOption(new InputOption("required", mode = InputOption.VALUE_REQUIRED))
 
@@ -38,6 +39,9 @@ object Main extends App {
 
       println("Options:")
       println(input.options)
+
+      println(input.hasOption("required"))
+      println(input.getOptionValue("required"))
     }
   }
 }

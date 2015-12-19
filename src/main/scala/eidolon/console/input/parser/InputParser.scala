@@ -1,5 +1,5 @@
 /**
- * This file is part of the "eidolon/console" project.
+ * This file is part of the "Default (Template) Project" project.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the LICENSE is distributed on an "AS IS" BASIS,
@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input
+package eidolon.console.input.parser
 
+import eidolon.console.input.Input
 import eidolon.console.input.validation.InvalidParameter
 
 /**
