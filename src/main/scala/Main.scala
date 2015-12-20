@@ -9,8 +9,10 @@
  * file that was distributed with this source code.
  */
 
-import eidolon.console.input._
+import eidolon.console.input.builder.InputBuilder
+import eidolon.console.input.definition.{InputOption, InputDefinition, InputArgument}
 import eidolon.console.input.parser.ArgsInputParser
+import eidolon.console.input.validation.InputValidator
 
 /**
  * Main
@@ -25,23 +27,35 @@ object Main extends App {
     .withOption(new InputOption("optional", Some("o")))
     .withOption(new InputOption("required", mode = InputOption.VALUE_REQUIRED))
 
-  val parser = new ArgsInputParser(args, definition)
-  val result = parser.parse()
+  val parser = new ArgsInputParser(args)
+  val validator = new InputValidator()
+  val builder = new InputBuilder()
 
-  result match {
-    case Left(errors) => {
-      println("Errors:")
-      println(errors)
-    }
-    case Right(input) => {
-      println("Arguments:")
-      println(input.arguments)
+  val parsed = parser.parse()
+  val validated = validator.validate(definition, parsed)
+  val built = builder.build(validated)
 
-      println("Options:")
-      println(input.options)
-
-      println(input.hasOption("required"))
-      println(input.getOptionValue("required"))
-    }
+  if (validated.isValid) {
+    println("")
+    println("Success!")
+    println("")
+    println("Has argument 'first'? %s".format(built.hasArgument("first")))
+    println("Value: '%s'".format(built.getArgumentValue("first").getOrElse("")))
+    println("")
+    println("Has argument 'second'? %s".format(built.hasArgument("second")))
+    println("Value: '%s'".format(built.getArgumentValue("second").getOrElse("")))
+    println("")
+    println("Has argument 'hasDefault'? %s".format(built.hasArgument("hasDefault")))
+    println("Value: '%s'".format(built.getArgumentValue("hasDefault").getOrElse("")))
+    println("")
+    println("Has option 'optional'? %s".format(built.hasOption("optional")))
+    println("Value: '%s'".format(built.getOptionValue("optional")))
+    println("")
+    println("Has option 'required'? %s".format(built.hasOption("required")))
+    println("Value: '%s'".format(built.getOptionValue("required")))
+    println("")
+  } else {
+    println("Some invalid parameters were specified, please check your input and try again.")
+    println(validated.invalid)
   }
 }

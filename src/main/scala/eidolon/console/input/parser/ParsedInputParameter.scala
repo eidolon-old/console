@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.validation
+package eidolon.console.input.parser
 
 /**
- * Valid Parameter
+ * ParsedInputParameter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait ValidParameter {
-  val name: String
+trait ParsedInputParameter {
+  val token: String
 }

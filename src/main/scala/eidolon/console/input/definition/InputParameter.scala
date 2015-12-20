@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.validation
+package eidolon.console.input.definition
 
 /**
- * Valid Parameter
+ * Input Parameter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait ValidParameter {
+trait InputParameter {
   val name: String
 }

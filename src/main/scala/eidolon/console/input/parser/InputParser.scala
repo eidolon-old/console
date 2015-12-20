@@ -25,5 +25,5 @@ trait InputParser {
    *
    * @return Parsed Array of InputArguments
    */
-  def parse(): Either[List[InvalidParameter], Input]
+  def parse(): List[ParsedInputParameter]
 }

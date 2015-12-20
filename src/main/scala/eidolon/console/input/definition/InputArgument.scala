@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input
+package eidolon.console.input.definition
 
 /**
  * Input Argument
@@ -21,7 +21,7 @@ case class InputArgument(
     mode: Int = InputArgument.OPTIONAL,
     description: Option[String] = None,
     default: Option[String] = None)
-  extends InputParameter(name) {
+  extends InputParameter {
 
   require(isValidMode, "Argument mode \"%d\" is not valid.".format(mode))
   require(isValidDefault, "Argument default is not valid.")

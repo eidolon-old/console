@@ -16,4 +16,6 @@ package eidolon.console.input.validation
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-abstract class InvalidParameter(val token: String)
+trait InvalidParameter {
+  val token: String
+}

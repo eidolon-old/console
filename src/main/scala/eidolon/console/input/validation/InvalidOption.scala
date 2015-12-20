@@ -16,4 +16,4 @@ package eidolon.console.input.validation
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class InvalidOption(override val token: String) extends InvalidParameter(token)
+case class InvalidOption(override val token: String) extends InvalidParameter

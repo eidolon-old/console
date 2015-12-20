@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input
+package eidolon.console.input.definition
 
 /**
  * Input Option
@@ -21,8 +21,8 @@ case class InputOption(
     shortName: Option[String] = None,
     mode: Int = InputOption.VALUE_NONE,
     description: Option[String] = None,
-    defaultValue: Option[Any] = None)
-  extends InputParameter(name) {
+    defaultValue: Option[String] = None)
+  extends InputParameter {
 
   require(isValidName, "Option name \"%s\" is not valid.".format(name))
   require(isValidShortName, "Option short name \"%s\" is not valid.".format(shortName))

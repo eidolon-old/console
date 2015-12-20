@@ -19,4 +19,4 @@ package eidolon.console.input.validation
 case class ValidOption(
     override val name: String,
     value: Option[String] = None)
-  extends ValidParameter(name)
+  extends ValidParameter

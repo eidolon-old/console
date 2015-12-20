@@ -9,11 +9,14 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input
+package eidolon.console.input.parser
 
 /**
- * Input Parameter
+ * Parsed Input Long Option
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-abstract class InputParameter(val name: String)
+case class ParsedInputLongOption(
+    token: String,
+    value: Option[String])
+  extends ParsedInputParameter

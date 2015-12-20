@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input
+package eidolon.console.input.definition
 
 /**
  * Input Definition
