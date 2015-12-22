@@ -27,7 +27,6 @@ case class InputOption(
   require(isValidName, "Option name \"%s\" is not valid.".format(name))
   require(isValidShortName, "Option short name \"%s\" is not valid.".format(shortName))
   require(isValidMode, "Option mode \"%d\" is not valid.".format(mode))
-  require(!isArrayValue || acceptValue, "Impossible to have an option mode VALUE_IS_ARRAY if the option does not accept a value.")
   require(isValidDefaultValue, "Option defaultValue is not valid.")
 
   def acceptValue: Boolean = {
@@ -36,10 +35,6 @@ case class InputOption(
 
   def isNoValue: Boolean = {
     InputOption.VALUE_NONE == (InputOption.VALUE_NONE & mode)
-  }
-
-  def isArrayValue: Boolean = {
-    InputOption.VALUE_IS_ARRAY == (InputOption.VALUE_IS_ARRAY & mode)
   }
 
   def isOptionalValue: Boolean = {
@@ -51,7 +46,7 @@ case class InputOption(
   }
 
   private def isValidMode: Boolean = {
-    (1 to 15).contains(mode)
+    (1 to 7).contains(mode)
   }
 
   private def isValidName: Boolean = {
@@ -71,11 +66,7 @@ case class InputOption(
       !isRequiredValue || defaultValue.isEmpty
     }
 
-    def validateArrayDefaultValue = {
-      !isArrayValue || defaultValue.getOrElse(None).isInstanceOf[Array[Any]]
-    }
-
-    validateNoneDefaultValue && validateRequiredDefaultValue && validateArrayDefaultValue
+    validateNoneDefaultValue && validateRequiredDefaultValue
   }
 
   override def equals(copy: Any): Boolean = { copy match {
@@ -93,5 +84,4 @@ object InputOption {
   val VALUE_NONE = 1
   val VALUE_REQUIRED = 2
   val VALUE_OPTIONAL = 4
-  val VALUE_IS_ARRAY = 8
 }

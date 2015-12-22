@@ -104,7 +104,6 @@ class InputValidator {
           }
         }
 
-        // todo: Array value mode
         case _ => {
           throw new RuntimeException("Unexpected InputOption mode.")
         }
