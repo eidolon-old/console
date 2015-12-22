@@ -19,28 +19,30 @@ import sbt.{Build => BaseBuild, _}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object Build extends BaseBuild {
-    import Dependencies._
 
-    lazy val commonSettings = Seq(
-        organization := "eidolon",
-        publishMavenStyle := true,
-        publishTo := Some(Resolver.sftp(
-            "Eidolon Repo",
-            "ssh.repo.eidolonframework.com",
-            "/usr/share/nginx/html"
-        )),
-        scalaVersion := "2.11.7",
-        version := "1.0.0",
-        testOptions in Test += Tests.Argument("-oD")
+  import Dependencies._
+
+  lazy val commonSettings = Seq(
+    organization := "eidolon",
+    publishMavenStyle := true,
+    publishTo := Some(Resolver.sftp(
+      "Eidolon Repo",
+      "ssh.repo.eidolonframework.com",
+      "/usr/share/nginx/html"
+    )),
+    scalaVersion := "2.11.7",
+    version := "1.0.0",
+    testOptions in Test += Tests.Argument("-oD")
+  )
+
+  lazy val console = (project in file("."))
+    .enablePlugins(JavaAppPackaging)
+    .enablePlugins(JavaServerAppPackaging)
+    .settings(commonSettings: _*)
+    .settings(name := "console")
+    .settings(libraryDependencies ++=
+      compile(chroma) ++
+      test(mockito, scalaTest)
     )
-
-    lazy val console = (project in file("."))
-        .enablePlugins(JavaAppPackaging)
-        .enablePlugins(JavaServerAppPackaging)
-        .settings(commonSettings: _*)
-        .settings(name := "console")
-        .settings(libraryDependencies ++=
-            test(mockito, scalaTest)
-        )
 }
 

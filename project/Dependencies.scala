@@ -17,13 +17,18 @@ import sbt._
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object Dependencies {
-    def compile(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "compile")
-    def container(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "container")
-    def provided(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "provided")
-    def runtime(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "runtime")
-    def test(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "test")
+  val repositories = Seq(
+    "Eidolon Repo" at "https://repo.eidolonframework.com/"
+  )
 
-    val mockito   = "org.mockito" % "mockito-core" % "1.10.19"
-    val scalaTest = "org.scalatest" %% "scalatest" % "2.2.4"
+  def compile(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "compile")
+  def container(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "container")
+  def provided(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "provided")
+  def runtime(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "runtime")
+  def test(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "test")
+
+  val chroma = "eidolon" %% "chroma" % "1.0.0"
+  val mockito = "org.mockito" % "mockito-core" % "1.10.19"
+  val scalaTest = "org.scalatest" %% "scalatest" % "2.2.4"
 }
 
