@@ -21,10 +21,9 @@ import eidolon.console.command.Command
  *
  * Usage (e.g. in main):
  *
- *    val app = new Application("myapp", "0.1.0-SNAPSHOT");
- *
- *    app.withCommand(new ExampleCommand())
- *    app.run()
+ *    val app = new Application("myapp", "0.1.0-SNAPSHOT")
+ *      .withCommand(new ExampleCommand())
+ *      .run()
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
