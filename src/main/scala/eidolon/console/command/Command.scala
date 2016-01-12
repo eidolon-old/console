@@ -18,34 +18,28 @@ import eidolon.console.input.definition.InputDefinition
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-final class Command(
-    val name: String,
-    val aliases: List[String] = List(),
-    val definition: InputDefinition = new InputDefinition()) {
+trait Command[T <: Command[T]] {
+  val name: String
+  val aliases: List[String] = List()
+  val definition: InputDefinition = new InputDefinition()
 
-  def withAlias(alias: String): Command = {
+  def withAlias(alias: String): T = {
     copy(aliases = aliases :+ alias)
   }
 
-  def withAliases(newAliases: List[String]): Command = {
+  def withAliases(newAliases: List[String]): T = {
     copy(aliases = aliases ++ newAliases)
   }
 
-  def withDefinition(definition: InputDefinition): Command = {
+  def withDefinition(definition: InputDefinition): T = {
     copy(definition = definition)
   }
 
   private def copy(
       name: String = name,
       aliases: List[String] = aliases,
-      definition: InputDefinition = definition): Command = {
+      definition: InputDefinition = definition): T = {
 
-    new Command(name, aliases, definition)
-  }
-}
-
-object Command {
-  def apply(name: String): Command = {
-    new Command(name)
+    new T(name, aliases, definition)
   }
 }

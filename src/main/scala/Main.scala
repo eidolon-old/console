@@ -24,7 +24,7 @@ object Main extends App {
     .withArgument(new InputArgument("source"))
     .withArgument(new InputArgument("destination", default = Some(".")))
 
-  val installCommand = Command("install")
+  val installCommand = new Command("install")
     .withAlias("i")
     .withAlias("ins")
     .withDefinition(definition);

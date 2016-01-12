@@ -12,10 +12,10 @@
 package eidolon.console.command
 
 /**
- * Install Command Builder
+ * Install Command
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class InstallCommandBuilder {
-  
+class InstallCommand extends Command[InstallCommand] {
+  override val name: String = "install"
 }
