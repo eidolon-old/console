@@ -9,14 +9,10 @@
  * file that was distributed with this source code.
  */
 
-import java.text.SimpleDateFormat
-import java.util.Calendar
+import eidolon.console.Application
+import eidolon.console.command.Command
+import eidolon.console.input.definition.{InputArgument, InputDefinition}
 
-import eidolon.chroma.Chroma
-import eidolon.console.input.builder.InputBuilder
-import eidolon.console.input.definition.{InputOption, InputDefinition, InputArgument}
-import eidolon.console.input.parser.ArgsInputParser
-import eidolon.console.input.validation.{InvalidOption, InvalidArgument, InputValidator}
 
 /**
  * Main
@@ -25,74 +21,17 @@ import eidolon.console.input.validation.{InvalidOption, InvalidArgument, InputVa
  */
 object Main extends App {
   val definition = new InputDefinition()
-    .withArgument(new InputArgument("first", mode = InputArgument.REQUIRED))
-    .withArgument(new InputArgument("second", mode = InputArgument.REQUIRED))
-    .withArgument(new InputArgument("hasDefault", default = Some("defaultTestValue")))
-    .withOption(new InputOption("optional", Some("o")))
-    .withOption(new InputOption("required", mode = InputOption.VALUE_REQUIRED))
+    .withArgument(new InputArgument("source"))
+    .withArgument(new InputArgument("destination", default = Some(".")))
 
-  val chroma = Chroma()
-  val parser = new ArgsInputParser(args)
-  val validator = new InputValidator()
-  val builder = new InputBuilder()
+  val installCommand = Command("install")
+    .withAlias("i")
+    .withAlias("ins")
+    .withDefinition(definition);
 
-  val parsed = parser.parse()
-  val validated = validator.validate(definition, parsed)
+  // Elsewhere...
+  val application = Application()
+    .withCommand(installCommand)
 
-  if (validated.isValid) {
-    val built = builder.build(validated)
-
-    println("")
-    println(chroma.green("Success!"))
-    println("")
-    println("Has argument 'first'? %s".format(chroma.blue(built.arguments.contains("first").toString)))
-    println("Value: '%s'".format(chroma.green(built.arguments.get("first").toString)))
-    println("")
-    println("Has argument 'second'? %s".format(chroma.blue(built.arguments.contains("second").toString)))
-    println("Value: '%s'".format(chroma.green(built.arguments.get("second").toString)))
-    println("")
-    println("Has argument 'hasDefault'? %s".format(chroma.blue(built.arguments.contains("hasDefault").toString)))
-    println("Value: '%s'".format(chroma.green(built.arguments.get("hasDefault").toString)))
-    println("")
-    println("Has option 'optional'? %s".format(chroma.blue(built.options.contains("optional").toString)))
-    println("Value: '%s'".format(chroma.green(built.options.getOrElse("optional", None).toString)))
-    println("")
-    println("Has option 'required'? %s".format(chroma.blue(built.options.contains("required").toString)))
-    println("Value: '%s'".format(chroma.green(built.options.getOrElse("required", None).toString)))
-    println("")
-  } else {
-    println(errorPrefix + "Invalid parameters found:")
-
-    validated.invalid.foreach({
-      case argument if argument.isInstanceOf[InvalidArgument] =>
-        println(errorPrefix + "- Missing argument '%s'".format(argument.token))
-      case option if option.isInstanceOf[InvalidOption] =>
-        println(errorPrefix + "- Unexpected option '%s'".format(option.asInstanceOf[InvalidOption].token))
-    })
-
-    println(infoPrefix + "Try run with --help, or -h to display usage information.")
-  }
-
-  def infoPrefix: String = {
-    chroma.blue(currentTime) + " [" + chroma.blue("INF") + "] "
-  }
-
-  def warningPrefix: String = {
-    chroma.yellow(currentTime) + " [" + chroma.yellow("WRN") + "] "
-  }
-
-  def errorPrefix: String = {
-    chroma.red(currentTime) + " [" + chroma.red("ERR") + "] "
-  }
-
-  def fatalPrefix: String = {
-    chroma.bgRed.white.bold(currentTime + " [FTL]") + " "
-  }
-
-  def currentTime: String = {
-    val format = new SimpleDateFormat("HH:mm:ss")
-    val now = Calendar.getInstance.getTime
-
-    format.format(now)
-  }
+  println(application)
 }
