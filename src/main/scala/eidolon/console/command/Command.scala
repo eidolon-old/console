@@ -22,24 +22,4 @@ trait Command[T <: Command[T]] {
   val name: String
   val aliases: List[String] = List()
   val definition: InputDefinition = new InputDefinition()
-
-  def withAlias(alias: String): T = {
-    copy(aliases = aliases :+ alias)
-  }
-
-  def withAliases(newAliases: List[String]): T = {
-    copy(aliases = aliases ++ newAliases)
-  }
-
-  def withDefinition(definition: InputDefinition): T = {
-    copy(definition = definition)
-  }
-
-  private def copy(
-      name: String = name,
-      aliases: List[String] = aliases,
-      definition: InputDefinition = definition): T = {
-
-    new T(name, aliases, definition)
-  }
 }

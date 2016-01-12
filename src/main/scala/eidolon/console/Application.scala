@@ -29,15 +29,13 @@ import eidolon.console.command.Command
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class Application(
-    private val commands: Map[String, Command] = Map()) {
+    val commands: Map[String, Command[_]] = Map()) {
 
-  def withCommand(command: Command): Application = {
+  def withCommand[T <: Command[_]](command: T): Application = {
     copy(commands ++ command.aliases.map(_ -> command) + (command.name -> command))
   }
 
-  private def copy(
-      commands: Map[String, Command]): Application = {
-
+  private def copy(commands: Map[String, Command[_]]): Application = {
     new Application(commands = commands)
   }
 }

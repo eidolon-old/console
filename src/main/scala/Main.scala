@@ -10,7 +10,7 @@
  */
 
 import eidolon.console.Application
-import eidolon.console.command.Command
+import eidolon.console.command.InstallCommand
 import eidolon.console.input.definition.{InputArgument, InputDefinition}
 
 
@@ -20,14 +20,7 @@ import eidolon.console.input.definition.{InputArgument, InputDefinition}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object Main extends App {
-  val definition = new InputDefinition()
-    .withArgument(new InputArgument("source"))
-    .withArgument(new InputArgument("destination", default = Some(".")))
-
-  val installCommand = new Command("install")
-    .withAlias("i")
-    .withAlias("ins")
-    .withDefinition(definition);
+  val installCommand = new InstallCommand()
 
   // Elsewhere...
   val application = Application()
