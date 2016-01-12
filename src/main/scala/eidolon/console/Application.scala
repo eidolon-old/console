@@ -28,6 +28,8 @@ import eidolon.console.command.Command
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class Application(
+    val name: String,
+    val version: String,
     val commands: Map[String, Command[_]] = Map()) {
 
   def withCommand[T <: Command[_]](command: T): Application = {
@@ -35,12 +37,12 @@ class Application(
   }
 
   private def copy(commands: Map[String, Command[_]]): Application = {
-    new Application(commands = commands)
+    new Application(name, version, commands = commands)
   }
 }
 
 object Application {
-  def apply(): Application = {
-    new Application()
+  def apply(name: String, version: String): Application = {
+    new Application(name, version)
   }
 }

@@ -19,11 +19,11 @@ import eidolon.console.input.definition.{InputArgument, InputDefinition}
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object Main extends App {
+object ApplicationMain extends App {
   val installCommand = new InstallCommand()
 
   // Elsewhere...
-  val application = Application()
+  val application = Application("eidolon/console", "0.1.0-SNAPSHOT")
     .withCommand(installCommand)
 
   println(application)
