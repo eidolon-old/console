@@ -30,13 +30,13 @@ import eidolon.console.command.Command
 class Application(
     val name: String,
     val version: String,
-    val commands: Map[String, Command[_]] = Map()) {
+    val commands: Map[String, Command] = Map()) {
 
-  def withCommand[T <: Command[_]](command: T): Application = {
+  def withCommand(command: Command): Application = {
     copy(commands ++ command.aliases.map(_ -> command) + (command.name -> command))
   }
 
-  private def copy(commands: Map[String, Command[_]]): Application = {
+  private def copy(commands: Map[String, Command]): Application = {
     new Application(name, version, commands = commands)
   }
 }

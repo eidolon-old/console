@@ -16,6 +16,7 @@ package eidolon.console.command
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class InstallCommand extends Command[InstallCommand] {
-  override val name: String = "install"
+class InstallCommand extends Command {
+  override val name = "install"
+  override val aliases = List("i")
 }

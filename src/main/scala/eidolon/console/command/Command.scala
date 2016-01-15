@@ -18,7 +18,7 @@ import eidolon.console.input.definition.InputDefinition
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait Command[T <: Command[T]] {
+trait Command {
   val name: String
   val aliases: List[String] = List()
   val definition: InputDefinition = new InputDefinition()
