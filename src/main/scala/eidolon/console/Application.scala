@@ -40,8 +40,8 @@ class Application(
     val inputBuilder: InputBuilder,
     val commands: Map[String, Command] = Map()) {
 
-  private val appDefinition = buildDefinition()
   private val appCommands = buildAppCommands(commands)
+  private val appDefinition = buildAppDefinition()
 
 
   def run(): Int = {
@@ -69,14 +69,13 @@ class Application(
 
   protected def buildAppCommands(commands: Map[String, Command]): Map[String, Command] = {
     val helpCommand = new HelpCommand()
-    val defaultCommands = Map(
+
+    Map(
       helpCommand.name -> helpCommand
     )
-
-    defaultCommands ++ commands
   }
 
-  protected def buildDefinition(): InputDefinition = {
+  protected def buildAppDefinition(): InputDefinition = {
     new InputDefinition()
       .withArgument(new InputArgument("command", InputArgument.REQUIRED))
       .withOption(new InputOption("help", Some("h"), InputOption.VALUE_NONE, Some("Displays this help message")))
@@ -85,11 +84,12 @@ class Application(
 
   private def getCommandFromInput(input: List[ParsedInputParameter]): Command = {
     val arguments = input.filter(_.isInstanceOf[ParsedInputArgument])
+    val allCommands = appCommands ++ commands
 
     if (arguments.nonEmpty) {
-      appCommands.get(arguments.head.token).get
+      allCommands.get(arguments.head.token).get
     } else {
-      appCommands.get("help").get
+      allCommands.get("help").get
     }
   }
 
