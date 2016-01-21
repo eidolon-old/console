@@ -22,6 +22,19 @@ final case class InputDefinition(
 
   private val shortOptions = getShortOptionsFromOptions(options)
 
+  /**
+   * Appends an InputDefinition's arguments and options onto this InputDefinition
+   *
+   * @param definition the input definition to append to this one
+   * @return a new input definition
+   */
+  def ++(definition: InputDefinition): InputDefinition = {
+    new InputDefinition(
+      arguments ++ definition.arguments,
+      options ++ definition.options
+    )
+  }
+
   def getArgument(index: Int): Option[InputArgument] = {
     arguments.values.toList.lift(index)
   }

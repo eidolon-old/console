@@ -11,7 +11,11 @@
 
 package eidolon.console
 
-import eidolon.console.command.Command
+import eidolon.console.command.{HelpCommand, Command}
+import eidolon.console.input.builder.InputBuilder
+import eidolon.console.input.definition.{InputOption, InputArgument, InputDefinition}
+import eidolon.console.input.parser.{ArgsInputParser, ParsedInputArgument, ParsedInputParameter, InputParser}
+import eidolon.console.input.validation.InputValidator
 
 /**
  * Application
@@ -21,28 +25,98 @@ import eidolon.console.command.Command
  *
  * Usage (e.g. in main):
  *
- *    val app = new Application("myapp", "0.1.0-SNAPSHOT")
+ *    val app = Application("myapp", "0.1.0-SNAPSHOT", args)
  *      .withCommand(new ExampleCommand())
- *      .run()
+ *
+ *    System.exit(app.run())
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class Application(
     val name: String,
     val version: String,
+    val inputParser: InputParser,
+    val inputValidator: InputValidator,
+    val inputBuilder: InputBuilder,
     val commands: Map[String, Command] = Map()) {
+
+  private val appDefinition = buildDefinition()
+  private val appCommands = buildAppCommands(commands)
+
+
+  def run(): Int = {
+    val parsedInput = inputParser.parse()
+    val command = getCommandFromInput(parsedInput)
+
+    doRunCommand(command, parsedInput)
+  }
+
+  private def doRunCommand(command: Command, parsedInput: List[ParsedInputParameter]): Int = {
+    val inputDefinition = appDefinition ++ command.definition
+    val validated = inputValidator.validate(inputDefinition, parsedInput)
+
+    if (validated.isValid) {
+      val input = inputBuilder.build(validated)
+
+      command.execute(input)
+    } else {
+      // Generate help text for the command
+      println("Looks like you need help with command '%s'.".format(command.name))
+    }
+
+    0
+  }
+
+  protected def buildAppCommands(commands: Map[String, Command]): Map[String, Command] = {
+    val helpCommand = new HelpCommand()
+    val defaultCommands = Map(
+      helpCommand.name -> helpCommand
+    )
+
+    defaultCommands ++ commands
+  }
+
+  protected def buildDefinition(): InputDefinition = {
+    new InputDefinition()
+      .withArgument(new InputArgument("command", InputArgument.REQUIRED))
+      .withOption(new InputOption("help", Some("h"), InputOption.VALUE_NONE, Some("Displays this help message")))
+      .withOption(new InputOption("quiet", Some("q"), InputOption.VALUE_NONE, Some("Silence output")))
+  }
+
+  private def getCommandFromInput(input: List[ParsedInputParameter]): Command = {
+    val arguments = input.filter(_.isInstanceOf[ParsedInputArgument])
+
+    if (arguments.nonEmpty) {
+      appCommands.get(arguments.head.token).get
+    } else {
+      appCommands.get("help").get
+    }
+  }
 
   def withCommand(command: Command): Application = {
     copy(commands ++ command.aliases.map(_ -> command) + (command.name -> command))
   }
 
   private def copy(commands: Map[String, Command]): Application = {
-    new Application(name, version, commands = commands)
+    new Application(
+      name,
+      version,
+      inputParser,
+      inputValidator,
+      inputBuilder,
+      commands = commands
+    )
   }
 }
 
 object Application {
-  def apply(name: String, version: String): Application = {
-    new Application(name, version)
+  def apply(name: String, version: String, args: Array[String]): Application = {
+    new Application(
+      name,
+      version,
+      new ArgsInputParser(args),
+      new InputValidator(),
+      new InputBuilder()
+    )
   }
 }

@@ -11,12 +11,15 @@
 
 package eidolon.console.command
 
+import eidolon.console.input.Input
+
 /**
- * Install Command
+ * HelpCommand
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class InstallCommand extends Command {
-  override val name = "install"
-  override val aliases = List("i")
+class HelpCommand extends Command {
+  override val name = "help"
+
+  override def execute(input: Input): Unit = ???
 }

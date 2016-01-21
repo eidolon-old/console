@@ -10,9 +10,7 @@
  */
 
 import eidolon.console.Application
-import eidolon.console.command.InstallCommand
-import eidolon.console.input.definition.{InputArgument, InputDefinition}
-
+import eidolon.console.command.CloneCommand
 
 /**
  * Main
@@ -20,11 +18,8 @@ import eidolon.console.input.definition.{InputArgument, InputDefinition}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object ApplicationMain extends App {
-  val installCommand = new InstallCommand()
+  val app = Application("eidolon/console", "0.1.0-SNAPSHOT", args)
+    .withCommand(new CloneCommand())
 
-  // Elsewhere...
-  val application = Application("eidolon/console", "0.1.0-SNAPSHOT")
-    .withCommand(installCommand)
-
-  println(application)
+  System.exit(app.run())
 }

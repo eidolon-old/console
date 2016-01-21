@@ -23,13 +23,15 @@ import eidolon.console.input.validation.{InvalidOption, InvalidArgument, InputVa
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object InputMain extends App {
+object InputMain /*extends App*/ {
   val definition = new InputDefinition()
     .withArgument(new InputArgument("first", mode = InputArgument.REQUIRED))
     .withArgument(new InputArgument("second", mode = InputArgument.REQUIRED))
     .withArgument(new InputArgument("hasDefault", default = Some("defaultTestValue")))
     .withOption(new InputOption("optional", Some("o")))
     .withOption(new InputOption("required", mode = InputOption.VALUE_REQUIRED))
+
+  val args = Array[String]()
 
   val chroma = Chroma()
   val parser = new ArgsInputParser(args)
