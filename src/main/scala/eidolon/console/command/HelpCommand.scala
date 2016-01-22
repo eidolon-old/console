@@ -21,5 +21,7 @@ import eidolon.console.input.Input
 class HelpCommand extends Command {
   override val name = "help"
 
-  override def execute(input: Input): Unit = ???
+  override def execute(input: Input): Unit = {
+    println("Looks like you need some help...")
+  }
 }

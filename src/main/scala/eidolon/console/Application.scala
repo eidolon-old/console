@@ -86,7 +86,7 @@ class Application(
     val arguments = input.filter(_.isInstanceOf[ParsedInputArgument])
     val allCommands = appCommands ++ commands
 
-    if (arguments.nonEmpty) {
+    if (arguments.nonEmpty && allCommands.contains(arguments.head.token)) {
       allCommands.get(arguments.head.token).get
     } else {
       allCommands.get("help").get
