@@ -13,6 +13,7 @@ package eidolon.console.command
 
 import eidolon.console.input.Input
 import eidolon.console.input.definition.{InputArgument, InputDefinition}
+import eidolon.console.output.Output
 
 /**
  * Install Command
@@ -33,7 +34,7 @@ class CloneCommand extends Command {
       InputArgument.OPTIONAL
     ))
 
-  override def execute(input: Input): Unit = {
-    println(input)
+  override def execute(input: Input, output: Output): Unit = {
+    output.write(input.toString)
   }
 }

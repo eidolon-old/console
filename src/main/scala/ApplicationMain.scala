@@ -17,11 +17,11 @@ import eidolon.console.command.CloneCommand
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object ApplicationMain /*extends App*/ {
-  val args: Array[String] = Array()
+object ApplicationMain extends App {
+//  val args: Array[String] = Array()
 
   val app = Application("eidolon/console", "0.1.0-SNAPSHOT", args)
     .withCommand(new CloneCommand())
 
-  System.exit(app.run())
+  app.run()
 }

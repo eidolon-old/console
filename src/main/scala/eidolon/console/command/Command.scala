@@ -13,6 +13,7 @@ package eidolon.console.command
 
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.Input
+import eidolon.console.output.Output
 
 /**
  * Command, the base class for all other commands.
@@ -25,5 +26,5 @@ trait Command {
   val aliases: List[String] = List()
   val definition: InputDefinition = new InputDefinition()
 
-  def execute(input: Input): Unit
+  def execute(input: Input, output: Output): Unit
 }

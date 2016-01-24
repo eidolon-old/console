@@ -16,6 +16,7 @@ import eidolon.console.input.builder.InputBuilder
 import eidolon.console.input.definition.{InputOption, InputArgument, InputDefinition}
 import eidolon.console.input.parser.{ArgsInputParser, ParsedInputArgument, ParsedInputParameter, InputParser}
 import eidolon.console.input.validation.InputValidator
+import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
 
 /**
  * Application
@@ -38,6 +39,7 @@ class Application(
     val inputParser: InputParser,
     val inputValidator: InputValidator,
     val inputBuilder: InputBuilder,
+    val outputBuilder: OutputBuilder,
     val commands: Map[String, Command] = Map()) {
 
   private val appCommands = buildAppCommands(commands)
@@ -46,9 +48,19 @@ class Application(
 
   def run(): Int = {
     val parsedInput = inputParser.parse()
-    val command = getCommandFromInput(parsedInput)
+    val arguments = parsedInput.filter(_.isInstanceOf[ParsedInputArgument])
+    val allCommands = appCommands ++ commands
 
-    doRunCommand(command, parsedInput)
+    if (arguments.nonEmpty && allCommands.contains(arguments.head.token)) {
+      val command = allCommands.get(arguments.head.token).get
+
+      doRunCommand(command, parsedInput)
+    } else {
+      val command = allCommands.get("help").get
+      val helpInput = List(new ParsedInputArgument("help"))
+
+      doRunCommand(command, helpInput)
+    }
   }
 
   private def doRunCommand(command: Command, parsedInput: List[ParsedInputParameter]): Int = {
@@ -57,8 +69,9 @@ class Application(
 
     if (validated.isValid) {
       val input = inputBuilder.build(validated)
+      val output = outputBuilder.build()
 
-      command.execute(input)
+      command.execute(input, output)
     } else {
       // Generate help text for the command
       println("Looks like you need help with command '%s'.".format(command.name))
@@ -82,17 +95,6 @@ class Application(
       .withOption(new InputOption("quiet", Some("q"), InputOption.VALUE_NONE, Some("Silence output")))
   }
 
-  private def getCommandFromInput(input: List[ParsedInputParameter]): Command = {
-    val arguments = input.filter(_.isInstanceOf[ParsedInputArgument])
-    val allCommands = appCommands ++ commands
-
-    if (arguments.nonEmpty && allCommands.contains(arguments.head.token)) {
-      allCommands.get(arguments.head.token).get
-    } else {
-      allCommands.get("help").get
-    }
-  }
-
   def withCommand(command: Command): Application = {
     copy(commands ++ command.aliases.map(_ -> command) + (command.name -> command))
   }
@@ -104,6 +106,7 @@ class Application(
       inputParser,
       inputValidator,
       inputBuilder,
+      outputBuilder,
       commands = commands
     )
   }
@@ -116,7 +119,8 @@ object Application {
       version,
       new ArgsInputParser(args),
       new InputValidator(),
-      new InputBuilder()
+      new InputBuilder(),
+      new ConsoleOutputBuilder()
     )
   }
 }

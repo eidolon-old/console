@@ -12,6 +12,7 @@
 package eidolon.console.command
 
 import eidolon.console.input.Input
+import eidolon.console.output.Output
 
 /**
  * HelpCommand
@@ -21,7 +22,7 @@ import eidolon.console.input.Input
 class HelpCommand extends Command {
   override val name = "help"
 
-  override def execute(input: Input): Unit = {
-    println("Looks like you need some help...")
+  override def execute(input: Input, output: Output): Unit = {
+    output.write("Looks like you need some help...")
   }
 }

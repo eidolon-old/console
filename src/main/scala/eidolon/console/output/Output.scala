@@ -22,6 +22,22 @@ abstract class Output(
     val formatter: OutputFormatter[_],
     val verbosity: Int = Output.VerbosityNormal) {
 
+  def isQuiet: Boolean = {
+    Output.VerbosityQuiet == verbosity
+  }
+
+  def isVerbose: Boolean = {
+    Output.VerbosityVerbose <= verbosity
+  }
+
+  def isVeryVerbose: Boolean = {
+    Output.VerbosityVeryVerbose <= verbosity
+  }
+
+  def isDebug: Boolean = {
+    Output.VerbosityDebug <= verbosity
+  }
+
   def write(
       message: String,
       newLine: Boolean = true,

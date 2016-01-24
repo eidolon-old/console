@@ -9,20 +9,17 @@
  * file that was distributed with this source code.
  */
 
+package eidolon.console.output.builder
+
 import eidolon.console.output.{ConsoleOutput, Output}
 
 /**
- * FormatterMain
+ * ConsoleOutputBuilder
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object FormatterMain /*xtends App*/ {
-  val stdOut: Output = new ConsoleOutput()
-  val stdErr: Output = stdOut match {
-    case output: ConsoleOutput => output.errOutput
-    case _ => stdOut
+class ConsoleOutputBuilder extends OutputBuilder {
+  override def build(): Output = {
+    new ConsoleOutput()
   }
-
-  stdOut.write("<info>Hey there</info>, how are you?")
-  stdErr.write("<error>Looks like something fishy is going on, whatup homie?")
 }
