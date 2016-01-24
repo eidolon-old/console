@@ -1,9 +1,3 @@
-import eidolon.chroma.Chroma
-import eidolon.console.output.formatter.ConsoleOutputFormatter
-import eidolon.console.output.formatter.lexer.OutputFormatLexer
-import eidolon.console.output.formatter.parser.OutputFormatParser
-import eidolon.console.output.formatter.tree.{RootNode, StyleNode, StringNode}
-
 /**
  * This file is part of the "console" project.
  *
@@ -15,6 +9,7 @@ import eidolon.console.output.formatter.tree.{RootNode, StyleNode, StringNode}
  * file that was distributed with this source code.
  */
 
+import eidolon.console.output.ConsoleOutput
 
 /**
  * FormatterMain
@@ -22,18 +17,7 @@ import eidolon.console.output.formatter.tree.{RootNode, StyleNode, StringNode}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object FormatterMain extends App {
-//  val formatter = new ConsoleOutputFormatter(Chroma())
-//
-//  println(formatter.format("OL <info>IL <error>IIL</error> I <error>IIR</error> IR</info> OR"))
+  val output = new ConsoleOutput()
 
-  val lexer = new OutputFormatLexer()
-  val tokens = lexer.tokenise("OL <info>IL <error>IIL <info>dafuq <I am not a tag> mayn</info> lelwut</error> I <error>IIR</error> IR</info> OR")
-
-//  println(tokens)
-
-  val parser = new OutputFormatParser()
-  val result = parser.parse(tokens)
-
-  println(result)
-  println(result.render())
+  output.write("<info>Hey there</info>, how are <error>you</error>?")
 }

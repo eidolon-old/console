@@ -11,25 +11,43 @@
 
 package eidolon.console.output.formatter
 
+import eidolon.console.output.formatter.lexer.OutputFormatLexer
+import eidolon.console.output.formatter.parser.OutputFormatParser
+import eidolon.console.output.formatter.style._
+import eidolon.console.output.Output
+
 /**
  * Formatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait OutputFormatter[T <: OutputFormatter[T]] {
-  val decorated: Boolean
+  val lexer: OutputFormatLexer = new OutputFormatLexer()
+  val parser: OutputFormatParser = new OutputFormatParser()
   val styles: Map[String, OutputFormatterStyle]
 
-  def format(message: String): String
+  def format(message: String, mode: Int = Output.OutputNormal): String
+
+  protected def doFormat(
+      styleGroup: OutputFormatterStyleGroup,
+      message: String,
+      mode: Int)
+    : String = {
+
+    if (mode == Output.OutputNormal || mode == Output.OutputPlain) {
+      val tokens = lexer.tokenise(message)
+      val result = parser.parse(tokens)
+
+      result.render(styleGroup, mode == Output.OutputNormal)
+    } else {
+      message
+    }
+  }
 
   def hasStyle(name: String): Boolean = {
     styles.contains(name)
   }
 
   def withStyle(style: OutputFormatterStyle): T
-}
-
-object OutputFormatter {
-  val TagInnerPattern = "[a-z][a-z0-9_=;-]*"
-  val TagRegex = s"#<(($TagInnerPattern) | /($TagInnerPattern)?)>#ix"
+  def withStyles(styles: Map[String, OutputFormatterStyle]): T
 }

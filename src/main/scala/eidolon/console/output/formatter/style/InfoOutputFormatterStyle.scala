@@ -9,19 +9,19 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.output.formatter
+package eidolon.console.output.formatter.style
 
 import eidolon.chroma.Chroma
 
 /**
- * ErrorOutputFormatter
+ * InfoOutputFormatterStyle
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ErrorOutputFormatterStyle(chroma: Chroma) extends OutputFormatterStyle {
-  override val name: String = "error"
+class InfoOutputFormatterStyle(chroma: Chroma) extends OutputFormatterStyle {
+  override val name: String = "info"
 
   override def applyStyle(message: String): String = {
-    chroma.red(message)
+    chroma.green(message)
   }
 }

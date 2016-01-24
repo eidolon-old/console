@@ -20,15 +20,23 @@ import eidolon.console.output.formatter.OutputFormatter
  */
 abstract class Output(
     val formatter: OutputFormatter[_],
-    val verbosity: Int = Output.VerbosityNormal,
-    val decorated: Boolean = false) {
+    val verbosity: Int = Output.VerbosityNormal) {
 
   def write(
-    message: String,
-    newLine: Boolean,
-    options: Int): Unit = {
+      message: String,
+      newLine: Boolean = true,
+      mode: Int = Output.OutputNormal,
+      verbosity: Int = Output.VerbosityNormal)
+    : Unit = {
 
+    if (verbosity <= this.verbosity) {
+      val formatted = formatter.format(message, mode)
+
+      doWrite(formatted, newLine)
+    }
   }
+
+  protected def doWrite(message: String, newLine: Boolean): Unit
 }
 
 object Output {

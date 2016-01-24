@@ -11,6 +11,8 @@
 
 package eidolon.console.output.formatter.tree
 
+import eidolon.console.output.formatter.style.OutputFormatterStyleGroup
+
 /**
  * RootNode
  *
@@ -21,9 +23,9 @@ case class RootNode(
   extends Node
   with ParentNode[RootNode] {
 
-  override def render(): String = {
+  override def render(styleGroup: OutputFormatterStyleGroup, styled: Boolean): String = {
     children.foldLeft("")((aggregate, node) => {
-      aggregate + node.render()
+      aggregate + node.render(styleGroup, styled)
     })
   }
 

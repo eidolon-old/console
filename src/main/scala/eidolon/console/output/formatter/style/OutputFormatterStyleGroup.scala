@@ -9,15 +9,19 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.output.formatter
+package eidolon.console.output.formatter.style
 
 /**
- * OutputFormatterStyle
+ * OutputFormatterStyleGroup
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait OutputFormatterStyle {
-  val name: String
+case class OutputFormatterStyleGroup(val styles: Map[String, OutputFormatterStyle] = Map()) {
+  def withStyle(style: OutputFormatterStyle): OutputFormatterStyleGroup = {
+    copy(styles + (style.name -> style))
+  }
 
-  def applyStyle(message: String): String
+  def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatterStyleGroup = {
+    copy(this.styles ++ styles)
+  }
 }

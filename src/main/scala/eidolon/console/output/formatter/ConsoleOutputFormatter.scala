@@ -12,6 +12,8 @@
 package eidolon.console.output.formatter
 
 import eidolon.chroma.Chroma
+import eidolon.console.output.formatter.style._
+import eidolon.console.output.Output
 
 /**
  * ConsoleOutputFormatter
@@ -19,26 +21,24 @@ import eidolon.chroma.Chroma
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 case class ConsoleOutputFormatter(
-    private val chroma: Chroma,
-    override val decorated: Boolean = true,
+    private val chroma: Chroma = Chroma(),
     override val styles: Map[String, OutputFormatterStyle] = Map())
   extends OutputFormatter[ConsoleOutputFormatter] {
 
-  private val infoStyle = new InfoOutputFormatterStyle(chroma)
-  private val errorStyle = new ErrorOutputFormatterStyle(chroma)
+  val styleGroup = new OutputFormatterStyleGroup()
+    .withStyle(new InfoOutputFormatterStyle(chroma))
+    .withStyle(new ErrorOutputFormatterStyle(chroma))
+    .withStyles(styles)
 
-  val defaultStyles = Map(
-    infoStyle.name -> infoStyle,
-    errorStyle.name -> errorStyle
-  )
-
-  override def format(message: String): String = {
-    val consoleStyles = defaultStyles ++ styles
-
-    message
+  override def format(message: String, mode: Int = Output.OutputNormal): String = {
+    doFormat(styleGroup, message, mode)
   }
 
   override def withStyle(style: OutputFormatterStyle): ConsoleOutputFormatter = {
-    copy(chroma, decorated, styles + (style.name -> style))
+    copy(chroma, styles + (style.name -> style))
+  }
+
+  override def withStyles(styles: Map[String, OutputFormatterStyle]): ConsoleOutputFormatter = {
+    copy(chroma, this.styles ++ styles)
   }
 }

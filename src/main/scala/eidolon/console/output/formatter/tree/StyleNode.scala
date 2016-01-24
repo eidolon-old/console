@@ -11,8 +11,7 @@
 
 package eidolon.console.output.formatter.tree
 
-import eidolon.chroma.Chroma
-import eidolon.console.output.formatter.{ErrorOutputFormatterStyle, InfoOutputFormatterStyle}
+import eidolon.console.output.formatter.style.{OutputFormatterStyle, OutputFormatterStyleGroup}
 
 /**
  * StyleNode
@@ -25,20 +24,17 @@ case class StyleNode(
   extends Node
   with ParentNode[StyleNode] {
 
-  override def render(): String = {
-    val info = new InfoOutputFormatterStyle(Chroma())
-    val error = new ErrorOutputFormatterStyle(Chroma())
+  override def render(styleGroup: OutputFormatterStyleGroup, styled: Boolean): String = {
+    val renderer = styleGroup.styles.get(style).get
+    val body = children.foldLeft("")((aggregate, node) => {
+      aggregate + node.render(styleGroup, styled)
+    })
 
-    val styles = Map(
-      info.name -> info,
-      error.name -> error
-    )
-
-    val renderer = styles.get(style).get
-
-    renderer.applyStyle(children.foldLeft("")((aggregate, node) => {
-      aggregate + node.render()
-    }))
+    renderer match {
+      case _ if renderer.isInstanceOf[OutputFormatterStyle] && styled =>
+        renderer.applyStyle(body)
+      case _ => body
+    }
   }
 
   override def withChild(child: StyleNode): StyleNode = {

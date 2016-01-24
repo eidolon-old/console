@@ -11,11 +11,13 @@
 
 package eidolon.console.output.formatter.tree
 
+import eidolon.console.output.formatter.style.OutputFormatterStyleGroup
+
 /**
  * Node
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait Node {
-  def render(): String
+  def render(styleGroup: OutputFormatterStyleGroup, styled: Boolean): String
 }
