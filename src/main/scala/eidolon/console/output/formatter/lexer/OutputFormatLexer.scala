@@ -45,22 +45,17 @@ class OutputFormatLexer {
     }
 
     def readNextToken(): Token = {
-      val token = context.current match {
-        case '<' if context.next == '/' =>
-          readStyleCloseToken()
-        case '<' =>
-          readStyleOpenToken()
-        case _ =>
-          readStringToken()
+      remainingCharacters.mkString match {
+        case LexerMechanism.TagEndRegex(_, _, _) => readStyleCloseToken()
+        case LexerMechanism.TagStartRegex(_, _, _) => readStyleOpenToken()
+        case _ => readStringToken()
       }
-
-      token
     }
 
     def readStyleOpenToken(): StyleOpenToken = {
       read()
 
-      while (context.current != '>') {
+      while (!isEndOfText && context.current != '>') {
         context.captureBuffer.append(context.current)
         read()
       }
@@ -74,7 +69,7 @@ class OutputFormatLexer {
       read()
       read()
 
-      while (context.current != '>') {
+      while (!isEndOfText && context.current != '>') {
         context.captureBuffer.append(context.current)
         read()
       }
@@ -85,10 +80,28 @@ class OutputFormatLexer {
     }
 
     def readStringToken(): StringToken = {
-      while (!isEndOfText && context.current != '<') {
+      def buildNextChar(): Unit = {
         context.captureBuffer.append(context.current)
         read()
+
+        if (!isEndOfText) {
+          buildStringTokenValue()
+        }
       }
+
+      def buildStringTokenValue(): Unit = {
+        if (context.current == '<') {
+          remainingCharacters.mkString match {
+            case LexerMechanism.TagEndRegex(_, _, _) =>
+            case LexerMechanism.TagStartRegex(_, _, _) =>
+            case _ => buildNextChar()
+          }
+        } else {
+          buildNextChar()
+        }
+      }
+
+      buildStringTokenValue()
 
       new StringToken(context.flushCaptureBuffer())
     }
@@ -106,9 +119,22 @@ class OutputFormatLexer {
       }
     }
 
+    def remainingCharacters: List[Char] = {
+      context.buffer
+        .indices
+        .filter(_ >= (context.cursor - 1))
+        .map(context.buffer.lift(_).get)
+        .toList
+    }
+
     private def isEndOfText: Boolean = {
       context.current == LexerContext.EndChar
     }
+  }
+
+  private object LexerMechanism {
+    val TagStartRegex = "^(<([A-Za-z0-9_-]*)>)(.*)".r
+    val TagEndRegex = "^(</([A-Za-z0-9_-]*)>)(.*)".r
   }
 
   private class LexerContext(
