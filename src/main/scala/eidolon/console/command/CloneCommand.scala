@@ -43,8 +43,9 @@ class CloneCommand extends Command {
     .withOption(new InputOption(
       "cache-dir",
       Some("c"),
-      mode = InputOption.VALUE_REQUIRED,
-      description = Some("Path to local cache directory to use")
+      mode = InputOption.VALUE_OPTIONAL,
+      description = Some("Path to local cache directory to use"),
+      defaultValue = Some("./.eidola-cache")
     ))
 
   override val help = Some(helpText)

@@ -31,7 +31,9 @@ class HelpCommand(
   override val definition = new InputDefinition()
     .withArgument(new InputArgument(
       "command_name",
-      InputArgument.OPTIONAL
+      InputArgument.OPTIONAL,
+      Some("The command name"),
+      Some("help")
     ))
 
   override def execute(input: Input, output: Output): Unit = {
@@ -47,7 +49,7 @@ class HelpCommand(
 
       descriptor.describeCommand(output, application, command)
     } else {
-      descriptor.describeApplication(output, application)
+      descriptor.describeCommand(output, application, this)
     }
   }
 }
