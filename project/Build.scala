@@ -26,10 +26,11 @@ object Build extends BaseBuild {
     organization := "eidolon",
     publishMavenStyle := true,
     publishTo := Some(Resolver.sftp(
-      "Eidolon Repo",
+      "Eidolon Push Repo",
       "ssh.repo.eidolonframework.com",
       "/usr/share/nginx/html"
     )),
+    resolvers ++= Dependencies.repositories,
     scalaVersion := "2.11.7",
     version := "1.0.0",
     testOptions in Test += Tests.Argument("-oD")

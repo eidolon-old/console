@@ -18,7 +18,7 @@ import sbt._
  */
 object Dependencies {
   val repositories = Seq(
-    "Eidolon Repo" at "https://repo.eidolonframework.com/"
+    "Eidolon Pull Repo" at "https://repo.eidolonframework.com/"
   )
 
   def compile(deps: ModuleID*): Seq[ModuleID] = deps.map(_ % "compile")

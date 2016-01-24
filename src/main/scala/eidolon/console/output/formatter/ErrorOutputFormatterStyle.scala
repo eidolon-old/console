@@ -1,5 +1,5 @@
 /**
- * This file is part of the "eidolon/console" project.
+ * This file is part of the "console" project.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the LICENSE is distributed on an "AS IS" BASIS,
@@ -9,19 +9,19 @@
  * file that was distributed with this source code.
  */
 
-import eidolon.console.Application
-import eidolon.console.command.CloneCommand
+package eidolon.console.output.formatter
+
+import eidolon.chroma.Chroma
 
 /**
- * Main
+ * ErrorOutputFormatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object ApplicationMain /*extends App*/ {
-  val args: Array[String] = Array()
+class ErrorOutputFormatterStyle(chroma: Chroma) extends OutputFormatterStyle {
+  override val name: String = "error"
 
-  val app = Application("eidolon/console", "0.1.0-SNAPSHOT", args)
-    .withCommand(new CloneCommand())
-
-  System.exit(app.run())
+  override def applyStyle(message: String): String = {
+    chroma.white.bgRed.bold(message)
+  }
 }
