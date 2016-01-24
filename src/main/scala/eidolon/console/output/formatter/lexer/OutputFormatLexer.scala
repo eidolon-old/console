@@ -80,28 +80,10 @@ class OutputFormatLexer {
     }
 
     def readStringToken(): StringToken = {
-      def buildNextChar(): Unit = {
+      while (!isEndOfText && isStillString) {
         context.captureBuffer.append(context.current)
         read()
-
-        if (!isEndOfText) {
-          buildStringTokenValue()
-        }
       }
-
-      def buildStringTokenValue(): Unit = {
-        if (context.current == '<') {
-          remainingCharacters.mkString match {
-            case LexerMechanism.TagEndRegex(_, _, _) =>
-            case LexerMechanism.TagStartRegex(_, _, _) =>
-            case _ => buildNextChar()
-          }
-        } else {
-          buildNextChar()
-        }
-      }
-
-      buildStringTokenValue()
 
       new StringToken(context.flushCaptureBuffer())
     }
@@ -121,14 +103,19 @@ class OutputFormatLexer {
 
     def remainingCharacters: List[Char] = {
       context.buffer
-        .indices
-        .filter(_ >= (context.cursor - 1))
-        .map(context.buffer.lift(_).get)
-        .toList
+        .slice(context.cursor - 1, context.buffer.length)
     }
 
     private def isEndOfText: Boolean = {
       context.current == LexerContext.EndChar
+    }
+
+    private def isStillString: Boolean = {
+      context.current != '<' || (remainingCharacters.mkString match {
+        case LexerMechanism.TagEndRegex(_, _, _) => false
+        case LexerMechanism.TagStartRegex(_, _, _) => false
+        case _ => true
+      })
     }
   }
 

@@ -25,7 +25,7 @@ object FormatterMain extends App {
 //  println(formatter.format("OL <info>IL <error>IIL</error> I <error>IIR</error> IR</info> OR"))
 
   val lexer = new OutputFormatLexer()
-  val tokens = lexer.tokenise("<something> <info>that</info> <<< >>> < < > < ><  has some <error>content</error> in")
+  val tokens = lexer.tokenise("OL <info>IL <error>IIL</error> I <error>IIR</error> IR</info> OR")
 
   println(tokens)
 }
