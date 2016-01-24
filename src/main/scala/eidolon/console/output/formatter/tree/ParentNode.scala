@@ -9,19 +9,15 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.output.formatter
-
-import eidolon.chroma.Chroma
+package eidolon.console.output.formatter.tree
 
 /**
- * ErrorOutputFormatter
+ * ParentNode
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ErrorOutputFormatterStyle(chroma: Chroma) extends OutputFormatterStyle {
-  override val name: String = "error"
+trait ParentNode[T <: ParentNode[T]] {
+  val children: List[Node]
 
-  override def applyStyle(message: String): String = {
-    chroma.red(message)
-  }
+  def withChild(child: T): T
 }

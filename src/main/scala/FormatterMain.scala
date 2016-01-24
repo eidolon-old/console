@@ -1,6 +1,8 @@
 import eidolon.chroma.Chroma
 import eidolon.console.output.formatter.ConsoleOutputFormatter
 import eidolon.console.output.formatter.lexer.OutputFormatLexer
+import eidolon.console.output.formatter.parser.OutputFormatParser
+import eidolon.console.output.formatter.tree.{RootNode, StyleNode, StringNode}
 
 /**
  * This file is part of the "console" project.
@@ -25,7 +27,13 @@ object FormatterMain extends App {
 //  println(formatter.format("OL <info>IL <error>IIL</error> I <error>IIR</error> IR</info> OR"))
 
   val lexer = new OutputFormatLexer()
-  val tokens = lexer.tokenise("OL <info>IL <error>IIL</error> I <error>IIR</error> IR</info> OR")
+  val tokens = lexer.tokenise("OL <info>IL <error>IIL <info>dafuq <I am not a tag> mayn</info> lelwut</error> I <error>IIR</error> IR</info> OR")
 
-  println(tokens)
+//  println(tokens)
+
+  val parser = new OutputFormatParser()
+  val result = parser.parse(tokens)
+
+  println(result)
+  println(result.render())
 }

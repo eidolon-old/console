@@ -11,11 +11,94 @@
 
 package eidolon.console.output.formatter.parser
 
+import eidolon.console.output.formatter.lexer.token.{StyleCloseToken, StyleOpenToken, StringToken, Token}
+import eidolon.console.output.formatter.tree._
+
 /**
  * OutputFormatParser
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class OutputFormatParser {
+  def parse(tokens: List[Token]): Node = {
+    val mechanism = new ParserMechanism()
 
+    mechanism.buildNode(new RootNode(), tokens)
+  }
+
+  private class ParserMechanism {
+    var position: Int = -1
+
+    def buildNode(node: Node, tokens: List[Token]): Node = {
+      position = position + 1
+
+      val result = node match {
+        case RootNode(children) => buildRootNode(node, tokens, children)
+        case StyleNode(children, style) => buildStyleNode(node, tokens, children, style)
+      }
+
+      result
+    }
+
+    private def buildRootNode(
+        node: Node,
+        tokens: List[Token],
+        children: List[Node])
+      : Node = {
+
+      tokens.lift(position) match {
+        case Some(StringToken(string)) =>
+          // If we hit a string token, just add it to the current node
+          buildNode(new RootNode(children :+ new StringNode(string)), tokens)
+
+        case Some(StyleOpenToken(style)) =>
+          // If we hit a style token, build a child node
+          buildNode(
+            new RootNode(
+              children :+
+                buildNode(
+                  new StyleNode(List(), style),
+                  tokens
+                )
+            ),
+            tokens
+          )
+
+        case Some(StyleCloseToken(style)) => node
+        case None => node
+        case _ => buildNode(node, tokens)
+      }
+    }
+
+    private def buildStyleNode(
+        node: Node,
+        tokens: List[Token],
+        children: List[Node],
+        style: String)
+      : Node = {
+
+      tokens.lift(position) match {
+        case Some(StringToken(string)) =>
+          buildNode(new StyleNode(children :+ new StringNode(string), style), tokens)
+
+        case Some(StyleOpenToken(childStyle)) =>
+          // If we hit a style token, build a child node
+          buildNode(
+            new StyleNode(
+              children :+
+                buildNode(
+                  new StyleNode(List(), childStyle),
+                  tokens
+                ),
+              style
+            ),
+            tokens
+          )
+
+        case Some(StyleCloseToken(childStyle)) => node
+        case None => node
+        case _ => buildNode(node, tokens)
+      }
+    }
+  }
 }
