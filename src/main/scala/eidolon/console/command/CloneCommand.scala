@@ -35,6 +35,6 @@ class CloneCommand extends Command {
     ))
 
   override def execute(input: Input, output: Output): Unit = {
-    output.write(input.toString)
+    output.write("<info>" + input.toString + "</info>")
   }
 }

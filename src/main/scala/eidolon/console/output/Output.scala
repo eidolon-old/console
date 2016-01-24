@@ -38,6 +38,15 @@ abstract class Output(
     Output.VerbosityDebug <= verbosity
   }
 
+  def writeln(
+      message: String,
+      mode: Int = Output.OutputNormal,
+      verbosity: Int = Output.VerbosityNormal)
+    : Unit = {
+
+    write(message, newLine = true, mode, verbosity)
+  }
+
   def write(
       message: String,
       newLine: Boolean = true,

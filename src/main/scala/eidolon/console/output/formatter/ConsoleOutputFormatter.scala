@@ -28,6 +28,8 @@ case class ConsoleOutputFormatter(
   val styleGroup = new OutputFormatterStyleGroup()
     .withStyle(new InfoOutputFormatterStyle(chroma))
     .withStyle(new ErrorOutputFormatterStyle(chroma))
+    .withStyle(new CommentOutputFormatterStyle(chroma))
+    .withStyle(new QuestionOutputFormatterStyle(chroma))
     .withStyles(styles)
 
   override def format(message: String, mode: Int = Output.OutputNormal): String = {
