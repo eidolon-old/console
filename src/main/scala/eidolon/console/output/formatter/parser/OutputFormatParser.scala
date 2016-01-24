@@ -55,11 +55,10 @@ class OutputFormatParser {
           // If we hit a style token, build a child node
           buildNode(
             new RootNode(
-              children :+
-                buildNode(
-                  new StyleNode(List(), style),
-                  tokens
-                )
+              children :+ buildNode(
+                new StyleNode(List(), style),
+                tokens
+              )
             ),
             tokens
           )
@@ -85,11 +84,10 @@ class OutputFormatParser {
           // If we hit a style token, build a child node
           buildNode(
             new StyleNode(
-              children :+
-                buildNode(
-                  new StyleNode(List(), childStyle),
-                  tokens
-                ),
+              children :+ buildNode(
+                new StyleNode(List(), childStyle),
+                tokens
+              ),
               style
             ),
             tokens
