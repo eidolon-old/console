@@ -16,13 +16,18 @@ import eidolon.console.output.{ConsoleOutput, Output}
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object FormatterMain /*xtends App*/ {
+object FormatterMain /*extends App*/ {
   val stdOut: Output = new ConsoleOutput()
   val stdErr: Output = stdOut match {
     case output: ConsoleOutput => output.errOutput
     case _ => stdOut
   }
 
-  stdOut.write("<info>Hey there</info>, how are you?")
-  stdErr.write("<error>Looks like something fishy is going on, whatup homie?")
+  stdOut.write(
+  """The <info>clone</info> command creates a clone of a remote repository
+    |template and asks you questions to fill in template values.
+    |
+    |<info>$ eidola clone example/repo:gh .</info>""".stripMargin)
+
+//  stdErr.write("<error>Looks like something fishy is going on, whatup homie?")
 }

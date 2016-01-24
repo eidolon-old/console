@@ -11,6 +11,9 @@
 
 package eidolon.console.command
 
+import eidolon.console.Application
+import eidolon.console.descriptor.{TextDescriptor, Descriptor}
+import eidolon.console.input.definition.{InputArgument, InputDefinition}
 import eidolon.console.input.Input
 import eidolon.console.output.Output
 
@@ -19,10 +22,32 @@ import eidolon.console.output.Output
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class HelpCommand extends Command {
+class HelpCommand(
+    application: Application,
+    descriptor: Descriptor = new TextDescriptor())
+  extends Command {
+
   override val name = "help"
+  override val definition = new InputDefinition()
+    .withArgument(new InputArgument(
+      "command_name",
+      InputArgument.OPTIONAL
+    ))
 
   override def execute(input: Input, output: Output): Unit = {
-    output.write("Looks like you need some help...")
+    val commandName = input.arguments.getOrElse("command_name", "")
+    val commandOpt = application.commands.get(commandName)
+
+    output.write(application.logo)
+    output.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
+    output.writeln("")
+
+    if (commandOpt.nonEmpty) {
+      val command = commandOpt.get
+
+      descriptor.describeCommand(output, application, command)
+    } else {
+      descriptor.describeApplication(output, application)
+    }
   }
 }

@@ -25,6 +25,7 @@ trait Command {
   val description: Option[String] = None
   val aliases: List[String] = List()
   val definition: InputDefinition = new InputDefinition()
+  val help: Option[String] = None
 
   def execute(input: Input, output: Output): Unit
 }

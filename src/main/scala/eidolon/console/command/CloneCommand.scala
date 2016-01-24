@@ -12,7 +12,7 @@
 package eidolon.console.command
 
 import eidolon.console.input.Input
-import eidolon.console.input.definition.{InputArgument, InputDefinition}
+import eidolon.console.input.definition.{InputOption, InputArgument, InputDefinition}
 import eidolon.console.output.Output
 
 /**
@@ -27,16 +27,39 @@ class CloneCommand extends Command {
   override val definition = new InputDefinition()
     .withArgument(new InputArgument(
       "source",
-      InputArgument.REQUIRED
+      InputArgument.REQUIRED,
+      Some("The source repository to clone from")
     ))
     .withArgument(new InputArgument(
       "destination",
-      InputArgument.OPTIONAL
+      InputArgument.OPTIONAL,
+      Some("The destination directory to clone into")
     ))
+    .withOption(new InputOption(
+      "no-cache",
+      mode = InputOption.VALUE_NONE,
+      description = Some("Set to disable using locally cached copies of templates")
+    ))
+    .withOption(new InputOption(
+      "cache-dir",
+      Some("c"),
+      mode = InputOption.VALUE_REQUIRED,
+      description = Some("Path to local cache directory to use")
+    ))
+
+  override val help = Some(helpText)
+
 
   override def execute(input: Input, output: Output): Unit = {
     output.write("<question>Is this thing on?</question>")
     output.write("<comment>Looks like it is...</comment>")
     output.write("<info>Cloning some stuff...</info>")
+  }
+
+  private def helpText: String = {
+    """The <info>clone</info> command creates a clone of a remote repository
+      |template and asks you questions to fill in template values.
+      |
+      |<info>$ eidola clone example/repo:gh .</info>""".stripMargin
   }
 }

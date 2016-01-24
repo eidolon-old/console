@@ -11,10 +11,10 @@
 
 package eidolon.console
 
-import eidolon.console.command.{HelpCommand, Command}
+import eidolon.console.command.{Command, HelpCommand}
 import eidolon.console.input.builder.InputBuilder
-import eidolon.console.input.definition.{InputOption, InputArgument, InputDefinition}
-import eidolon.console.input.parser.{ArgsInputParser, ParsedInputArgument, ParsedInputParameter, InputParser}
+import eidolon.console.input.definition.{InputArgument, InputDefinition, InputOption}
+import eidolon.console.input.parser.{ArgsInputParser, InputParser, ParsedInputArgument, ParsedInputParameter}
 import eidolon.console.input.validation.InputValidator
 import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
 
@@ -40,23 +40,34 @@ class Application(
     val inputValidator: InputValidator,
     val inputBuilder: InputBuilder,
     val outputBuilder: OutputBuilder,
-    val commands: Map[String, Command] = Map()) {
+    val userCommands: Map[String, Command] = Map()) {
 
-  private val appCommands = buildAppCommands(commands)
-  private val appDefinition = buildAppDefinition()
+  private val appCommands = buildAppCommands()
 
+  val commands = appCommands ++ userCommands
+  val definition = buildAppDefinition()
+
+  val logo =
+    """                                             #
+      |                              ###            ##
+      |######## ### ####### #######  ###   #######  ###  ##
+      |         ###       ##      ## ###         ## #### ##
+      | ####### ###  ###  ## ##   ## ###    ##   ## #######
+      | ###     ###  ###  ## ##   ## ###    ##   ## ### ###
+      | ####### ###  ######   #####  ####### #####  ###  ##
+      |                                                   #
+    """.stripMargin
 
   def run(): Int = {
     val parsedInput = inputParser.parse()
     val arguments = parsedInput.filter(_.isInstanceOf[ParsedInputArgument])
-    val allCommands = appCommands ++ commands
 
-    if (arguments.nonEmpty && allCommands.contains(arguments.head.token)) {
-      val command = allCommands.get(arguments.head.token).get
+    if (arguments.nonEmpty && commands.contains(arguments.head.token)) {
+      val command = commands.get(arguments.head.token).get
 
       doRunCommand(command, parsedInput)
     } else {
-      val command = allCommands.get("help").get
+      val command = commands.get("help").get
       val helpInput = List(new ParsedInputArgument("help"))
 
       doRunCommand(command, helpInput)
@@ -64,7 +75,7 @@ class Application(
   }
 
   private def doRunCommand(command: Command, parsedInput: List[ParsedInputParameter]): Int = {
-    val inputDefinition = appDefinition ++ command.definition
+    val inputDefinition = definition ++ command.definition
     val validated = inputValidator.validate(inputDefinition, parsedInput)
 
     if (validated.isValid) {
@@ -73,15 +84,20 @@ class Application(
 
       command.execute(input, output)
     } else {
-      // Generate help text for the command
-      println("Looks like you need help with command '%s'.".format(command.name))
+      doRunCommand(
+        commands.get("help").get,
+        List(
+          new ParsedInputArgument("help"),
+          new ParsedInputArgument(command.name)
+        )
+      )
     }
 
     0
   }
 
-  protected def buildAppCommands(commands: Map[String, Command]): Map[String, Command] = {
-    val helpCommand = new HelpCommand()
+  protected def buildAppCommands(): Map[String, Command] = {
+    val helpCommand = new HelpCommand(this)
 
     Map(
       helpCommand.name -> helpCommand
@@ -96,10 +112,10 @@ class Application(
   }
 
   def withCommand(command: Command): Application = {
-    copy(commands ++ command.aliases.map(_ -> command) + (command.name -> command))
+    copy(userCommands ++ command.aliases.map(_ -> command) + (command.name -> command))
   }
 
-  private def copy(commands: Map[String, Command]): Application = {
+  private def copy(userCommands: Map[String, Command]): Application = {
     new Application(
       name,
       version,
@@ -107,7 +123,7 @@ class Application(
       inputValidator,
       inputBuilder,
       outputBuilder,
-      commands = commands
+      userCommands
     )
   }
 }

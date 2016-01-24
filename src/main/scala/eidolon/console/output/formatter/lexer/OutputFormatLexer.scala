@@ -111,6 +111,11 @@ class OutputFormatLexer {
     }
 
     private def isStillString: Boolean = {
+      val remaining = remainingCharacters.mkString
+      val matched = LexerMechanism.TagStartRegex.findAllMatchIn(remaining)
+
+      val matches = matched.nonEmpty
+
       context.current != '<' || (remainingCharacters.mkString match {
         case LexerMechanism.TagEndRegex(_, _, _) => false
         case LexerMechanism.TagStartRegex(_, _, _) => false
@@ -120,8 +125,8 @@ class OutputFormatLexer {
   }
 
   private object LexerMechanism {
-    val TagStartRegex = "^(<([A-Za-z0-9_-]*)>)(.*)".r
-    val TagEndRegex = "^(</([A-Za-z0-9_-]*)>)(.*)".r
+    val TagStartRegex = "^(<([A-Za-z0-9_-]*)>)(.|\\n)*".r
+    val TagEndRegex = "^(</([A-Za-z0-9_-]*)>)(.|\\n)*".r
   }
 
   private class LexerContext(

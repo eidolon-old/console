@@ -14,6 +14,7 @@ package eidolon.console.descriptor
 import eidolon.console.Application
 import eidolon.console.command.Command
 import eidolon.console.input.definition.{InputDefinition, InputOption, InputArgument}
+import eidolon.console.output.Output
 
 /**
  * Descriptor
@@ -21,13 +22,9 @@ import eidolon.console.input.definition.{InputDefinition, InputOption, InputArgu
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait Descriptor {
-  def describeInputArgument(argument: InputArgument): String
-
-  def describeInputOption(option: InputOption): String
-
-  def describeInputDefinition(definition: InputDefinition): String
-
-  def describeCommand(command: Command): String
-
-  def describeApplication(application: Application): String
+  def describeApplication(output: Output, application: Application): Unit
+  def describeCommand(output: Output, application: Application, command: Command): Unit
+  def describeInputArgument(output: Output, argument: InputArgument, totalWidth: Int): Unit
+  def describeInputDefinition(output: Output, definition: InputDefinition): Unit
+  def describeInputOption(output: Output, option: InputOption, totalWidth: Int): Unit
 }
