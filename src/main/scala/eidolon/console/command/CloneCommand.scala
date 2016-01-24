@@ -35,6 +35,8 @@ class CloneCommand extends Command {
     ))
 
   override def execute(input: Input, output: Output): Unit = {
-    output.write("<info>" + input.toString + "</info>")
+    output.write("<question>Is this thing on?</question>")
+    output.write("<comment>Looks like it is...</comment>")
+    output.write("<info>Cloning some stuff...</info>")
   }
 }

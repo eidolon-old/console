@@ -22,6 +22,6 @@ class InfoOutputFormatterStyle(chroma: Chroma) extends OutputFormatterStyle {
   override val name: String = "info"
 
   override def applyStyle(message: String): String = {
-    chroma.green(message)
+    chroma.blue(message)
   }
 }

@@ -22,6 +22,6 @@ class CommentOutputFormatterStyle(chroma: Chroma) extends OutputFormatterStyle {
   override val name: String = "comment"
 
   override def applyStyle(message: String): String = {
-    chroma.yellow(message)
+    chroma.magenta(message)
   }
 }
