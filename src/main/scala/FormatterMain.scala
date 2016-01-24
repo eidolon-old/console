@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-import eidolon.console.output.ConsoleOutput
+import eidolon.console.output.{ConsoleOutput, Output}
 
 /**
  * FormatterMain
@@ -17,7 +17,12 @@ import eidolon.console.output.ConsoleOutput
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object FormatterMain extends App {
-  val output = new ConsoleOutput()
+  val stdOut: Output = new ConsoleOutput()
+  val stdErr: Output = stdOut match {
+    case output: ConsoleOutput => output.errOutput
+    case _ => stdOut
+  }
 
-  output.write("<info>Hey there</info>, how are <error>you</error>?")
+  stdOut.write("<info>Hey there</info>, how are you?")
+  stdErr.write("<error>Looks like something fishy is going on, whatup homie?")
 }

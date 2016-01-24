@@ -44,12 +44,12 @@ class InputValidator {
     parsedInput
       .foldLeft(new InputValidatorResult())((aggregate, param) => {
         val result = param match {
-          case argument if argument.isInstanceOf[ParsedInputArgument] =>
-            validateArgument(definition, aggregate, argument.asInstanceOf[ParsedInputArgument])
-          case option if option.isInstanceOf[ParsedInputLongOption] =>
-            validateLongOption(definition, aggregate, option.asInstanceOf[ParsedInputLongOption])
-          case option if option.isInstanceOf[ParsedInputShortOption] =>
-            validateShortOption(definition, aggregate, option.asInstanceOf[ParsedInputShortOption])
+          case argument: ParsedInputArgument =>
+            validateArgument(definition, aggregate, argument)
+          case option: ParsedInputLongOption =>
+            validateLongOption(definition, aggregate, option)
+          case option: ParsedInputShortOption =>
+            validateShortOption(definition, aggregate, option)
         }
 
         result match {

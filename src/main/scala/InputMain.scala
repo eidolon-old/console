@@ -66,10 +66,10 @@ object InputMain /*extends App*/ {
     println(errorPrefix + "Invalid parameters found:")
 
     validated.invalid.foreach({
-      case argument if argument.isInstanceOf[InvalidArgument] =>
+      case argument: InvalidArgument =>
         println(errorPrefix + "- Missing argument '%s'".format(argument.token))
-      case option if option.isInstanceOf[InvalidOption] =>
-        println(errorPrefix + "- Unexpected option '%s'".format(option.asInstanceOf[InvalidOption].token))
+      case option: InvalidOption =>
+        println(errorPrefix + "- Unexpected option '%s'".format(option.token))
     })
 
     println(infoPrefix + "Try run with --help, or -h to display usage information.")

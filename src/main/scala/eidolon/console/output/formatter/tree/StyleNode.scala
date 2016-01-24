@@ -31,7 +31,7 @@ case class StyleNode(
     })
 
     renderer match {
-      case _ if renderer.isInstanceOf[OutputFormatterStyle] && styled =>
+      case renderer: OutputFormatterStyle if styled =>
         renderer.applyStyle(body)
       case _ => body
     }

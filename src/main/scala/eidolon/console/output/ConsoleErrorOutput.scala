@@ -14,21 +14,20 @@ package eidolon.console.output
 import eidolon.console.output.formatter.{ConsoleOutputFormatter, OutputFormatter}
 
 /**
- * ConsoleOutput
+ * ConsoleErrorOutput
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ConsoleOutput(
-    override val formatter: OutputFormatter[_] = new ConsoleOutputFormatter(),
-    override val verbosity: Int = Output.VerbosityNormal,
-    val errOutput: Output = new ConsoleErrorOutput())
+class ConsoleErrorOutput(
+  override val formatter: OutputFormatter[_] = new ConsoleOutputFormatter(),
+  override val verbosity: Int = Output.VerbosityNormal)
   extends Output(formatter, verbosity) {
 
   override protected def doWrite(message: String, newLine: Boolean): Unit = {
     if (newLine) {
-      Console.out.println(message)
+      Console.err.println(message)
     } else {
-      Console.out.print(message)
+      Console.err.print(message)
     }
   }
 }
