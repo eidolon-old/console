@@ -22,7 +22,40 @@ import eidolon.console.output.Output
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class TextDescriptor extends Descriptor {
-  override def describeApplication(output: Output, application: Application): Unit = {}
+  override def describeApplication(
+      output: Output,
+      application: Application)
+    : Unit = {
+
+    // @todo: Add ability to have help text at an application level, conditionally show it here
+
+    output.writeln("<comment>Usage:</comment>")
+    output.writeln("")
+    output.writeln("  command [options] [arguments]")
+    output.writeln("")
+    describeInputDefinition(output, new InputDefinition(options = application.definition.options))
+    output.writeln("")
+
+    val totalWidth = calculateCommandWidths(application.commands).reduce((a, b) => {
+      if (a >= b) a else b
+    })
+
+    output.writeln("<comment>Available commands:</comment>")
+    output.writeln("")
+
+    // @todo: Handle namespaced commands (i.e. foo:bar:baz)
+    application.commands.values.toList.distinct.foreach((command) => {
+      val spacing = totalWidth - command.name.length + 2
+
+      output.writeln("  <info>%s</info>%s%s".format(
+        command.name,
+        " " * spacing,
+        command.description.getOrElse("")
+      ))
+    })
+
+    output.writeln("")
+  }
 
   override def describeCommand(
       output: Output,
@@ -71,9 +104,9 @@ class TextDescriptor extends Descriptor {
       output.writeln("<comment>Arguments:</comment>")
       output.writeln("")
 
-      definition.arguments.foreach({ case (name, argument) => {
+      definition.arguments.values.foreach((argument) => {
         describeInputArgument(output, argument, totalWidth)
-      }})
+      })
     }
 
     if (definition.arguments.nonEmpty && definition.options.nonEmpty) {
@@ -84,9 +117,9 @@ class TextDescriptor extends Descriptor {
       output.writeln("<comment>Options:</comment>")
       output.writeln("")
 
-      definition.options.foreach({ case (name, option) => {
+      definition.options.values.foreach((option) => {
         describeInputOption(output, option, totalWidth)
-      }})
+      })
     }
   }
 
@@ -139,6 +172,12 @@ class TextDescriptor extends Descriptor {
   private def calculateArgumentWidths(arguments: Map[String, InputArgument]): List[Int] = {
     arguments.values.map((argument) => {
       argument.name.length
+    }).toList
+  }
+
+  private def calculateCommandWidths(commands: Map[String, Command]): List[Int] = {
+    commands.values.map((command) => {
+      command.name.length
     }).toList
   }
 

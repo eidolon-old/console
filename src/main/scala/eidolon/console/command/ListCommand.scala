@@ -12,6 +12,7 @@
 package eidolon.console.command
 
 import eidolon.console.Application
+import eidolon.console.descriptor.{TextDescriptor, Descriptor}
 import eidolon.console.input.Input
 import eidolon.console.input.definition.{InputArgument, InputDefinition}
 import eidolon.console.output.Output
@@ -21,7 +22,10 @@ import eidolon.console.output.Output
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ListCommand(application: Application) extends Command {
+class ListCommand(
+    application: Application,
+    descriptor: Descriptor = new TextDescriptor())
+  extends Command {
   override val name = "list"
   override val description = Some("Lists commands")
   override val definition = new InputDefinition()
@@ -32,6 +36,10 @@ class ListCommand(application: Application) extends Command {
     ))
 
   override def execute(input: Input, output: Output): Unit = {
-    output.writeln("Testing")
+    output.write(application.logo)
+    output.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
+    output.writeln("")
+
+    descriptor.describeApplication(output, application)
   }
 }
