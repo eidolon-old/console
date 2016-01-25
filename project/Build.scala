@@ -32,7 +32,7 @@ object Build extends BaseBuild {
     )),
     resolvers ++= Dependencies.repositories,
     scalaVersion := "2.11.7",
-    version := "1.0.0",
+    version := "0.1.0-SNAPSHOT",
     testOptions in Test += Tests.Argument("-oD")
   )
 
