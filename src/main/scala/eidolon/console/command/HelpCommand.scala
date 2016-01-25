@@ -28,6 +28,7 @@ class HelpCommand(
   extends Command {
 
   override val name = "help"
+  override val description = Some("Displays help for a command")
   override val definition = new InputDefinition()
     .withArgument(new InputArgument(
       "command_name",
@@ -49,7 +50,8 @@ class HelpCommand(
 
       descriptor.describeCommand(output, application, command)
     } else {
-      descriptor.describeCommand(output, application, this)
+      output.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
+      output.writeln("");
     }
   }
 }

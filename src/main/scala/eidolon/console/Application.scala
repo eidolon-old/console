@@ -11,7 +11,7 @@
 
 package eidolon.console
 
-import eidolon.console.command.{Command, HelpCommand}
+import eidolon.console.command.{ListCommand, Command, HelpCommand}
 import eidolon.console.input.builder.InputBuilder
 import eidolon.console.input.definition.{InputArgument, InputDefinition, InputOption}
 import eidolon.console.input.parser.{ArgsInputParser, InputParser, ParsedInputArgument, ParsedInputParameter}
@@ -67,10 +67,7 @@ class Application(
 
       doRunCommand(command, parsedInput)
     } else {
-      val command = commands.get("help").get
-      val helpInput = List(new ParsedInputArgument("help"))
-
-      doRunCommand(command, helpInput)
+      doRunCommand(commands.get("list").get, List(new ParsedInputArgument("list")))
     }
   }
 
@@ -98,9 +95,11 @@ class Application(
 
   protected def buildAppCommands(): Map[String, Command] = {
     val helpCommand = new HelpCommand(this)
+    val listCommand = new ListCommand(this)
 
     Map(
-      helpCommand.name -> helpCommand
+      helpCommand.name -> helpCommand,
+      listCommand.name -> listCommand
     )
   }
 
