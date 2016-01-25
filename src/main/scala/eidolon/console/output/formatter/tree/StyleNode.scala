@@ -11,6 +11,7 @@
 
 package eidolon.console.output.formatter.tree
 
+import eidolon.console.output.formatter.exception.StyleNotFoundException
 import eidolon.console.output.formatter.style.{OutputFormatterStyle, OutputFormatterStyleGroup}
 
 /**
@@ -20,20 +21,18 @@ import eidolon.console.output.formatter.style.{OutputFormatterStyle, OutputForma
  */
 case class StyleNode(
     override val children: List[Node] = List(),
-    val style: String)
+    style: String)
   extends Node
   with ParentNode[StyleNode] {
 
   override def render(styleGroup: OutputFormatterStyleGroup, styled: Boolean): String = {
-    val renderer = styleGroup.styles.get(style).get
     val body = children.foldLeft("")((aggregate, node) => {
       aggregate + node.render(styleGroup, styled)
     })
 
-    renderer match {
-      case renderer: OutputFormatterStyle if styled =>
-        renderer.applyStyle(body)
-      case _ => body
+    styleGroup.styles.get(style) match {
+      case Some(renderer) if styled => renderer.applyStyle(body)
+      case _ => throw new StyleNotFoundException(style)
     }
   }
 
