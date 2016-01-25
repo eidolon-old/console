@@ -21,9 +21,9 @@ import eidolon.console.output.Output
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class CloneCommand extends Command {
-  override val name = "clone"
+  override val name = "eidola:clone"
   override val description = Some("Clone a given template repo to a local destination")
-  override val aliases = List("cl")
+  override val aliases = List("eidola:cl")
   override val definition = new InputDefinition()
     .withArgument(new InputArgument(
       "source",

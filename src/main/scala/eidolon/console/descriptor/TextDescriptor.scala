@@ -27,6 +27,8 @@ class TextDescriptor extends Descriptor {
       application: Application)
     : Unit = {
 
+    val commands = application.commands.values.toList.distinct
+
     // @todo: Add ability to have help text at an application level, conditionally show it here
 
     output.writeln("<comment>Usage:</comment>")
@@ -36,16 +38,19 @@ class TextDescriptor extends Descriptor {
     describeInputDefinition(output, new InputDefinition(options = application.definition.options))
     output.writeln("")
 
-    val totalWidth = calculateCommandWidths(application.commands).reduce((a, b) => {
+    val totalWidth = calculateCommandWidths(commands).reduce((a, b) => {
       if (a >= b) a else b
     })
 
     output.writeln("<comment>Available commands:</comment>")
     output.writeln("")
 
-    // @todo: Handle namespaced commands (i.e. foo:bar:baz)
-    application.commands.values.toList.distinct.foreach((command) => {
-      val spacing = totalWidth - command.name.length + 2
+    val globalCommands = getGlobalCommands(commands).sortBy(_.name)
+    val namespacedCommands = getNamespacedCommands(commands).sortBy(_.name)
+
+    globalCommands.foreach((command) => {
+      val padding = if (namespacedCommands.nonEmpty) 4 else 2
+      val spacing = totalWidth - command.name.length + padding
 
       output.writeln("  <info>%s</info>%s%s".format(
         command.name,
@@ -53,6 +58,25 @@ class TextDescriptor extends Descriptor {
         command.description.getOrElse("")
       ))
     })
+
+    if (namespacedCommands.nonEmpty) {
+      namespacedCommands.foldLeft("")((namespace, command) => {
+        val commandNamespace = getCommandRootNamespace(command)
+        val spacing = totalWidth - command.name.length + 2
+
+        if (commandNamespace != namespace) {
+          output.writeln(s"  <comment>$commandNamespace</comment>")
+        }
+
+        output.writeln("    <info>%s</info>%s%s".format(
+          command.name,
+          " " * spacing,
+          command.description.getOrElse("")
+        ))
+
+        commandNamespace
+      })
+    }
 
     output.writeln("")
   }
@@ -65,9 +89,9 @@ class TextDescriptor extends Descriptor {
 
     output.writeln("<comment>Usage:</comment>")
     output.writeln("")
-    output.write("  " + getCommandSynopsis(command, true), mode = Output.OutputRaw)
+    output.write("  " + getCommandSynopsis(command, short = true), mode = Output.OutputRaw)
 
-    command.aliases.foreach(alias => {
+    command.aliases.foreach((alias) => {
       output.writeln("  " + alias)
     })
 
@@ -93,8 +117,8 @@ class TextDescriptor extends Descriptor {
   }
 
   override def describeInputDefinition(output: Output, definition: InputDefinition): Unit = {
-    val argumentWidths = calculateArgumentWidths(definition.arguments)
-    val optionWidths = calculateOptionWidths(definition.options)
+    val argumentWidths = calculateArgumentWidths(definition.arguments.values.toList)
+    val optionWidths = calculateOptionWidths(definition.options.values.toList)
 
     val totalWidth = (argumentWidths ++ optionWidths).reduce((a, b) => {
       if (a >= b) a else b
@@ -169,20 +193,20 @@ class TextDescriptor extends Descriptor {
     ))
   }
 
-  private def calculateArgumentWidths(arguments: Map[String, InputArgument]): List[Int] = {
-    arguments.values.map((argument) => {
+  private def calculateArgumentWidths(arguments: List[InputArgument]): List[Int] = {
+    arguments.map((argument) => {
       argument.name.length
-    }).toList
+    })
   }
 
-  private def calculateCommandWidths(commands: Map[String, Command]): List[Int] = {
-    commands.values.map((command) => {
+  private def calculateCommandWidths(commands: List[Command]): List[Int] = {
+    commands.map((command) => {
       command.name.length
-    }).toList
+    })
   }
 
-  private def calculateOptionWidths(options: Map[String, InputOption]): List[Int] = {
-    options.values.map((option) => {
+  private def calculateOptionWidths(options: List[InputOption]): List[Int] = {
+    options.map((option) => {
       // "-" + shortName + ", --" + name
       val nameLength = 1 + math.max(option.shortName.getOrElse("").length, 1) + 4 + option.name.length
       val valueLength = option.acceptValue match {
@@ -192,7 +216,7 @@ class TextDescriptor extends Descriptor {
       }
 
       nameLength + valueLength
-    }).toList
+    })
   }
 
   private def getCommandSynopsis(command: Command, short: Boolean = false): String = {
@@ -249,5 +273,33 @@ class TextDescriptor extends Descriptor {
       case true => s" $synopsis"
       case false => s" [$synopsis]"
     }
+  }
+
+  private def getGlobalCommands(commands: List[Command]): List[Command] = {
+    commands.filter((command) => {
+      !isNamespacedCommand(command)
+    })
+  }
+
+  private def getNamespacedCommands(commands: List[Command]): List[Command] = {
+    commands.filter((command) => {
+      isNamespacedCommand(command)
+    })
+  }
+
+  @throws[UnsupportedOperationException]
+  private def getCommandRootNamespace(command: Command): String = {
+    val pattern = "^([A-Za-z0-9_-]+):(.+)$".r.unanchored
+
+    command.name match {
+      case pattern(namespace, _) => namespace
+      case _ => throw new UnsupportedOperationException(
+        "Cannot get namespace for command with name '%s'".format(command.name)
+      )
+    }
+  }
+
+  private def isNamespacedCommand(command: Command): Boolean = {
+    command.name.matches("^(.*):(.*)$")
   }
 }
