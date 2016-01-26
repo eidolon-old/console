@@ -29,8 +29,6 @@ class TextDescriptor extends Descriptor {
 
     val commands = application.commands.values.toList.distinct
 
-    // @todo: Add ability to have help text at an application level, conditionally show it here
-
     output.writeln("<comment>Usage:</comment>")
     output.writeln("")
     output.writeln("  command [options] [arguments]")
