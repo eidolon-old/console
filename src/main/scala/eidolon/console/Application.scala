@@ -30,7 +30,7 @@ import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
  *    val app = Application("myapp", "0.1.0-SNAPSHOT")
  *      .withCommand(new ExampleCommand())
  *
- *    app.run(args)
+ *    app.run(args.toList)
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
