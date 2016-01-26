@@ -19,7 +19,7 @@ import eidolon.console.output.Output
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class ConsoleDialog extends Dialog {
-  val console = System.console()
+  private val console = System.console()
 
   override def ask(
       output: Output,
