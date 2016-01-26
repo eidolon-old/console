@@ -64,8 +64,29 @@ final case class InputDefinition(
     new InputDefinition(arguments + (argument.name -> argument), options)
   }
 
+  def withArgument(
+    name: String,
+    mode: Int = InputArgument.OPTIONAL,
+    description: Option[String] = None,
+    default: Option[String] = None)
+  : InputDefinition = {
+
+    withArgument(new InputArgument(name, mode, description, default))
+  }
+
   def withOption(option: InputOption): InputDefinition = {
     new InputDefinition(arguments, options + (option.name -> option))
+  }
+
+  def withOption(
+      name: String,
+      shortName: Option[String] = None,
+      mode: Int = InputOption.VALUE_NONE,
+      description: Option[String] = None,
+      defaultValue: Option[String] = None)
+    : InputDefinition = {
+
+    withOption(new InputOption(name, shortName, mode, description, defaultValue))
   }
 
   private def getShortOptionsFromOptions(input: Map[String, InputOption]): Map[String, String] = {

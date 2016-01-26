@@ -27,28 +27,28 @@ class CloneCommand extends Command {
   override val description = Some("Clone a given template repo to a local destination")
   override val aliases = List("eidola:cl")
   override val definition = new InputDefinition()
-    .withArgument(new InputArgument(
+    .withArgument(
       "source",
       InputArgument.REQUIRED,
       Some("The source repository to clone from")
-    ))
-    .withArgument(new InputArgument(
+    )
+    .withArgument(
       "destination",
       InputArgument.OPTIONAL,
       Some("The destination directory to clone into")
-    ))
-    .withOption(new InputOption(
+    )
+    .withOption(
       "no-cache",
       mode = InputOption.VALUE_NONE,
       description = Some("Set to disable using locally cached copies of templates")
-    ))
-    .withOption(new InputOption(
+    )
+    .withOption(
       "cache-dir",
       Some("c"),
       mode = InputOption.VALUE_OPTIONAL,
       description = Some("Path to local cache directory to use"),
       defaultValue = Some("./.eidola-cache")
-    ))
+    )
 
   override val help = Some(helpText)
 

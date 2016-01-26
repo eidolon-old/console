@@ -32,12 +32,12 @@ class HelpCommand(
   override val name = "help"
   override val description = Some("Displays help for a command")
   override val definition = new InputDefinition()
-    .withArgument(new InputArgument(
+    .withArgument(
       "command_name",
       InputArgument.OPTIONAL,
       Some("The command name"),
       Some("help")
-    ))
+    )
 
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
     val commandName = input.arguments.getOrElse("command_name", "")

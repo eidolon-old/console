@@ -31,11 +31,11 @@ class ListCommand(
   override val name = "list"
   override val description = Some("Lists commands")
   override val definition = new InputDefinition()
-    .withArgument(new InputArgument(
+    .withArgument(
       "namespace",
       InputArgument.OPTIONAL,
       Some("A command's namespace to list commands under")
-    ))
+    )
 
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
     output.write(application.logo)
