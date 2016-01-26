@@ -12,6 +12,8 @@
 package eidolon.console.output.formatter
 
 import eidolon.chroma.Chroma
+import eidolon.console.output.formatter.lexer.OutputFormatLexer
+import eidolon.console.output.formatter.parser.OutputFormatParser
 import eidolon.console.output.formatter.style._
 import eidolon.console.output.Output
 
@@ -21,9 +23,11 @@ import eidolon.console.output.Output
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 case class ConsoleOutputFormatter(
-    private val chroma: Chroma = Chroma(),
+    private val chroma: Chroma,
+    override val lexer: OutputFormatLexer,
+    override val parser: OutputFormatParser,
     override val styles: Map[String, OutputFormatterStyle] = Map())
-  extends OutputFormatter[ConsoleOutputFormatter] {
+  extends OutputFormatter {
 
   val styleGroup = new OutputFormatterStyleGroup()
     .withStyle(new InfoOutputFormatterStyle(chroma))
@@ -36,11 +40,11 @@ case class ConsoleOutputFormatter(
     doFormat(styleGroup, message, mode)
   }
 
-  override def withStyle(style: OutputFormatterStyle): ConsoleOutputFormatter = {
-    copy(chroma, styles + (style.name -> style))
+  override def withStyle(style: OutputFormatterStyle): OutputFormatter = {
+    copy(chroma, lexer, parser, styles + (style.name -> style))
   }
 
-  override def withStyles(styles: Map[String, OutputFormatterStyle]): ConsoleOutputFormatter = {
-    copy(chroma, this.styles ++ styles)
+  override def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatter = {
+    copy(chroma, lexer, parser, this.styles ++ styles)
   }
 }

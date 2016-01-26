@@ -11,7 +11,7 @@
 
 package eidolon.console.output
 
-import eidolon.console.output.formatter.{ConsoleOutputFormatter, OutputFormatter}
+import eidolon.console.output.formatter.OutputFormatter
 
 /**
  * ConsoleErrorOutput
@@ -19,7 +19,7 @@ import eidolon.console.output.formatter.{ConsoleOutputFormatter, OutputFormatter
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class ConsoleErrorOutput(
-    override val formatter: OutputFormatter[_] = new ConsoleOutputFormatter(),
+    override val formatter: OutputFormatter,
     override val verbosity: Int = Output.VerbosityNormal)
   extends Output {
 

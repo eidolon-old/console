@@ -19,7 +19,7 @@ import eidolon.console.output.formatter.OutputFormatter
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait Output {
-  val formatter: OutputFormatter[_]
+  val formatter: OutputFormatter
   val verbosity: Int = Output.VerbosityNormal
 
   def isQuiet: Boolean = {

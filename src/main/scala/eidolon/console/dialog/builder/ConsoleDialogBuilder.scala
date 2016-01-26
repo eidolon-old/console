@@ -11,7 +11,7 @@
 
 package eidolon.console.dialog.builder
 
-import eidolon.console.dialog.{Dialog, ConsoleDialog}
+import eidolon.console.dialog.{ConsoleDialog, Dialog}
 
 /**
  * ConsoleDialogBuilder

@@ -17,13 +17,13 @@ import eidolon.console.output.formatter.style._
 import eidolon.console.output.Output
 
 /**
- * Formatter
+ * Output Formatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait OutputFormatter[T <: OutputFormatter[T]] {
-  val lexer: OutputFormatLexer = new OutputFormatLexer()
-  val parser: OutputFormatParser = new OutputFormatParser()
+trait OutputFormatter {
+  val lexer: OutputFormatLexer
+  val parser: OutputFormatParser
   val styles: Map[String, OutputFormatterStyle]
 
   def format(message: String, mode: Int = Output.OutputNormal): String
@@ -48,6 +48,6 @@ trait OutputFormatter[T <: OutputFormatter[T]] {
     styles.contains(name)
   }
 
-  def withStyle(style: OutputFormatterStyle): T
-  def withStyles(styles: Map[String, OutputFormatterStyle]): T
+  def withStyle(style: OutputFormatterStyle): OutputFormatter
+  def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatter
 }

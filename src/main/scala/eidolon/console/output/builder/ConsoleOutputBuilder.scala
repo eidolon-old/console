@@ -11,7 +11,11 @@
 
 package eidolon.console.output.builder
 
-import eidolon.console.output.{ConsoleOutput, Output}
+import eidolon.chroma.Chroma
+import eidolon.console.output.formatter.ConsoleOutputFormatter
+import eidolon.console.output.formatter.lexer.OutputFormatLexer
+import eidolon.console.output.formatter.parser.OutputFormatParser
+import eidolon.console.output.{ConsoleErrorOutput, ConsoleOutput, Output}
 
 /**
  * ConsoleOutputBuilder
@@ -20,6 +24,10 @@ import eidolon.console.output.{ConsoleOutput, Output}
  */
 class ConsoleOutputBuilder extends OutputBuilder {
   override def build(): Output = {
-    new ConsoleOutput()
+    val lexer = new OutputFormatLexer()
+    val parser = new OutputFormatParser()
+    val formatter = new ConsoleOutputFormatter(Chroma(), lexer, parser)
+
+    new ConsoleOutput(formatter, errOutput = new ConsoleErrorOutput(formatter))
   }
 }
