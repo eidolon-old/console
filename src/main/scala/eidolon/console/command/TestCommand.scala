@@ -28,7 +28,7 @@ class TestCommand extends Command {
     val askAge = dialog.askConfirmation(output, "<question>May I ask your age?</question>", default = true)
 
     val age = if (askAge) {
-      Some(dialog.ask(output, "<question>How old are you?</question>"))
+      Some(dialog.ask(output, "<question>How old are you?</question>", Some("23")))
     } else {
       None
     }

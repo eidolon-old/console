@@ -31,7 +31,7 @@ class ConsoleDialog extends Dialog {
     output.write(question + " ", mode = mode)
 
     if (default.nonEmpty) {
-      output.write(s"[${default.get}] ")
+      output.write(s"[<info>${default.get}</info>] ")
     }
 
     console.readLine()
@@ -47,9 +47,9 @@ class ConsoleDialog extends Dialog {
     output.write(question + " ", mode = mode)
 
     if (default) {
-      output.write(s"[Yn] ")
+      output.write(s"[<info>Yn</info>] ")
     } else {
-      output.write(s"[yN] ")
+      output.write(s"[<info>yN</info>] ")
     }
 
     val result = console.readLine()

@@ -22,6 +22,6 @@ class QuestionOutputFormatterStyle(chroma: Chroma) extends OutputFormatterStyle 
   override val name: String = "question"
 
   override def applyStyle(message: String): String = {
-    chroma.black.bgCyan(message)
+    chroma.cyan(message)
   }
 }
