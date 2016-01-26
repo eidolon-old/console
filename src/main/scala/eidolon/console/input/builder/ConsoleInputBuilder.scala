@@ -12,18 +12,14 @@
 package eidolon.console.input.builder
 
 import eidolon.console.input.{ConsoleInput, Input}
-import eidolon.console.input.validation.InputValidatorResult
 
 /**
  * ConsoleInputBuilder
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ConsoleInputBuilder extends InputBuilder{
-  override def build(validatedInput: InputValidatorResult): Input = {
-    new ConsoleInput(
-      validatedInput.validArguments.map(argument => argument.name -> argument.value).toMap,
-      validatedInput.validOptions.map(option => option.name -> option.value).toMap
-    )
+class ConsoleInputBuilder extends InputBuilder {
+  override def build(): Input = {
+    new ConsoleInput()
   }
 }

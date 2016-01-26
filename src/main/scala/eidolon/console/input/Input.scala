@@ -19,4 +19,10 @@ package eidolon.console.input
 trait Input {
   val arguments: Map[String, String]
   val options: Map[String, Option[String]]
+
+  def withArgument(name: String, value: String): Input
+  def withOption(name: String, value: Option[String]): Input
+
+  def withArguments(arguments: Map[String, String]): Input
+  def withOptions(options: Map[String, Option[String]]): Input
 }

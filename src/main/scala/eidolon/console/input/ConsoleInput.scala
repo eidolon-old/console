@@ -17,6 +17,31 @@ package eidolon.console.input
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class ConsoleInput(
-    override val arguments: Map[String, String],
-    override val options: Map[String, Option[String]])
-  extends Input
+    override val arguments: Map[String, String] = Map(),
+    override val options: Map[String, Option[String]] = Map())
+  extends Input {
+
+  override def withArgument(name: String, value: String): Input = {
+    copy(arguments + (name -> value), options)
+  }
+
+  override def withArguments(arguments: Map[String, String]): Input = {
+    copy(this.arguments ++ arguments, options)
+  }
+
+  override def withOption(name: String, value: Option[String]): Input = {
+    copy(arguments, options + (name -> value))
+  }
+
+  override def withOptions(options: Map[String, Option[String]]): Input = {
+    copy(arguments, this.options ++ options)
+  }
+
+  private def copy(
+      arguments: Map[String, String],
+      options: Map[String, Option[String]])
+    : ConsoleInput = {
+
+    new ConsoleInput(arguments, options)
+  }
+}

@@ -12,7 +12,7 @@
 package eidolon.console.command
 
 import eidolon.console.Application
-import eidolon.console.descriptor.{TextDescriptor, Descriptor}
+import eidolon.console.descriptor.Descriptor
 import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
 import eidolon.console.input.definition.InputDefinition
@@ -26,7 +26,7 @@ import eidolon.console.output.Output
  */
 class ListCommand(
     application: Application,
-    descriptor: Descriptor = new TextDescriptor())
+    descriptor: Descriptor)
   extends Command {
   override val name = "list"
   override val description = Some("Lists commands")

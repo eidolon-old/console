@@ -12,12 +12,13 @@
 package eidolon.console
 
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
+import eidolon.console.descriptor.TextDescriptor
 import eidolon.console.dialog.builder.{ConsoleDialogBuilder, DialogBuilder}
 import eidolon.console.input.builder.{ConsoleInputBuilder, InputBuilder}
-import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
 import eidolon.console.input.definition.InputDefinition
-import eidolon.console.input.parser.parameter.{ParsedInputParameter, ParsedInputArgument}
+import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
 import eidolon.console.input.parser.InputParser
+import eidolon.console.input.parser.parameter.{ParsedInputParameter, ParsedInputArgument}
 import eidolon.console.input.validation.InputValidator
 import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
 
@@ -80,7 +81,12 @@ class Application(
     val validated = inputValidator.validate(inputDefinition, parsedInput)
 
     if (validated.isValid) {
-      val input = inputBuilder.build(validated)
+      val arguments = validated.validArguments.map(argument => argument.name -> argument.value)
+      val options = validated.validOptions.map(option => option.name -> option.value)
+
+      val input = inputBuilder.build()
+        .withArguments(arguments.toMap)
+        .withOptions(options.toMap)
       val output = outputBuilder.build()
       val dialog = dialogBuilder.build()
 
@@ -99,8 +105,10 @@ class Application(
   }
 
   protected def buildAppCommands(): Map[String, Command] = {
-    val helpCommand = new HelpCommand(this)
-    val listCommand = new ListCommand(this)
+    val descriptor = new TextDescriptor()
+
+    val helpCommand = new HelpCommand(this, descriptor)
+    val listCommand = new ListCommand(this, descriptor)
 
     Map(
       helpCommand.name -> helpCommand,

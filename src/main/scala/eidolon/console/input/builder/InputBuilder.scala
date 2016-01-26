@@ -23,5 +23,5 @@ import eidolon.console.input.validation.InputValidatorResult
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait InputBuilder {
-  def build(validatedInput: InputValidatorResult): Input
+  def build(): Input
 }
