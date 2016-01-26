@@ -32,12 +32,10 @@ class OutputFormatParser {
     def buildNode(node: Node, tokens: List[Token]): Node = {
       position = position + 1
 
-      val result = node match {
+      node match {
         case RootNode(children) => buildRootNode(node, tokens, children)
         case StyleNode(children, style) => buildStyleNode(node, tokens, children, style)
       }
-
-      result
     }
 
     private def buildRootNode(
@@ -65,7 +63,10 @@ class OutputFormatParser {
 
         case Some(StyleCloseToken(style)) => node
         case None => node
-        case _ => buildNode(node, tokens)
+        case _ =>
+          throw new UnsupportedOperationException(
+            "Cannot build unknown node of type '%s'".format(node.getClass)
+          )
       }
     }
 
@@ -95,7 +96,10 @@ class OutputFormatParser {
 
         case Some(StyleCloseToken(childStyle)) => node
         case None => node
-        case _ => buildNode(node, tokens)
+        case _ =>
+          throw new UnsupportedOperationException(
+            "Cannot build unknown node of type '%s'".format(node.getClass)
+          )
       }
     }
   }
