@@ -9,22 +9,21 @@
  * file that was distributed with this source code.
  */
 
-import eidolon.console.Application
-import eidolon.console.command.{GlobalTestCommand, TestCommand, CacheClearCommand, CloneCommand}
+package eidolon.console.command
+
+import eidolon.console.input.Input
+import eidolon.console.output.Output
 
 /**
- * Main
+ * TestCommand
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object ApplicationMain extends App {
-//  val args: Array[String] = Array()
+class TestCommand extends Command {
+  override val name = "test:test"
+  override val description = Some("Just a test command to test the command listing")
 
-  val app = Application("eidolon/console", "0.1.0-SNAPSHOT", args)
-    .withCommand(new CacheClearCommand())
-    .withCommand(new CloneCommand())
-    .withCommand(new TestCommand())
-    .withCommand(new GlobalTestCommand())
+  override def execute(input: Input, output: Output): Unit = {
 
-  app.run()
+  }
 }

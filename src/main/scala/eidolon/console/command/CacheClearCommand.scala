@@ -9,22 +9,21 @@
  * file that was distributed with this source code.
  */
 
-import eidolon.console.Application
-import eidolon.console.command.{GlobalTestCommand, TestCommand, CacheClearCommand, CloneCommand}
+package eidolon.console.command
+
+import eidolon.console.input.Input
+import eidolon.console.output.Output
 
 /**
- * Main
+ * CacheClearCommand
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object ApplicationMain extends App {
-//  val args: Array[String] = Array()
+class CacheClearCommand extends Command {
+  override val name = "eidola:cache:clear"
+  override val description = Some("Clears the local cache")
 
-  val app = Application("eidolon/console", "0.1.0-SNAPSHOT", args)
-    .withCommand(new CacheClearCommand())
-    .withCommand(new CloneCommand())
-    .withCommand(new TestCommand())
-    .withCommand(new GlobalTestCommand())
+  override def execute(input: Input, output: Output): Unit = {
 
-  app.run()
+  }
 }
