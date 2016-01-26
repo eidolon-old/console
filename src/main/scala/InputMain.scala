@@ -34,11 +34,11 @@ object InputMain /*extends App*/ {
   val args = Array[String]()
 
   val chroma = Chroma()
-  val parser = new ArgsInputParser(args)
+  val parser = new ArgsInputParser()
   val validator = new InputValidator()
   val builder = new InputBuilder()
 
-  val parsed = parser.parse()
+  val parsed = parser.parse(args.toList)
   val validated = validator.validate(definition, parsed)
 
   if (validated.isValid) {

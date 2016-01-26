@@ -16,13 +16,9 @@ package eidolon.console.input.parser
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-final class ArgsInputParser(
-    private val args: Array[String])
-  extends InputParser {
-
-  override def parse(): List[ParsedInputParameter] = {
-    args
-      .toList
+final class ArgsInputParser extends InputParser {
+  override def parse(input: List[String]): List[ParsedInputParameter] = {
+    input
       .takeWhile(_ != "--")
       .map({
         case option if option.startsWith("--") =>

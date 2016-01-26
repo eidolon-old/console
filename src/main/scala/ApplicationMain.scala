@@ -18,13 +18,11 @@ import eidolon.console.command.{GlobalTestCommand, TestCommand, CacheClearComman
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object ApplicationMain extends App {
-//  val args: Array[String] = Array()
-
-  val app = Application("eidolon/console", "0.1.0-SNAPSHOT", args)
+  val app = Application("eidolon/console", "0.1.0-SNAPSHOT")
     .withCommand(new CacheClearCommand())
     .withCommand(new CloneCommand())
     .withCommand(new TestCommand())
     .withCommand(new GlobalTestCommand())
 
-  app.run()
+  app.run(args.toList)
 }

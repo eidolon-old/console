@@ -60,8 +60,8 @@ class Application(
       |                                                   #
     """.stripMargin
 
-  def run(): Int = {
-    val parsedInput = inputParser.parse()
+  def run(args: List[String]): Int = {
+    val parsedInput = inputParser.parse(args)
     val arguments = parsedInput.filter(_.isInstanceOf[ParsedInputArgument])
 
     if (arguments.nonEmpty && commands.contains(arguments.head.token)) {
@@ -132,11 +132,11 @@ class Application(
 }
 
 object Application {
-  def apply(name: String, version: String, args: Array[String]): Application = {
+  def apply(name: String, version: String): Application = {
     new Application(
       name,
       version,
-      new ArgsInputParser(args),
+      new ArgsInputParser(),
       new InputValidator(),
       new InputBuilder(),
       new ConsoleOutputBuilder(),
