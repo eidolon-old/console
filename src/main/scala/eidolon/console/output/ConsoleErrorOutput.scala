@@ -19,9 +19,9 @@ import eidolon.console.output.formatter.{ConsoleOutputFormatter, OutputFormatter
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class ConsoleErrorOutput(
-  override val formatter: OutputFormatter[_] = new ConsoleOutputFormatter(),
-  override val verbosity: Int = Output.VerbosityNormal)
-  extends Output(formatter, verbosity) {
+    override val formatter: OutputFormatter[_] = new ConsoleOutputFormatter(),
+    override val verbosity: Int = Output.VerbosityNormal)
+  extends Output {
 
   override protected def doWrite(message: String, newLine: Boolean): Unit = {
     if (newLine) {

@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.parser
+package eidolon.console.input.parser.parameter
 
 /**
- * ParsedInputParameter
+ * Parsed Input Argument
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait ParsedInputParameter {
-  val token: String
-}
+case class ParsedInputArgument(
+    token: String)
+  extends ParsedInputParameter

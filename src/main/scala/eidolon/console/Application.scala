@@ -13,9 +13,11 @@ package eidolon.console
 
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
 import eidolon.console.dialog.builder.{ConsoleDialogBuilder, DialogBuilder}
-import eidolon.console.input.builder.InputBuilder
-import eidolon.console.input.definition.{InputArgument, InputDefinition, InputOption}
-import eidolon.console.input.parser.{ArgsInputParser, InputParser, ParsedInputArgument, ParsedInputParameter}
+import eidolon.console.input.builder.{ConsoleInputBuilder, InputBuilder}
+import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+import eidolon.console.input.definition.InputDefinition
+import eidolon.console.input.parser.parameter.{ParsedInputParameter, ParsedInputArgument}
+import eidolon.console.input.parser.InputParser
 import eidolon.console.input.validation.InputValidator
 import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
 
@@ -117,6 +119,12 @@ class Application(
     copy(userCommands ++ command.aliases.map(_ -> command) + (command.name -> command))
   }
 
+  def withCommands(commands: List[Command]): Application = {
+    commands.foldLeft(this)((app, command) => {
+      app.withCommand(command)
+    })
+  }
+
   private def copy(userCommands: Map[String, Command]): Application = {
     new Application(
       name,
@@ -136,9 +144,9 @@ object Application {
     new Application(
       name,
       version,
-      new ArgsInputParser(),
+      new InputParser(),
       new InputValidator(),
-      new InputBuilder(),
+      new ConsoleInputBuilder(),
       new ConsoleOutputBuilder(),
       new ConsoleDialogBuilder()
     )

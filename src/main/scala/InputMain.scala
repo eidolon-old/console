@@ -13,10 +13,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 import eidolon.chroma.Chroma
-import eidolon.console.input.builder.InputBuilder
-import eidolon.console.input.definition.{InputOption, InputDefinition, InputArgument}
-import eidolon.console.input.parser.ArgsInputParser
-import eidolon.console.input.validation.{InvalidOption, InvalidArgument, InputValidator}
+import eidolon.console.input.builder.ConsoleInputBuilder
+import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+import eidolon.console.input.definition.InputDefinition
+import eidolon.console.input.parser.InputParser
+import eidolon.console.input.validation.parameter.{InvalidOption, InvalidArgument}
+import eidolon.console.input.validation.InputValidator
 
 /**
  * Main
@@ -34,9 +36,9 @@ object InputMain /*extends App*/ {
   val args = Array[String]()
 
   val chroma = Chroma()
-  val parser = new ArgsInputParser()
+  val parser = new InputParser()
   val validator = new InputValidator()
-  val builder = new InputBuilder()
+  val builder = new ConsoleInputBuilder()
 
   val parsed = parser.parse(args.toList)
   val validated = validator.validate(definition, parsed)

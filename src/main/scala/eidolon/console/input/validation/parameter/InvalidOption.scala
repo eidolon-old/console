@@ -9,13 +9,11 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.parser
+package eidolon.console.input.validation.parameter
 
 /**
- * Parsed Input Argument
+ * Invalid Option
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class ParsedInputArgument(
-    token: String)
-  extends ParsedInputParameter
+case class InvalidOption(override val token: String) extends InvalidParameter

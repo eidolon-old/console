@@ -11,6 +11,8 @@
 
 package eidolon.console.input.definition
 
+import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+
 /**
  * Input Definition
  *

@@ -22,7 +22,7 @@ class ConsoleOutput(
     override val formatter: OutputFormatter[_] = new ConsoleOutputFormatter(),
     override val verbosity: Int = Output.VerbosityNormal,
     val errOutput: Output = new ConsoleErrorOutput())
-  extends Output(formatter, verbosity) {
+  extends Output {
 
   override protected def doWrite(message: String, newLine: Boolean): Unit = {
     if (newLine) {

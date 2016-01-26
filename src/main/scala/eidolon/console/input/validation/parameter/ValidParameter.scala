@@ -9,14 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.parser
+package eidolon.console.input.validation.parameter
 
 /**
- * Parsed Input Long Option
+ * Valid Parameter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class ParsedInputShortOption(
-    token: String,
-    value: Option[String])
-  extends ParsedInputParameter
+trait ValidParameter {
+  val name: String
+}

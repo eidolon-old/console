@@ -18,9 +18,9 @@ import eidolon.console.output.formatter.OutputFormatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-abstract class Output(
-    val formatter: OutputFormatter[_],
-    val verbosity: Int = Output.VerbosityNormal) {
+trait Output {
+  val formatter: OutputFormatter[_]
+  val verbosity: Int = Output.VerbosityNormal
 
   def isQuiet: Boolean = {
     Output.VerbosityQuiet == verbosity

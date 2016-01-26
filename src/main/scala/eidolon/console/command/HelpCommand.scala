@@ -14,8 +14,9 @@ package eidolon.console.command
 import eidolon.console.Application
 import eidolon.console.descriptor.{TextDescriptor, Descriptor}
 import eidolon.console.dialog.Dialog
-import eidolon.console.input.definition.{InputArgument, InputDefinition}
+import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.Input
+import eidolon.console.input.definition.parameter.InputArgument
 import eidolon.console.output.Output
 
 /**

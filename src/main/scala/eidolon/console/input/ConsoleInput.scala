@@ -1,5 +1,5 @@
 /**
- * This file is part of the "eidolon/console" project.
+ * This file is part of the "console" project.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the LICENSE is distributed on an "AS IS" BASIS,
@@ -9,13 +9,14 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.definition
+package eidolon.console.input
 
 /**
- * Input Parameter
+ * ConsoleInput
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait InputParameter {
-  val name: String
-}
+class ConsoleInput(
+    override val arguments: Map[String, String],
+    override val options: Map[String, Option[String]])
+  extends Input

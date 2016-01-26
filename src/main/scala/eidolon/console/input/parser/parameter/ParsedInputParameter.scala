@@ -9,14 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input
+package eidolon.console.input.parser.parameter
 
 /**
- * Input
+ * ParsedInputParameter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait Input {
-  val arguments: Map[String, String]
-  val options: Map[String, Option[String]]
+trait ParsedInputParameter {
+  val token: String
 }

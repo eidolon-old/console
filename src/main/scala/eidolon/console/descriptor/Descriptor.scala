@@ -13,7 +13,8 @@ package eidolon.console.descriptor
 
 import eidolon.console.Application
 import eidolon.console.command.Command
-import eidolon.console.input.definition.{InputDefinition, InputOption, InputArgument}
+import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+import eidolon.console.input.definition.InputDefinition
 import eidolon.console.output.Output
 
 /**

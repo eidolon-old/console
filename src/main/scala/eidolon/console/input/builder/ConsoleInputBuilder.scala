@@ -1,5 +1,5 @@
 /**
- * This file is part of the "eidolon/console" project.
+ * This file is part of the "console" project.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the LICENSE is distributed on an "AS IS" BASIS,
@@ -11,17 +11,19 @@
 
 package eidolon.console.input.builder
 
-import eidolon.console.input.Input
+import eidolon.console.input.{ConsoleInput, Input}
 import eidolon.console.input.validation.InputValidatorResult
 
 /**
- * Input Builder
- *
- * Builds the final representation of the input parameters from the validated input parameters (this
- * includes the optional parameters with default values)
+ * ConsoleInputBuilder
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait InputBuilder {
-  def build(validatedInput: InputValidatorResult): Input
+class ConsoleInputBuilder extends InputBuilder{
+  override def build(validatedInput: InputValidatorResult): Input = {
+    new ConsoleInput(
+      validatedInput.validArguments.map(argument => argument.name -> argument.value).toMap,
+      validatedInput.validOptions.map(option => option.name -> option.value).toMap
+    )
+  }
 }

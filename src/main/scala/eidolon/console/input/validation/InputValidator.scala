@@ -12,7 +12,9 @@
 package eidolon.console.input.validation
 
 import eidolon.console.input.definition._
-import eidolon.console.input.parser._
+import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+import eidolon.console.input.parser.parameter.{ParsedInputShortOption, ParsedInputParameter, ParsedInputLongOption, ParsedInputArgument}
+import eidolon.console.input.validation.parameter._
 
 /**
  * Input Validator

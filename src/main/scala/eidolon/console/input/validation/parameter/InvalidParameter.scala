@@ -1,5 +1,5 @@
 /**
- * This file is part of the "eidolon/console" project.
+ * This file is part of the "Default (Template) Project" project.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the LICENSE is distributed on an "AS IS" BASIS,
@@ -9,14 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.validation
+package eidolon.console.input.validation.parameter
 
 /**
- * ValidOption
+ * Invalid Parameter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-case class ValidOption(
-    override val name: String,
-    value: Option[String] = None)
-  extends ValidParameter
+trait InvalidParameter {
+  val token: String
+}

@@ -11,6 +11,8 @@
 
 package eidolon.console.input.validation
 
+import eidolon.console.input.validation.parameter._
+
 /**
  * Input Validator Result
  *

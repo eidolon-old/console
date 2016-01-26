@@ -9,13 +9,14 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.validation
+package eidolon.console.input.validation.parameter
 
 /**
- * Valid Parameter
+ * Valid Argument
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait ValidParameter {
-  val name: String
-}
+case class ValidArgument(
+    override val name: String,
+    value: String)
+  extends ValidParameter
