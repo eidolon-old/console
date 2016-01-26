@@ -27,10 +27,10 @@ import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
  *
  * Usage (e.g. in main):
  *
- *    val app = Application("myapp", "0.1.0-SNAPSHOT", args)
+ *    val app = Application("myapp", "0.1.0-SNAPSHOT")
  *      .withCommand(new ExampleCommand())
  *
- *    System.exit(app.run())
+ *    app.run(args)
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
