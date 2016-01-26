@@ -28,5 +28,12 @@ trait Command {
   val definition: InputDefinition = new InputDefinition()
   val help: Option[String] = None
 
+  /**
+   * Execute this command
+   *
+   * @param input Input passed to the application
+   * @param output Output interface for displaying formatted text
+   * @param dialog Dialog interface for prompting for user input mid-execution
+   */
   def execute(input: Input, output: Output, dialog: Dialog): Unit
 }
