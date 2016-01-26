@@ -11,6 +11,7 @@
 
 package eidolon.console.command
 
+import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
 import eidolon.console.output.Output
 
@@ -23,7 +24,7 @@ class CacheClearCommand extends Command {
   override val name = "eidola:cache:clear"
   override val description = Some("Clears the local cache")
 
-  override def execute(input: Input, output: Output): Unit = {
+  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
 
   }
 }

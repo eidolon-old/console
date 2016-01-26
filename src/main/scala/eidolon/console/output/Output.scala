@@ -49,7 +49,7 @@ abstract class Output(
 
   def write(
       message: String,
-      newLine: Boolean = true,
+      newLine: Boolean = false,
       mode: Int = Output.OutputNormal,
       verbosity: Int = Output.VerbosityNormal)
     : Unit = {

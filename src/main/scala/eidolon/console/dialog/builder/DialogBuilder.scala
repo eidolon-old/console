@@ -9,22 +9,15 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.command
+package eidolon.console.dialog.builder
 
 import eidolon.console.dialog.Dialog
-import eidolon.console.input.Input
-import eidolon.console.output.Output
 
 /**
- * GlobalTestCommand
+ * DialogBuilder
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class GlobalTestCommand extends Command {
-  override val name = "test"
-  override val description = Some("A global test command for the command listing")
-
-  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-
-  }
+trait DialogBuilder {
+  def build(): Dialog
 }

@@ -9,22 +9,33 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.command
+package eidolon.console.dialog
 
-import eidolon.console.dialog.Dialog
-import eidolon.console.input.Input
 import eidolon.console.output.Output
 
 /**
- * GlobalTestCommand
+ * Dialog
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class GlobalTestCommand extends Command {
-  override val name = "test"
-  override val description = Some("A global test command for the command listing")
+trait Dialog {
+  def ask(
+      output: Output,
+      question: String,
+      default: Option[String] = None,
+      mode: Int = Output.OutputNormal)
+    : String
 
-  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+  def askConfirmation(
+      output: Output,
+      question: String,
+      default: Boolean = false,
+      mode: Int = Output.OutputNormal)
+    : Boolean
 
-  }
+  def askSensitive(
+      output: Output,
+      question: String,
+      mode: Int = Output.OutputNormal)
+    : String
 }

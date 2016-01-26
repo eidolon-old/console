@@ -11,6 +11,7 @@
 
 package eidolon.console.command
 
+import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
 import eidolon.console.output.Output
 
@@ -23,7 +24,21 @@ class TestCommand extends Command {
   override val name = "test:test"
   override val description = Some("Just a test command to test the command listing")
 
-  override def execute(input: Input, output: Output): Unit = {
+  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+    val askAge = dialog.askConfirmation(output, "<question>May I ask your age?</question>", default = true)
 
+    val age = if (askAge) {
+      Some(dialog.ask(output, "<question>How old are you?</question>"))
+    } else {
+      None
+    }
+
+    val secret = dialog.askSensitive(output, "<question>Tell me a secret...</question>")
+
+    if (askAge && age.nonEmpty) {
+      output.writeln(s"<info>You said your age is ${age.get}</info>")
+    }
+
+    output.writeln(s"<info>Your secret was: '$secret'</info>")
   }
 }

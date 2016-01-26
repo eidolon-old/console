@@ -93,22 +93,22 @@ class TextDescriptor extends Descriptor {
       output.writeln("  " + alias)
     })
 
+    output.writeln("")
+
     if (command.definition.options.nonEmpty || command.definition.arguments.nonEmpty) {
       val commandDefinition = new InputDefinition(
         command.definition.arguments,
         application.definition.options ++ command.definition.options
       )
 
-      output.writeln("")
       describeInputDefinition(output, commandDefinition)
-      output.writeln("")
     }
 
     if (command.help.nonEmpty) {
       output.writeln("")
       output.writeln("<comment>Help:</comment>")
       output.writeln("")
-      output.write("  " + command.help.get.replace("\n", "\n  "))
+      output.writeln("  " + command.help.get.replace("\n", "\n  "))
     }
 
     output.writeln("")

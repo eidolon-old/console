@@ -12,6 +12,7 @@
 package eidolon.console
 
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
+import eidolon.console.dialog.builder.{ConsoleDialogBuilder, DialogBuilder}
 import eidolon.console.input.builder.InputBuilder
 import eidolon.console.input.definition.{InputArgument, InputDefinition, InputOption}
 import eidolon.console.input.parser.{ArgsInputParser, InputParser, ParsedInputArgument, ParsedInputParameter}
@@ -40,6 +41,7 @@ class Application(
     val inputValidator: InputValidator,
     val inputBuilder: InputBuilder,
     val outputBuilder: OutputBuilder,
+    val dialogBuilder: DialogBuilder,
     val userCommands: Map[String, Command] = Map()) {
 
   private val appCommands = buildAppCommands()
@@ -78,8 +80,9 @@ class Application(
     if (validated.isValid) {
       val input = inputBuilder.build(validated)
       val output = outputBuilder.build()
+      val dialog = dialogBuilder.build()
 
-      command.execute(input, output)
+      command.execute(input, output, dialog)
     } else {
       doRunCommand(
         commands.get("help").get,
@@ -122,6 +125,7 @@ class Application(
       inputValidator,
       inputBuilder,
       outputBuilder,
+      dialogBuilder,
       userCommands
     )
   }
@@ -135,7 +139,8 @@ object Application {
       new ArgsInputParser(args),
       new InputValidator(),
       new InputBuilder(),
-      new ConsoleOutputBuilder()
+      new ConsoleOutputBuilder(),
+      new ConsoleDialogBuilder()
     )
   }
 }
