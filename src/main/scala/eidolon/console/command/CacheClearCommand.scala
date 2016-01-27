@@ -24,6 +24,9 @@ class CacheClearCommand extends Command {
   override val name = "eidola:cache:clear"
   override val description = Some("Clears the local cache")
 
+  /**
+   * @inheritdoc
+   */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
 
   }

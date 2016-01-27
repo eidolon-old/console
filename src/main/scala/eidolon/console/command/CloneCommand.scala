@@ -52,13 +52,20 @@ class CloneCommand extends Command {
 
   override val help = Some(helpText)
 
-
+  /**
+   * @inheritdoc
+   */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
     output.write("<question>Is this thing on?</question>")
     output.write("<comment>Looks like it is...</comment>")
     output.write("<info>Cloning some stuff...</info>")
   }
 
+  /**
+   * Get this command's help text
+   *
+   * @return The help text
+   */
   private def helpText: String = {
     """The <info>clone</info> command creates a clone of a remote repository
       |template and asks you questions to fill in template values.

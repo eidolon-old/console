@@ -39,6 +39,9 @@ class HelpCommand(
       Some("help")
     )
 
+  /**
+   * @inheritdoc
+   */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
     val commandName = input.arguments.getOrElse("command_name", "")
     val commandOpt = application.commands.get(commandName)

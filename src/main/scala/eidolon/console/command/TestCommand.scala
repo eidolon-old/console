@@ -24,6 +24,9 @@ class TestCommand extends Command {
   override val name = "test:test"
   override val description = Some("Just a test command to test the command listing")
 
+  /**
+   * @inheritdoc
+   */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
     val askAge = dialog.askConfirmation(output, "<question>May I ask your age?</question>", default = true)
 

@@ -24,6 +24,9 @@ class GlobalTestCommand extends Command {
   override val name = "test"
   override val description = Some("A global test command for the command listing")
 
+  /**
+   * @inheritdoc
+   */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
 
   }
