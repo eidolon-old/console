@@ -53,9 +53,9 @@ class ConsoleDialog extends Dialog {
     output.write(question + " ", mode = mode)
 
     if (default) {
-      output.write(s"[<info>Yn</info>] ")
+      output.write("[<info>Yn</info>] ")
     } else {
-      output.write(s"[<info>yN</info>] ")
+      output.write("[<info>yN</info>] ")
     }
 
     val result = console.readLine()
