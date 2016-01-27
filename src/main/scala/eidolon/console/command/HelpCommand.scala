@@ -46,7 +46,7 @@ class HelpCommand(
     val commandName = input.arguments.getOrElse("command_name", "")
     val commandOpt = application.commands.get(commandName)
 
-    output.write(application.logo)
+    output.writeln(application.logo)
     output.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
     output.writeln("")
 
