@@ -19,6 +19,12 @@ import eidolon.console.input.parser.parameter.{ParsedInputShortOption, ParsedInp
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class InputParser {
+  /**
+   * Parse the given list of input arguments and options into object representations
+   *
+   * @param input The list of input strings
+   * @return The parsed input options
+   */
   def parse(input: List[String]): List[ParsedInputParameter] = {
     input
       .takeWhile(_ != "--")
@@ -32,6 +38,15 @@ class InputParser {
       })
   }
 
+  /**
+   * Parse a long option from a string representation into an object
+   *
+   * @param option The option
+   * @return a parsed input option with an assigned name and potentially a value
+   *
+   * @throws RuntimeException if the option is somehow in an invalid format
+   */
+  @throws[RuntimeException]
   private def parseLongOption(option: String): ParsedInputLongOption = {
     val (name, value) = option
       .drop(2)
@@ -48,6 +63,15 @@ class InputParser {
     new ParsedInputLongOption(name, value)
   }
 
+  /**
+   * Parse a short option from a string representation into an object
+   *
+   * @param option The option
+   * @return a parsed input option with an assigned name and potentially a value
+   *
+   * @throws RuntimeException if the option is somehow in an invalid format
+   */
+  @throws[RuntimeException]
   private def parseShortOption(option: String): ParsedInputShortOption = {
     val (name, value) = option
       .drop(1)
@@ -64,6 +88,12 @@ class InputParser {
     new ParsedInputShortOption(name, value)
   }
 
+  /**
+   * Parse an input argument from a string representation into an object
+   *
+   * @param argument The argument value
+   * @return a parsed input argument with an assigned value
+   */
   private def parseArgument(argument: String): ParsedInputArgument = {
     new ParsedInputArgument(argument)
   }

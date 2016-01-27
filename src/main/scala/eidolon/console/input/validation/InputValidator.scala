@@ -26,7 +26,18 @@ import eidolon.console.input.validation.parameter._
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class InputValidator {
-  def validate(definition: InputDefinition, parsedInput: List[ParsedInputParameter]): InputValidatorResult = {
+  /**
+   * Validate the given parsed input against a given input definition
+   *
+   * @param definition The input definition to validate against
+   * @param parsedInput The parsed input to validate
+   * @return an input validator result
+   */
+  def validate(
+      definition: InputDefinition,
+      parsedInput: List[ParsedInputParameter])
+    : InputValidatorResult = {
+
     val validatedParsedInput = validateParsedInput(definition, parsedInput)
 
     val missingArguments = findMissingArguments(definition, validatedParsedInput)
@@ -39,9 +50,18 @@ class InputValidator {
     )
   }
 
+  /**
+   * Internally validate the given parsed input against a given input definition (not all checks
+   * are performed in this method)
+   *
+   * @param definition The input definition to validate against
+   * @param parsedInput The parsed input to validate
+   * @return an input validator results
+   */
   private def validateParsedInput(
       definition: InputDefinition,
-      parsedInput: List[ParsedInputParameter]): InputValidatorResult = {
+      parsedInput: List[ParsedInputParameter])
+    : InputValidatorResult = {
 
     parsedInput
       .foldLeft(new InputValidatorResult())((aggregate, param) => {
@@ -63,10 +83,19 @@ class InputValidator {
       })
   }
 
+  /**
+   * Validate the given parsed input argument against a given input definition
+   *
+   * @param definition The input definition to validate against
+   * @param aggregate The aggregate input validator result
+   * @param parsedArgument The parsed input argument to validate
+   * @return an input validator result
+   */
   private def validateArgument(
       definition: InputDefinition,
       aggregate: InputValidatorResult,
-      parsedArgument: ParsedInputArgument): Either[InvalidParameter, ValidParameter] = {
+      parsedArgument: ParsedInputArgument)
+    : Either[InvalidParameter, ValidParameter] = {
 
     definition.getArgument(aggregate.argumentCount) match {
       case Some(argument) => Right(new ValidArgument(argument.name, parsedArgument.token))
@@ -74,10 +103,19 @@ class InputValidator {
     }
   }
 
+  /**
+   * Validate the given parsed input long option against a given input definition
+   *
+   * @param definition The input definition to validate against
+   * @param aggregate The aggregate input validator result
+   * @param parsedOption The parsed input long option to validate
+   * @return an input validator result
+   */
   private def validateLongOption(
       definition: InputDefinition,
       aggregate: InputValidatorResult,
-      parsedOption: ParsedInputLongOption): Either[InvalidParameter, ValidParameter] = {
+      parsedOption: ParsedInputLongOption)
+    : Either[InvalidParameter, ValidParameter] = {
 
     def validateOptionMode(option: InputOption): Either[InvalidParameter, ValidParameter] = {
       option.mode match {
@@ -118,10 +156,20 @@ class InputValidator {
     }
   }
 
+
+  /**
+   * Validate the given parsed input short option against a given input definition
+   *
+   * @param definition The input definition to validate against
+   * @param aggregate The aggregate input validator result
+   * @param parsedOption The parsed input short option to validate
+   * @return an input validator result
+   */
   private def validateShortOption(
       definition: InputDefinition,
       aggregate: InputValidatorResult,
-      parsedOption: ParsedInputShortOption): Either[InvalidParameter, ValidParameter] = {
+      parsedOption: ParsedInputShortOption)
+    : Either[InvalidParameter, ValidParameter] = {
 
     definition.getOptionByShortName(parsedOption.token) match {
       case Some(option) =>
@@ -130,9 +178,17 @@ class InputValidator {
     }
   }
 
+  /**
+   * Find the arguments defined in the given definition that weren't in the given validated input
+   *
+   * @param definition An input definition to compare against
+   * @param parsedArgs A validated input result to check input from
+   * @return a list of missing arguments
+   */
   private def findMissingArguments(
       definition: InputDefinition,
-      parsedArgs: InputValidatorResult): List[InputArgument] = {
+      parsedArgs: InputValidatorResult)
+    : List[InputArgument] = {
 
     definition.arguments.values
       .filter((argument) => { !parsedArgs.argumentNames.contains(argument.name) })

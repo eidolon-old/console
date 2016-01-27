@@ -36,6 +36,11 @@ case class InputValidatorResult(
   lazy val argumentNames = validArguments.map(_.name) ++: invalidArguments.map(_.token)
   lazy val optionNames = validOptions.map(_.name) ++: invalidArguments.map(_.token)
 
+  /**
+   * Check if this input validator result reports valid input or not
+   *
+   * @return true if the result is that the input is valid
+   */
   def isValid: Boolean = {
     invalid.isEmpty
   }
