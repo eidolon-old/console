@@ -12,7 +12,6 @@
 package eidolon.console.input.builder
 
 import eidolon.console.input.Input
-import eidolon.console.input.validation.InputValidatorResult
 
 /**
  * Input Builder
@@ -23,5 +22,10 @@ import eidolon.console.input.validation.InputValidatorResult
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait InputBuilder {
+  /**
+   * Build the input
+   *
+   * @return the built input
+   */
   def build(): Input
 }

@@ -26,22 +26,47 @@ case class InputArgument(
   require(isValidMode, "Argument mode \"%d\" is not valid.".format(mode))
   require(isValidDefault, "Argument default is not valid.")
 
+  /**
+   * Check if this input argument has a default value
+   *
+   * @return true if a default value is set
+   */
   def hasDefault: Boolean = {
     default.nonEmpty
   }
 
+  /**
+   * Check if this input argument is optional
+   *
+   * @return true if the mode includes OPTIONAL
+   */
   def isOptional: Boolean = {
     InputArgument.OPTIONAL == (InputArgument.OPTIONAL & mode)
   }
 
+  /**
+   * Check if this input argument is required
+   *
+   * @return true if the mode includes REQUIRED
+   */
   def isRequired: Boolean = {
     InputArgument.REQUIRED == (InputArgument.REQUIRED & mode)
   }
 
+  /**
+   * Check if this input argument's mode is valid
+   *
+   * @return true if the mode is valid
+   */
   private def isValidMode: Boolean = {
     (1 to 3).contains(mode)
   }
 
+  /**
+   * Check if this input argument's default value is valid
+   *
+   * @return true if the default value is valid
+   */
   private def isValidDefault: Boolean = {
     !isRequired || default.isEmpty
   }

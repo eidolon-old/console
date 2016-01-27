@@ -25,7 +25,7 @@ final case class InputDefinition(
   private val shortOptions = getShortOptionsFromOptions(options)
 
   /**
-   * Appends an InputDefinition's arguments and options onto this InputDefinition
+   * Appends an input definition's arguments and options onto this one's
    *
    * @param definition the input definition to append to this one
    * @return a new input definition
@@ -37,18 +37,42 @@ final case class InputDefinition(
     )
   }
 
+  /**
+   * Get an input argument at the given index
+   *
+   * @param index The index of the input argument to get
+   * @return an input argument, if it exists
+   */
   def getArgument(index: Int): Option[InputArgument] = {
     arguments.values.toList.lift(index)
   }
 
+  /**
+   * Check if an input argument exists in this input definition at the given index
+   *
+   * @param index The index of the input argument to check
+   * @return true if the input argument exists
+   */
   def hasArgument(index: Int): Boolean = {
     arguments.values.toList.lift(index).isDefined
   }
 
+  /**
+   * Get an input option with the given name
+   *
+   * @param name The name of the input option to get
+   * @return an input option, if it exists
+   */
   def getOption(name: String): Option[InputOption] = {
     options.get(name)
   }
 
+  /**
+   * Get an input option with the given short name
+   *
+   * @param shortName The short name of the input option to get
+   * @return an input option, if it exists
+   */
   def getOptionByShortName(shortName: String): Option[InputOption] = {
     for {
       name <- shortOptions.get(shortName)
@@ -56,28 +80,65 @@ final case class InputDefinition(
     } yield option
   }
 
+  /**
+   * Check if an input option exists in this input definition with the given name
+   *
+   * @param name The name of the input option to check
+   * @return true if the input option exists
+   */
   def hasOption(name: String): Boolean = {
     options.contains(name)
   }
 
+  /**
+   * Create a copy of this input definition with the given input argument
+   *
+   * @param argument The input argument to add to the copy of this input definition
+   * @return a new input definition
+   */
   def withArgument(argument: InputArgument): InputDefinition = {
     new InputDefinition(arguments + (argument.name -> argument), options)
   }
 
+  /**
+   * Create a copy of this input definition with the given input argument configuration
+   *
+   * @param name The name of the input argument
+   * @param mode The mode of the input argument
+   * @param description The description of the input argument
+   * @param default The default value of the input argument
+   * @return a new input definition
+   */
   def withArgument(
-    name: String,
-    mode: Int = InputArgument.OPTIONAL,
-    description: Option[String] = None,
-    default: Option[String] = None)
-  : InputDefinition = {
+      name: String,
+      mode: Int = InputArgument.OPTIONAL,
+      description: Option[String] = None,
+      default: Option[String] = None)
+    : InputDefinition = {
 
     withArgument(new InputArgument(name, mode, description, default))
   }
 
+  /**
+   * Create a copy of this input definition with the given input option
+   *
+   * @param option The input option to add to the copy of this input definition
+   * @return a new input definition
+   */
   def withOption(option: InputOption): InputDefinition = {
     new InputDefinition(arguments, options + (option.name -> option))
   }
 
+  /**
+   * Create a copy of this input definition with the given input option configuration
+   *
+   * @param name The name of the input option
+   * @param shortName The short name of the input option
+   * @param mode The mode of the input option
+   * @param description The description of the input option
+   * @param defaultValue The default value of the input option
+   * @return a new input definition
+   */
   def withOption(
       name: String,
       shortName: Option[String] = None,
@@ -89,6 +150,12 @@ final case class InputDefinition(
     withOption(new InputOption(name, shortName, mode, description, defaultValue))
   }
 
+  /**
+   * Get a map of input option short names to input option names
+   *
+   * @param input The input options to map
+   * @return a map of input options short names to input option names
+   */
   private def getShortOptionsFromOptions(input: Map[String, InputOption]): Map[String, String] = {
     input
       .filter({ case (_, option) => option.shortName.nonEmpty })
