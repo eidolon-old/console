@@ -15,5 +15,7 @@ package eidolon.console.output.formatter.lexer.token
  * StyleOpenToken
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param lexeme The value of the token
  */
 case class StyleOpenToken(override val lexeme: String) extends Token

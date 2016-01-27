@@ -15,6 +15,8 @@ package eidolon.console.output.formatter.exception
  * StyleNotFoundException
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param style The style that was not found
  */
 class StyleNotFoundException(
     style: String)

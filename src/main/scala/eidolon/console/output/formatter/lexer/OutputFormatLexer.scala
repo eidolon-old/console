@@ -21,6 +21,12 @@ import scala.annotation.tailrec
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class OutputFormatLexer {
+  /**
+   * Conver the given input to a list of tokens
+   *
+   * @param input The input string
+   * @return a list of tokens
+   */
   def tokenise(input: String): List[Token] = {
     val context = new LexerContext(input.toCharArray.toList)
     val mechanism = new LexerMechanism(context)
@@ -28,7 +34,17 @@ class OutputFormatLexer {
     mechanism.tokenise()
   }
 
+  /**
+   * The lexer mechanism, an instance is made for each tokenisation
+   *
+   * @param context A lexer context
+   */
   private class LexerMechanism(val context: LexerContext) {
+    /**
+     * Produce a list of tokens from the current lexer context
+     *
+     * @return a list of tokens
+     */
     def tokenise(): List[Token] = {
       read()
 
@@ -44,6 +60,11 @@ class OutputFormatLexer {
       readTokens(List())
     }
 
+    /**
+     * Read the next token from the context
+     *
+     * @return a token
+     */
     def readNextToken(): Token = {
       remainingCharacters.mkString match {
         case LexerMechanism.TagEndRegex(_, _, _) => readStyleCloseToken()
@@ -52,6 +73,11 @@ class OutputFormatLexer {
       }
     }
 
+    /**
+     * Attempt to read a style open token
+     *
+     * @return a style open token
+     */
     def readStyleOpenToken(): StyleOpenToken = {
       read()
 
@@ -65,6 +91,11 @@ class OutputFormatLexer {
       new StyleOpenToken(context.flushCaptureBuffer())
     }
 
+    /**
+     * Attempt to read a style close token
+     *
+     * @return a style close token
+     */
     def readStyleCloseToken(): StyleCloseToken = {
       read()
       read()
@@ -79,6 +110,11 @@ class OutputFormatLexer {
       new StyleCloseToken(context.flushCaptureBuffer())
     }
 
+    /**
+     * Attempt to read a string token
+     *
+     * @return a string token
+     */
     def readStringToken(): StringToken = {
       while (!isEndOfText && isStillString) {
         context.captureBuffer.append(context.current)
@@ -88,6 +124,9 @@ class OutputFormatLexer {
       new StringToken(context.flushCaptureBuffer())
     }
 
+    /**
+     * Read the next character in the context
+     */
     def read(): Unit = {
       if (context.cursor >= context.buffer.length) {
         context.current = LexerContext.EndChar
@@ -101,15 +140,30 @@ class OutputFormatLexer {
       }
     }
 
+    /**
+     * Get a list of the remaining unread charactes in the context
+     *
+     * @return a list of characters
+     */
     def remainingCharacters: List[Char] = {
       context.buffer
         .slice(context.cursor - 1, context.buffer.length)
     }
 
+    /**
+     * Check if the context has reached the end of it's input
+     *
+     * @return true if the current context character is the end character
+     */
     private def isEndOfText: Boolean = {
       context.current == LexerContext.EndChar
     }
 
+    /**
+     * Check if the a string is still being read from the current context
+     *
+     * @return true if the what is currently being read is still a string
+     */
     private def isStillString: Boolean = {
       val remaining = remainingCharacters.mkString
       val matched = LexerMechanism.TagStartRegex.findAllMatchIn(remaining)
@@ -129,6 +183,16 @@ class OutputFormatLexer {
     val TagEndRegex = "^(</([A-Za-z0-9_-]*)>)(.|\\n)*".r
   }
 
+  /**
+   * Provides context to the lexer mechanism so it can keep track of the progress it has made
+   *
+   * @param buffer The input to tokenise
+   * @param captureBuffer The buffer to store data in to retrieve token lexemes
+   * @param prev The previous character
+   * @param current The current character
+   * @param next The next character
+   * @param cursor The current position in the input
+   */
   private class LexerContext(
     val buffer: List[Char],
     val captureBuffer: StringBuilder = new StringBuilder(),
@@ -137,10 +201,18 @@ class OutputFormatLexer {
     var next: Char = LexerContext.EndChar,
     var cursor: Int = 0) {
 
-    def clearCaptureBuffer() {
+    /**
+     * Clear the capture buffer
+     */
+    def clearCaptureBuffer(): Unit = {
       captureBuffer.clear()
     }
 
+    /**
+     * Flush the capture buffer
+     *
+     * @return the captured content
+     */
     def flushCaptureBuffer(): String = {
       val buffer = captureBuffer.toString()
 

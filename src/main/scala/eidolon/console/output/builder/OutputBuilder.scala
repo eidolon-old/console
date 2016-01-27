@@ -19,5 +19,10 @@ import eidolon.console.output.Output
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait OutputBuilder {
+  /**
+   * Build some output
+   *
+   * @return output
+   */
   def build(): Output
 }

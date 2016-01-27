@@ -23,6 +23,9 @@ import eidolon.console.output.{ConsoleErrorOutput, ConsoleOutput, Output}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class ConsoleOutputBuilder extends OutputBuilder {
+  /**
+   * @inheritdoc
+   */
   override def build(): Output = {
     val lexer = new OutputFormatLexer()
     val parser = new OutputFormatParser()

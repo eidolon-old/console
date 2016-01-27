@@ -15,5 +15,7 @@ package eidolon.console.output.formatter.lexer.token
  * StringToken
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param lexeme The value of the token
  */
 case class StringToken(override val lexeme: String) extends Token

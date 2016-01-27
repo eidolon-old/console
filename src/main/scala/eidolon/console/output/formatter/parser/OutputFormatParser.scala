@@ -20,15 +20,31 @@ import eidolon.console.output.formatter.tree._
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class OutputFormatParser {
+  /**
+   * Parse the given list of tokens into a tree of nodes
+   *
+   * @param tokens A list of tokens
+   * @return a parsed tree of nodes
+   */
   def parse(tokens: List[Token]): Node = {
     val mechanism = new ParserMechanism()
 
     mechanism.buildNode(new RootNode(), tokens)
   }
 
+  /**
+   * The parser mechanism, an instance if made for each parse
+   */
   private class ParserMechanism {
     var position: Int = -1
 
+    /**
+     * Build on a given node with the given tokens
+     *
+     * @param node A node to build on
+     * @param tokens Tokens to build onto the node
+     * @return a built node
+     */
     def buildNode(node: Node, tokens: List[Token]): Node = {
       position = position + 1
 
@@ -38,6 +54,14 @@ class OutputFormatParser {
       }
     }
 
+    /**
+     * Build onto a root node
+     *
+     * @param node A root node
+     * @param tokens Tokens to build onto the node
+     * @param children The node's children
+     * @return a built node
+     */
     private def buildRootNode(
         node: Node,
         tokens: List[Token],
@@ -70,6 +94,15 @@ class OutputFormatParser {
       }
     }
 
+    /**
+     * Built onto a style node
+     *
+     * @param node A style node
+     * @param tokens Tokens to build onto the node
+     * @param children The node's children
+     * @param style The style of the style node
+     * @return a built node
+     */
     private def buildStyleNode(
         node: Node,
         tokens: List[Token],
