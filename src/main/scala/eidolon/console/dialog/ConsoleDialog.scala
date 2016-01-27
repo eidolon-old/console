@@ -21,6 +21,9 @@ import eidolon.console.output.Output
 class ConsoleDialog extends Dialog {
   private val console = System.console()
 
+  /**
+   * @inheritdoc
+   */
   override def ask(
       output: Output,
       question: String,
@@ -37,6 +40,9 @@ class ConsoleDialog extends Dialog {
     console.readLine()
   }
 
+  /**
+   * @inheritdoc
+   */
   override def askConfirmation(
       output: Output,
       question: String,
@@ -61,6 +67,9 @@ class ConsoleDialog extends Dialog {
     }
   }
 
+  /**
+   * @inheritdoc
+   */
   override def askSensitive(
       output: Output,
       question: String,

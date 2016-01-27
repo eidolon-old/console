@@ -19,5 +19,10 @@ import eidolon.console.dialog.Dialog
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait DialogBuilder {
+  /**
+   * Build a dialog instance
+   *
+   * @return A dialog instance
+   */
   def build(): Dialog
 }
