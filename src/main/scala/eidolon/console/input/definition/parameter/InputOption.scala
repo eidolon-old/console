@@ -116,7 +116,9 @@ case class InputOption(
   }
 
   /**
-   * @inheritdoc
+   * Check if the given "copy" has the same values as this input option
+   *
+   * @return true if the values are the same
    */
   override def equals(copy: Any): Boolean = { copy match {
     case copy: InputOption =>

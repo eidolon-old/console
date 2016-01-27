@@ -12,12 +12,18 @@
 package eidolon.console.output.formatter.style
 
 /**
- * OutputFormatterStyle
+ * Output Formatter Style
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait OutputFormatterStyle {
   val name: String
 
+  /**
+   * Apply a style to a message
+   *
+   * @param message A message to apply style to
+   * @return A styled message
+   */
   def applyStyle(message: String): String
 }

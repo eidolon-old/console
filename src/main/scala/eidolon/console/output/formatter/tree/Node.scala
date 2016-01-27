@@ -19,5 +19,12 @@ import eidolon.console.output.formatter.style.OutputFormatterStyleGroup
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait Node {
+  /**
+   * Render this node (usually rendering all child nodes too)
+   *
+   * @param styleGroup A group of styles
+   * @param styled Whether or not to render with styles
+   * @return A rendered string
+   */
   def render(styleGroup: OutputFormatterStyleGroup, styled: Boolean): String
 }

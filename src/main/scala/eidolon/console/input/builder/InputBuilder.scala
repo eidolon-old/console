@@ -23,7 +23,7 @@ import eidolon.console.input.Input
  */
 trait InputBuilder {
   /**
-   * Build the input
+   * Build an input instance
    *
    * @return the built input
    */

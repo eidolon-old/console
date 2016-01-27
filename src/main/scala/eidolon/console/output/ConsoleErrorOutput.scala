@@ -14,15 +14,23 @@ package eidolon.console.output
 import eidolon.console.output.formatter.OutputFormatter
 
 /**
- * ConsoleErrorOutput
+ * Console Error Output
+ *
+ * For writing output to stderr
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param formatter An output formatter
+ * @param verbosity The verbosity level of the output
  */
 class ConsoleErrorOutput(
     override val formatter: OutputFormatter,
     override val verbosity: Int = Output.VerbosityNormal)
   extends Output {
 
+  /**
+   * @inheritdoc
+   */
   override protected def doWrite(message: String, newLine: Boolean): Unit = {
     if (newLine) {
       Console.err.println(message)

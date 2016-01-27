@@ -18,9 +18,14 @@ import eidolon.console.output.formatter.style._
 import eidolon.console.output.Output
 
 /**
- * ConsoleOutputFormatter
+ * Console Output Formatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param chroma An instance of Chroma
+ * @param lexer An output format lexer
+ * @param parser An output format parser
+ * @param styles A map of output format styles
  */
 case class ConsoleOutputFormatter(
     private val chroma: Chroma,
@@ -36,14 +41,23 @@ case class ConsoleOutputFormatter(
     .withStyle(new QuestionOutputFormatterStyle(chroma))
     .withStyles(styles)
 
+  /**
+   * @inheritdoc
+   */
   override def format(message: String, mode: Int = Output.OutputNormal): String = {
     doFormat(styleGroup, message, mode)
   }
 
+  /**
+   * @inheritdoc
+   */
   override def withStyle(style: OutputFormatterStyle): OutputFormatter = {
     copy(chroma, lexer, parser, styles + (style.name -> style))
   }
 
+  /**
+   * @inheritdoc
+   */
   override def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatter = {
     copy(chroma, lexer, parser, this.styles ++ styles)
   }

@@ -14,21 +14,29 @@ package eidolon.console.output.formatter.tree
 import eidolon.console.output.formatter.style.OutputFormatterStyleGroup
 
 /**
- * RootNode
+ * Root Node
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param children A list of child nodes
  */
 case class RootNode(
     override val children: List[Node] = List())
   extends Node
   with ParentNode[RootNode] {
 
+  /**
+   * @inheritdoc
+   */
   override def render(styleGroup: OutputFormatterStyleGroup, styled: Boolean): String = {
     children.foldLeft("")((aggregate, node) => {
       aggregate + node.render(styleGroup, styled)
     })
   }
 
+  /**
+   * @inheritdoc
+   */
   override def withChild(child: RootNode): RootNode = {
     copy(children :+ child)
   }

@@ -15,9 +15,12 @@ import eidolon.console.output.formatter.exception.StyleNotFoundException
 import eidolon.console.output.formatter.style.{OutputFormatterStyle, OutputFormatterStyleGroup}
 
 /**
- * StyleNode
+ * Style Node
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param children A list of child nodes
+ * @param style A style to apply when rendering
  */
 case class StyleNode(
     override val children: List[Node] = List(),
@@ -25,6 +28,9 @@ case class StyleNode(
   extends Node
   with ParentNode[StyleNode] {
 
+  /**
+   * @inheritdoc
+   */
   override def render(styleGroup: OutputFormatterStyleGroup, styled: Boolean): String = {
     val body = children.foldLeft("")((aggregate, node) => {
       aggregate + node.render(styleGroup, styled)
@@ -36,6 +42,9 @@ case class StyleNode(
     }
   }
 
+  /**
+   * @inheritdoc
+   */
   override def withChild(child: StyleNode): StyleNode = {
     copy(children :+ child)
   }

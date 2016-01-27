@@ -12,12 +12,18 @@
 package eidolon.console.output.formatter.tree
 
 /**
- * ParentNode
+ * Parent Node
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait ParentNode[T <: ParentNode[T]] {
   val children: List[Node]
 
+  /**
+   * Create a copy of node with the given child
+   *
+   * @param child A child node
+   * @return a copy of the node with the child
+   */
   def withChild(child: T): T
 }

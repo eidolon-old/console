@@ -12,7 +12,7 @@
 package eidolon.console.output.formatter.exception
 
 /**
- * StyleNotFoundException
+ * Style Not Found Exception
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  *

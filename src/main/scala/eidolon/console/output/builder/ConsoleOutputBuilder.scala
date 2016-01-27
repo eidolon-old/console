@@ -18,11 +18,11 @@ import eidolon.console.output.formatter.parser.OutputFormatParser
 import eidolon.console.output.{ConsoleErrorOutput, ConsoleOutput, Output}
 
 /**
- * ConsoleOutputBuilder
+ * Console Output Builder
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ConsoleOutputBuilder extends OutputBuilder {
+final class ConsoleOutputBuilder extends OutputBuilder {
   /**
    * @inheritdoc
    */

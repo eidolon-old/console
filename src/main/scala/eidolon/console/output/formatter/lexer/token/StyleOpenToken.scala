@@ -12,7 +12,7 @@
 package eidolon.console.output.formatter.lexer.token
 
 /**
- * StyleOpenToken
+ * Style Open Token
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  *

@@ -14,15 +14,15 @@ package eidolon.console.output.builder
 import eidolon.console.output.Output
 
 /**
- * OutputBuilder
+ * Output Builder
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait OutputBuilder {
   /**
-   * Build some output
+   * Build an output instance
    *
-   * @return output
+   * @return the built output
    */
   def build(): Output
 }

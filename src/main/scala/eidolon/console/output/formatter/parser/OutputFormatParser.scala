@@ -15,7 +15,7 @@ import eidolon.console.output.formatter.lexer.token.{StyleCloseToken, StyleOpenT
 import eidolon.console.output.formatter.tree._
 
 /**
- * OutputFormatParser
+ * Output Format Parser
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */

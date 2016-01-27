@@ -14,11 +14,14 @@ package eidolon.console.output.formatter.tree
 import eidolon.console.output.formatter.style.OutputFormatterStyleGroup
 
 /**
- * StringNode
+ * String Node
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 case class StringNode(val content: String) extends Node {
+  /**
+   * @inheritdoc
+   */
   override def render(styleGroup: OutputFormatterStyleGroup, styled: Boolean): String = {
     content
   }

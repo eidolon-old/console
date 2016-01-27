@@ -18,7 +18,7 @@ import eidolon.console.dialog.{ConsoleDialog, Dialog}
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ConsoleDialogBuilder extends DialogBuilder {
+final class ConsoleDialogBuilder extends DialogBuilder {
   /**
    * @inheritdoc
    */

@@ -14,13 +14,18 @@ package eidolon.console.output.formatter.style
 import eidolon.chroma.Chroma
 
 /**
- * CommentOutputFormatterStyle
+ * Comment Output Formatter Style
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param chroma A Chroma instance, for colouring console output
  */
 class CommentOutputFormatterStyle(chroma: Chroma) extends OutputFormatterStyle {
   override val name: String = "comment"
 
+  /**
+   * @inheritdoc
+   */
   override def applyStyle(message: String): String = {
     chroma.magenta(message)
   }

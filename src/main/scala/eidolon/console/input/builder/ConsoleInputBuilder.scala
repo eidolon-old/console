@@ -18,7 +18,7 @@ import eidolon.console.input.{ConsoleInput, Input}
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ConsoleInputBuilder extends InputBuilder {
+final class ConsoleInputBuilder extends InputBuilder {
   /**
    * @inheritdoc
    */

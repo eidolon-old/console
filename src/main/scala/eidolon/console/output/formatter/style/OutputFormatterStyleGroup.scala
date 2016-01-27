@@ -12,15 +12,27 @@
 package eidolon.console.output.formatter.style
 
 /**
- * OutputFormatterStyleGroup
+ * Output Formatter Style Group
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 case class OutputFormatterStyleGroup(val styles: Map[String, OutputFormatterStyle] = Map()) {
+  /**
+   * Create a copy of this output formatter style group with the given style
+   *
+   * @param style A style to add
+   * @return a copy of the output formatter style group
+   */
   def withStyle(style: OutputFormatterStyle): OutputFormatterStyleGroup = {
     copy(styles + (style.name -> style))
   }
 
+  /**
+   * Create a copy of this output formatter style group with the given styles
+   *
+   * @param styles A map of styles to add
+   * @return a copy of the output formatter style group
+   */
   def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatterStyleGroup = {
     copy(this.styles ++ styles)
   }

@@ -124,7 +124,11 @@ class TextDescriptor extends Descriptor {
   /**
    * @inheritdoc
    */
-  override def describeInputDefinition(output: Output, definition: InputDefinition): Unit = {
+  override def describeInputDefinition(
+      output: Output,
+      definition: InputDefinition)
+    : Unit = {
+
     if (definition.arguments.nonEmpty) {
       output.writeln("<comment>Arguments:</comment>")
       output.writeln("")
@@ -391,8 +395,9 @@ class TextDescriptor extends Descriptor {
    * Get the root namespace of a given command
    *
    * @param command The command to get the namespace for
-   * @throws UnsupportedOperationException if the given command doesn't have a namespace
    * @return The namespace of the given command
+   *
+   * @throws UnsupportedOperationException if the given command doesn't have a namespace
    */
   @throws[UnsupportedOperationException]
   private def getCommandRootNamespace(command: Command): String = {

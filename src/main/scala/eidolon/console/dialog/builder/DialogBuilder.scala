@@ -22,7 +22,7 @@ trait DialogBuilder {
   /**
    * Build a dialog instance
    *
-   * @return A dialog instance
+   * @return the built dialog
    */
   def build(): Dialog
 }

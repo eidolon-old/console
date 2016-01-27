@@ -38,7 +38,6 @@ trait Input {
    */
   def withOption(name: String, value: Option[String]): Input
 
-
   /**
    * Create a copy of this input with the given input arguments
    *

@@ -16,7 +16,7 @@ import eidolon.console.output.formatter.lexer.token.{StyleCloseToken, StyleOpenT
 import scala.annotation.tailrec
 
 /**
- * OutputFormatLexer
+ * Output Format Lexer
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */

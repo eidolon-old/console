@@ -26,8 +26,23 @@ trait OutputFormatter {
   val parser: OutputFormatParser
   val styles: Map[String, OutputFormatterStyle]
 
+  /**
+   * Format the given message, with the given output setting
+   *
+   * @param message The message to format
+   * @param mode The output mode
+   * @return a formatted message
+   */
   def format(message: String, mode: Int = Output.OutputNormal): String
 
+  /**
+   * Perform the formatting, parsing the style tags and applying their corresponding styles
+   *
+   * @param styleGroup The style group to pull styles from
+   * @param message The message to format
+   * @param mode The output mode
+   * @return a formatted message
+   */
   protected def doFormat(
       styleGroup: OutputFormatterStyleGroup,
       message: String,
@@ -44,10 +59,19 @@ trait OutputFormatter {
     }
   }
 
-  def hasStyle(name: String): Boolean = {
-    styles.contains(name)
-  }
-
+  /**
+   * Create a copy of this output formatter with the given style
+   *
+   * @param style A style to add
+   * @return a copy of the output formatter
+   */
   def withStyle(style: OutputFormatterStyle): OutputFormatter
+
+  /**
+   * Create a copy of this output formatter with the given style
+   *
+   * @param styles A style to add
+   * @return a copy of the output formatter
+   */
   def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatter
 }
