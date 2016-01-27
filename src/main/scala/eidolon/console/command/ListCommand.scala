@@ -23,11 +23,15 @@ import eidolon.console.output.Output
  * ListCommand
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param application An application
+ * @param descriptor A console descriptor
  */
 class ListCommand(
     application: Application,
     descriptor: Descriptor)
   extends Command {
+
   override val name = "list"
   override val description = Some("Lists commands")
   override val definition = new InputDefinition()

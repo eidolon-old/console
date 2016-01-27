@@ -56,9 +56,9 @@ class CloneCommand extends Command {
    * @inheritdoc
    */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-    output.write("<question>Is this thing on?</question>")
-    output.write("<comment>Looks like it is...</comment>")
-    output.write("<info>Cloning some stuff...</info>")
+    output.writeln("<question>Is this thing on?</question>")
+    output.writeln("<comment>Looks like it is...</comment>")
+    output.writeln("<info>Cloning some stuff...</info>")
   }
 
   /**

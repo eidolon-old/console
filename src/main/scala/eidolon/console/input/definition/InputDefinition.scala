@@ -17,6 +17,9 @@ import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
  * Input Definition
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param arguments A map of input arguments
+ * @param options A map of input options
  */
 final case class InputDefinition(
     arguments: Map[String, InputArgument] = Map(),

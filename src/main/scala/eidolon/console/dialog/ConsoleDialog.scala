@@ -14,7 +14,7 @@ package eidolon.console.dialog
 import eidolon.console.output.Output
 
 /**
- * ConsoleDialog
+ * Console Dialog
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */

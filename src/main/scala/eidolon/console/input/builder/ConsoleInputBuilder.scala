@@ -14,7 +14,7 @@ package eidolon.console.input.builder
 import eidolon.console.input.{ConsoleInput, Input}
 
 /**
- * ConsoleInputBuilder
+ * Console Input Builder
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */

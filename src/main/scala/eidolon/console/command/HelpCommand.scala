@@ -23,6 +23,9 @@ import eidolon.console.output.Output
  * HelpCommand
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param application An application
+ * @param descriptor A console descriptor
  */
 class HelpCommand(
     application: Application,

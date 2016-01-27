@@ -15,6 +15,8 @@ package eidolon.console.input.parser.parameter
  * Parsed Input Argument
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param token An input argument token
  */
 case class ParsedInputArgument(
     token: String)

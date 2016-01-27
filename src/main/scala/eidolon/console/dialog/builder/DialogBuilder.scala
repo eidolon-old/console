@@ -14,7 +14,7 @@ package eidolon.console.dialog.builder
 import eidolon.console.dialog.Dialog
 
 /**
- * DialogBuilder
+ * Dialog Builder
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */

@@ -17,6 +17,9 @@ import eidolon.console.input.validation.parameter._
  * Input Validator Result
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param invalid A list of invalid input parameters
+ * @param valid A list of valid input parameters
  */
 case class InputValidatorResult(
     invalid: List[InvalidParameter] = List(),

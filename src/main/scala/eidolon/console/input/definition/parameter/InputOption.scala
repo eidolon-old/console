@@ -15,6 +15,12 @@ package eidolon.console.input.definition.parameter
  * Input Option
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param name A name
+ * @param shortName A short name
+ * @param mode A input argument mode
+ * @param description A description
+ * @param defaultValue A default value
  */
 case class InputOption(
     override val name: String,

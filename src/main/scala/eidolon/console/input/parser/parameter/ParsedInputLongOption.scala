@@ -15,6 +15,9 @@ package eidolon.console.input.parser.parameter
  * Parsed Input Long Option
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param token An input option token
+ * @param value An input option value
  */
 case class ParsedInputLongOption(
     token: String,

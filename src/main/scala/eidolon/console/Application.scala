@@ -36,6 +36,15 @@ import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
  *    app.run(args.toList)
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param name An application name
+ * @param version An application version
+ * @param inputParser An input parser
+ * @param inputValidator An input validator
+ * @param inputBuilder An input builder
+ * @param outputBuilder An output builder
+ * @param dialogBuilder A dialog builder
+ * @param userCommands A map of user commands
  */
 class Application(
     val name: String,
@@ -63,6 +72,12 @@ class Application(
       |                                                   #
     """.stripMargin
 
+  /**
+   * Run the application
+   *
+   * @param args A set of raw input parameters
+   * @return the resulting exit code
+   */
   def run(args: List[String]): Int = {
     val parsedInput = inputParser.parse(args)
     val arguments = parsedInput.filter(_.isInstanceOf[ParsedInputArgument])
@@ -76,6 +91,13 @@ class Application(
     }
   }
 
+  /**
+   * Run a given command, with the given parsed input
+   *
+   * @param command A command to run
+   * @param parsedInput Parsed input to run the command with
+   * @return the resulting exit code
+   */
   private def doRunCommand(command: Command, parsedInput: List[ParsedInputParameter]): Int = {
     val inputDefinition = definition ++ command.definition
     val validated = inputValidator.validate(inputDefinition, parsedInput)
@@ -104,6 +126,11 @@ class Application(
     0
   }
 
+  /**
+   * Build the built-in app commands
+   *
+   * @return a map of commands
+   */
   protected def buildAppCommands(): Map[String, Command] = {
     val descriptor = new TextDescriptor()
 
@@ -116,6 +143,11 @@ class Application(
     )
   }
 
+  /**
+   * Build the built-in input definition
+   *
+   * @return an input definition
+   */
   protected def buildAppDefinition(): InputDefinition = {
     new InputDefinition()
       .withArgument(new InputArgument("command", InputArgument.REQUIRED))
@@ -123,16 +155,34 @@ class Application(
       .withOption(new InputOption("quiet", Some("q"), InputOption.VALUE_NONE, Some("Silence output")))
   }
 
+  /**
+   * Create a copy of this application with the given command
+   *
+   * @param command The command
+   * @return a copy of the application
+   */
   def withCommand(command: Command): Application = {
     copy(userCommands ++ command.aliases.map(_ -> command) + (command.name -> command))
   }
 
+  /**
+   * Create a copy of this application with the given commands
+   *
+   * @param commands The commands
+   * @return a copy of the application
+   */
   def withCommands(commands: List[Command]): Application = {
     commands.foldLeft(this)((app, command) => {
       app.withCommand(command)
     })
   }
 
+  /**
+   * Create a copy of this application with the given user commands
+   *
+   * @param userCommands A map of user commands
+   * @return a copy of this application
+   */
   private def copy(userCommands: Map[String, Command]): Application = {
     new Application(
       name,
@@ -148,6 +198,13 @@ class Application(
 }
 
 object Application {
+  /**
+   * Create an application with the given name and version, and some sensible defaults for internals
+   *
+   * @param name An application name
+   * @param version An application version
+   * @return an application
+   */
   def apply(name: String, version: String): Application = {
     new Application(
       name,

@@ -18,7 +18,7 @@ import eidolon.console.input.definition.InputDefinition
 import eidolon.console.output.Output
 
 /**
- * TextDescriptor
+ * Text Descriptor
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
@@ -94,7 +94,7 @@ class TextDescriptor extends Descriptor {
 
     output.writeln("<comment>Usage:</comment>")
     output.writeln("")
-    output.write("  " + getCommandSynopsis(command, short = true), mode = Output.OutputRaw)
+    output.writeln("  " + getCommandSynopsis(command, short = true), mode = Output.OutputRaw)
 
     command.aliases.foreach((alias) => {
       output.writeln("  " + alias)

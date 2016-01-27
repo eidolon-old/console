@@ -156,7 +156,6 @@ class InputValidator {
     }
   }
 
-
   /**
    * Validate the given parsed input short option against a given input definition
    *

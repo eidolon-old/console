@@ -12,9 +12,12 @@
 package eidolon.console.input.validation.parameter
 
 /**
- * ValidOption
+ * Valid Option
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param name A valid option name
+ * @param value A valid option value
  */
 case class ValidOption(
     override val name: String,

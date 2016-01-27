@@ -12,7 +12,7 @@
 package eidolon.console.input.parser.parameter
 
 /**
- * ParsedInputParameter
+ * Parsed Input Parameter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */

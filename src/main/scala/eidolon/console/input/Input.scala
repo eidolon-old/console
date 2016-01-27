@@ -20,9 +20,38 @@ trait Input {
   val arguments: Map[String, String]
   val options: Map[String, Option[String]]
 
+  /**
+   * Create a copy of this input with the given input argument
+   *
+   * @param name The input argument name
+   * @param value The input argument value
+   * @return a copy of the input
+   */
   def withArgument(name: String, value: String): Input
+
+  /**
+   * Create a copy of this input with the given input option
+   *
+   * @param name The input option name
+   * @param value The input option value
+   * @return a copy of the input
+   */
   def withOption(name: String, value: Option[String]): Input
 
+
+  /**
+   * Create a copy of this input with the given input arguments
+   *
+   * @param arguments The input arguments
+   * @return a copy of the input
+   */
   def withArguments(arguments: Map[String, String]): Input
+
+  /**
+   * Create a copy of this input with the given input options
+   *
+   * @param options The input options
+   * @return a copy of the input
+   */
   def withOptions(options: Map[String, Option[String]]): Input
 }

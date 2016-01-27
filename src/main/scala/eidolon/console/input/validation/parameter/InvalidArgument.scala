@@ -15,5 +15,7 @@ package eidolon.console.input.validation.parameter
  * Invalid Argument
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param token An invalid argument token
  */
 case class InvalidArgument(override val token: String) extends InvalidParameter

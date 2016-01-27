@@ -15,6 +15,9 @@ package eidolon.console.input.validation.parameter
  * Valid Argument
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param name A valid argument name
+ * @param value A valid argument value
  */
 case class ValidArgument(
     override val name: String,
