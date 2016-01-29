@@ -1,0 +1,6 @@
+sbt:
+  image: 1science/sbt:latest
+  volumes:
+    - ~/.ivy2:/root/.ivy2
+    - ..:/app
+  command: sbt coverage clean test universal:packageBin
