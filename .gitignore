@@ -1,3 +1,4 @@
+.ivy2/
 build/sbt-cache/*
 !build/sbt-cache/.gitkeep
 target/
