@@ -1,5 +1,5 @@
 sbt:
-  image: 1science/sbt:latest
+  image: seeruk/docker-sbt:latest
   volumes:
     - ~/.ivy2:/root/.ivy2
     - .:/app
