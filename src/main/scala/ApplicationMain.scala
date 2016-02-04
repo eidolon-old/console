@@ -18,11 +18,22 @@ import eidolon.console.command.{GlobalTestCommand, TestCommand, CacheClearComman
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 object ApplicationMain extends App {
-  val app = Application("eidolon/console", "0.1.0-SNAPSHOT")
-    .withCommand(new CacheClearCommand())
-    .withCommand(new CloneCommand())
-    .withCommand(new TestCommand())
-    .withCommand(new GlobalTestCommand())
+  def time[A](f: => A) = {
+    val s = System.nanoTime
+    val ret = f
 
-  app.run(args.toList)
+    println("Time taken: " + (System.nanoTime - s) / 1e6 + "ms")
+
+    ret
+  }
+
+  time {
+    val app = Application("eidolon/console", "0.1.0-SNAPSHOT")
+      .withCommand(new CacheClearCommand())
+      .withCommand(new CloneCommand())
+      .withCommand(new TestCommand())
+      .withCommand(new GlobalTestCommand())
+
+    app.run(args.toList)
+  }
 }

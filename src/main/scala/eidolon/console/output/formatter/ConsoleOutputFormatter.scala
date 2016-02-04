@@ -12,53 +12,88 @@
 package eidolon.console.output.formatter
 
 import eidolon.chroma.Chroma
-import eidolon.console.output.formatter.lexer.OutputFormatLexer
-import eidolon.console.output.formatter.parser.OutputFormatParser
 import eidolon.console.output.formatter.style._
 import eidolon.console.output.Output
+
+import scala.xml.{Elem, Text, XML}
 
 /**
  * Console Output Formatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
- *
  * @param chroma An instance of Chroma
- * @param lexer An output format lexer
- * @param parser An output format parser
  * @param styles A map of output format styles
  */
 case class ConsoleOutputFormatter(
     private val chroma: Chroma,
-    override val lexer: OutputFormatLexer,
-    override val parser: OutputFormatParser,
-    override val styles: Map[String, OutputFormatterStyle] = Map())
+    override val styles: OutputFormatterStyleGroup)
   extends OutputFormatter {
-
-  val styleGroup = new OutputFormatterStyleGroup()
-    .withStyle(new InfoOutputFormatterStyle(chroma))
-    .withStyle(new ErrorOutputFormatterStyle(chroma))
-    .withStyle(new CommentOutputFormatterStyle(chroma))
-    .withStyle(new QuestionOutputFormatterStyle(chroma))
-    .withStyles(styles)
 
   /**
    * @inheritdoc
    */
   override def format(message: String, mode: Int = Output.OutputNormal): String = {
-    doFormat(styleGroup, message, mode)
+    // @todo: Handle exceptions from XML parsing for things like missing styles
+    mode match {
+      case Output.OutputRaw => message
+      case _ => renderString(message, mode)
+    }
   }
 
   /**
    * @inheritdoc
    */
   override def withStyle(style: OutputFormatterStyle): OutputFormatter = {
-    copy(chroma, lexer, parser, styles + (style.name -> style))
+    copy(chroma, styles.withStyle(style))
   }
 
   /**
    * @inheritdoc
    */
   override def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatter = {
-    copy(chroma, lexer, parser, this.styles ++ styles)
+    copy(chroma, this.styles.withStyles(styles))
+  }
+
+  /**
+   * Render a string with styles with the given mode
+   *
+   * @param message The message to render
+   * @param mode The mode to render with
+   * @return The rendered string
+   */
+  private def renderString(message: String, mode: Int): String = {
+    val xml = XML.loadString("<root>" + message + "</root>")
+
+    renderNode(xml, mode)
+  }
+
+  /**
+   * Render an XML node with styles with the given mode
+   *
+   * @param element The node to render
+   * @param mode The mode to render with
+   * @return The rendered string
+   */
+  private def renderNode(element: Elem, mode: Int): String = {
+    element.child.foldLeft("")((aggregate, child) => {
+      val result = child match {
+        case text: Text => text.text
+        case node: Elem if mode == Output.OutputNormal => applyStyle(node.label, renderNode(node, mode))
+        case node: Elem if mode == Output.OutputPlain => renderNode(node, mode)
+      }
+
+      aggregate + result
+    })
+  }
+
+  /**
+   * Apply a style from the styles available in this formatter
+   *
+   * @param styleName The name of the style to apply
+   * @param message The message to apply the style to
+   * @return The styled message
+   */
+  private def applyStyle(styleName: String, message: String): String = {
+    styles.styles.get(styleName).get.applyStyle(message)
   }
 }

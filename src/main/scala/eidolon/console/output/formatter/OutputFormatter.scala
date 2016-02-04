@@ -11,8 +11,6 @@
 
 package eidolon.console.output.formatter
 
-import eidolon.console.output.formatter.lexer.OutputFormatLexer
-import eidolon.console.output.formatter.parser.OutputFormatParser
 import eidolon.console.output.formatter.style._
 import eidolon.console.output.Output
 
@@ -22,9 +20,7 @@ import eidolon.console.output.Output
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 trait OutputFormatter {
-  val lexer: OutputFormatLexer
-  val parser: OutputFormatParser
-  val styles: Map[String, OutputFormatterStyle]
+  val styles: OutputFormatterStyleGroup
 
   /**
    * Format the given message, with the given output setting
@@ -34,30 +30,6 @@ trait OutputFormatter {
    * @return a formatted message
    */
   def format(message: String, mode: Int = Output.OutputNormal): String
-
-  /**
-   * Perform the formatting, parsing the style tags and applying their corresponding styles
-   *
-   * @param styleGroup The style group to pull styles from
-   * @param message The message to format
-   * @param mode The output mode
-   * @return a formatted message
-   */
-  protected def doFormat(
-      styleGroup: OutputFormatterStyleGroup,
-      message: String,
-      mode: Int)
-    : String = {
-
-    if (mode == Output.OutputNormal || mode == Output.OutputPlain) {
-      val tokens = lexer.tokenise(message)
-      val result = parser.parse(tokens)
-
-      result.render(styleGroup, mode == Output.OutputNormal)
-    } else {
-      message
-    }
-  }
 
   /**
    * Create a copy of this output formatter with the given style

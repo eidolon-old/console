@@ -13,8 +13,7 @@ package eidolon.console.output.builder
 
 import eidolon.chroma.Chroma
 import eidolon.console.output.formatter.ConsoleOutputFormatter
-import eidolon.console.output.formatter.lexer.OutputFormatLexer
-import eidolon.console.output.formatter.parser.OutputFormatParser
+import eidolon.console.output.formatter.style._
 import eidolon.console.output.{ConsoleErrorOutput, ConsoleOutput, Output}
 
 /**
@@ -23,14 +22,22 @@ import eidolon.console.output.{ConsoleErrorOutput, ConsoleOutput, Output}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 final class ConsoleOutputBuilder extends OutputBuilder {
+  private val chroma = Chroma()
+
   /**
    * @inheritdoc
    */
   override def build(): Output = {
-    val lexer = new OutputFormatLexer()
-    val parser = new OutputFormatParser()
-    val formatter = new ConsoleOutputFormatter(Chroma(), lexer, parser)
+    val formatter = new ConsoleOutputFormatter(chroma, buildStyleGroup())
 
     new ConsoleOutput(formatter, errOutput = new ConsoleErrorOutput(formatter))
+  }
+
+  private def buildStyleGroup(): OutputFormatterStyleGroup = {
+    new OutputFormatterStyleGroup()
+      .withStyle(new InfoOutputFormatterStyle(chroma))
+      .withStyle(new ErrorOutputFormatterStyle(chroma))
+      .withStyle(new CommentOutputFormatterStyle(chroma))
+      .withStyle(new QuestionOutputFormatterStyle(chroma))
   }
 }

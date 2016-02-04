@@ -94,7 +94,7 @@ class TextDescriptor extends Descriptor {
 
     output.writeln("<comment>Usage:</comment>")
     output.writeln("")
-    output.writeln("  " + getCommandSynopsis(command, short = true), mode = Output.OutputRaw)
+    output.writeln("  " + getCommandSynopsis(command, short = true), Output.OutputRaw)
 
     command.aliases.foreach((alias) => {
       output.writeln("  " + alias)

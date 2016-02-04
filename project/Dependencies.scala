@@ -30,5 +30,6 @@ object Dependencies {
   val chroma = "eidolon" %% "chroma" % "1.0.0"
   val mockito = "org.mockito" % "mockito-core" % "1.10.19"
   val scalaTest = "org.scalatest" %% "scalatest" % "2.2.6"
+  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
 }
 
