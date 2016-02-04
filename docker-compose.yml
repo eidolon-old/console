@@ -1,5 +1,6 @@
 sbt:
   image: seeruk/docker-sbt:latest
   volumes:
+    - ./build/sbt-cache:/home/sbt/.ivy2
     - .:/app
   command: sbt coverage clean test coverageReport universal:packageBin
