@@ -4,6 +4,7 @@
 # sbt specific
 .cache
 .history
+.ivy2/
 .lib/
 dist/*
 target/
