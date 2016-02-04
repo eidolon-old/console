@@ -2,5 +2,5 @@ sbt:
   image: 1science/sbt:latest
   volumes:
     - ~/.ivy2:/root/.ivy2
-    - ..:/app
+    - .:/app
   command: sbt coverage clean test coverageReport universal:packageBin
