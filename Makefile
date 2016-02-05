@@ -1,6 +1,6 @@
 build:
 	docker-compose run --rm sbt
-	tar czvf ./release/eidolon-console.tar.gz -C ./release/eidolon .
+	tar czvf ./release/eidolon-console.tar.gz -C ./release ./eidolon
 
 clean:
 	rm -rf ./project/target
