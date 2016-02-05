@@ -3,6 +3,7 @@ build:
 
 clean:
 	rm -rf ./project/target
+	rm -rf ./release
 	rm -rf ./target
 
 .PHONY: build clean

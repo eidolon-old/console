@@ -25,11 +25,7 @@ object Build extends BaseBuild {
   lazy val commonSettings = Seq(
     organization := "eidolon",
     publishMavenStyle := true,
-    publishTo := Some(Resolver.sftp(
-      "Eidolon Push Repo",
-      "ssh.repo.eidolonframework.com",
-      "/usr/share/nginx/html"
-    )),
+    publishTo := Some(Resolver.file("release", new File("./release"))),
     resolvers ++= Dependencies.repositories,
     scalaVersion := "2.11.7",
     version := "0.1.0-SNAPSHOT",
