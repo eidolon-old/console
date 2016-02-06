@@ -22,13 +22,16 @@ object Build extends BaseBuild {
 
   import Dependencies._
 
+  val `project-version` = taskKey[Unit]("Print the current version")
+  val projectVersion = "0.1.0-SNAPSHOT"
+
   lazy val commonSettings = Seq(
     organization := "eidolon",
     publishMavenStyle := true,
     publishTo := Some(Resolver.file("release", new File("./release"))),
     resolvers ++= Dependencies.repositories,
     scalaVersion := "2.11.7",
-    version := "0.1.0-SNAPSHOT",
+    version := projectVersion,
     testOptions in Test += Tests.Argument("-oD")
   )
 
@@ -37,6 +40,9 @@ object Build extends BaseBuild {
     .enablePlugins(JavaServerAppPackaging)
     .settings(commonSettings: _*)
     .settings(name := "console")
+    .settings(`project-version` := {
+      println(projectVersion)
+    })
     .settings(libraryDependencies ++=
       compile(chroma, scalaXml) ++
       test(mockito, scalaTest)
