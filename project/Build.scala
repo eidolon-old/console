@@ -9,9 +9,10 @@
  * file that was distributed with this source code.
  */
 
-import com.typesafe.sbt.packager.archetypes.{JavaAppPackaging, JavaServerAppPackaging}
 import sbt.Keys._
 import sbt.{Build => BaseBuild, _}
+
+import scala.io.Source
 
 /**
  * Main build file
@@ -22,8 +23,7 @@ object Build extends BaseBuild {
 
   import Dependencies._
 
-  val `project-version` = taskKey[Unit]("Print the current version")
-  val projectVersion = "0.1.0-SNAPSHOT"
+  val projectVersion = Source.fromFile(file("./VERSION")).getLines().mkString.trim
 
   lazy val commonSettings = Seq(
     organization := "eidolon",
@@ -36,13 +36,8 @@ object Build extends BaseBuild {
   )
 
   lazy val console = (project in file("."))
-    .enablePlugins(JavaAppPackaging)
-    .enablePlugins(JavaServerAppPackaging)
     .settings(commonSettings: _*)
     .settings(name := "console")
-    .settings(`project-version` := {
-      println(projectVersion)
-    })
     .settings(libraryDependencies ++=
       compile(chroma, scalaXml) ++
       test(mockito, scalaTest)

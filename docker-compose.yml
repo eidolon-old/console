@@ -4,14 +4,8 @@ sbt_build:
     - .:/app
   command: sbt -Dsbt.ivy.home=./.ivy2/ clean coverage test coverageReport publish
 
-sbt_project_version:
-  image: seeruk/docker-sbt:latest
+project_version:
+  image: ubuntu:trusty
   volumes:
     - .:/app
-  command: sbt -Dsbt.ivy.home=./.ivy2/ --error 'set showSuccess := false' project-version
-
-sbt_sbt_version:
-  image: seeruk/docker-sbt:latest
-  volumes:
-    - .:/app
-  command: sbt -Dsbt.ivy.home=./.ivy2/ sbtVersion
+  command: head -n1 /app/VERSION
