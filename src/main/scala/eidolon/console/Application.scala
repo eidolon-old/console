@@ -14,7 +14,7 @@ package eidolon.console
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
 import eidolon.console.descriptor.TextDescriptor
 import eidolon.console.dialog.builder.{ConsoleDialogBuilder, DialogBuilder}
-import eidolon.console.input.builder.{ConsoleInputBuilder, InputBuilder}
+import eidolon.console.input.factory.{ConsoleInputFactory, InputFactory}
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
 import eidolon.console.input.parser.InputParser
@@ -41,7 +41,7 @@ import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
  * @param version An application version
  * @param inputParser An input parser
  * @param inputValidator An input validator
- * @param inputBuilder An input builder
+ * @param inputFactory An input factory
  * @param outputBuilder An output builder
  * @param dialogBuilder A dialog builder
  * @param userCommands A map of user commands
@@ -51,7 +51,7 @@ class Application(
     val version: String,
     val inputParser: InputParser,
     val inputValidator: InputValidator,
-    val inputBuilder: InputBuilder,
+    val inputFactory: InputFactory,
     val outputBuilder: OutputBuilder,
     val dialogBuilder: DialogBuilder,
     val userCommands: Map[String, Command] = Map()) {
@@ -106,7 +106,7 @@ class Application(
       val arguments = validated.validArguments.map(argument => argument.name -> argument.value)
       val options = validated.validOptions.map(option => option.name -> option.value)
 
-      val input = inputBuilder.build()
+      val input = inputFactory.build()
         .withArguments(arguments.toMap)
         .withOptions(options.toMap)
       val output = outputBuilder.build()
@@ -189,7 +189,7 @@ class Application(
       version,
       inputParser,
       inputValidator,
-      inputBuilder,
+      inputFactory,
       outputBuilder,
       dialogBuilder,
       userCommands
@@ -211,7 +211,7 @@ object Application {
       version,
       new InputParser(),
       new InputValidator(),
-      new ConsoleInputBuilder(),
+      new ConsoleInputFactory(),
       new ConsoleOutputBuilder(),
       new ConsoleDialogBuilder()
     )

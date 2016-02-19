@@ -26,8 +26,8 @@ import eidolon.console.output.formatter.OutputFormatter
  */
 class ConsoleOutput(
     override val formatter: OutputFormatter,
-    override val verbosity: Int = Output.VerbosityNormal,
-    val errOutput: Output)
+    val errOutput: Output,
+    override val verbosity: Int = Output.VerbosityNormal)
   extends Output {
 
   /**

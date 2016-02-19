@@ -30,7 +30,7 @@ final class ConsoleOutputBuilder extends OutputBuilder {
   override def build(): Output = {
     val formatter = new ConsoleOutputFormatter(chroma, buildStyleGroup())
 
-    new ConsoleOutput(formatter, errOutput = new ConsoleErrorOutput(formatter))
+    new ConsoleOutput(formatter, new ConsoleErrorOutput(formatter))
   }
 
   private def buildStyleGroup(): OutputFormatterStyleGroup = {

@@ -9,20 +9,23 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.input.builder
+package eidolon.console.input.factory
 
-import eidolon.console.input.{ConsoleInput, Input}
+import eidolon.console.input.Input
 
 /**
- * Console Input Builder
+ * Input Factory
+ *
+ * Builds the final representation of the input parameters from the validated input parameters (this
+ * includes the optional parameters with default values)
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-final class ConsoleInputBuilder extends InputBuilder {
+trait InputFactory {
   /**
-   * @inheritdoc
+   * Build an input instance
+   *
+   * @return the built input
    */
-  override def build(): Input = {
-    new ConsoleInput()
-  }
+  def build(): Input
 }
