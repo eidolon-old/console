@@ -11,11 +11,10 @@
 
 package eidolon.console.output
 
-import java.io.ByteArrayOutputStream
+import java.io.{OutputStream, ByteArrayOutputStream}
 
 import eidolon.console.output.formatter.OutputFormatter
-import org.mockito.AdditionalAnswers._
-import org.mockito.Matchers._
+import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSpec}
@@ -26,14 +25,27 @@ import org.scalatest.{BeforeAndAfter, FunSpec}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class ConsoleOutputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
-  private var formatter: OutputFormatter = _
   private var errOutput: Output = _
+  private var formatter: OutputFormatter = _
+  private var outputStream: OutputStream = _
+  private var message: String = _
+  private var lineSeparator: String = _
 
   before {
-    formatter = mock[OutputFormatter]
     errOutput = mock[Output]
+    formatter = mock[OutputFormatter]
+    outputStream = new ByteArrayOutputStream()
+    message = "Hello world"
+    lineSeparator = sys.props("line.separator")
 
-    when(formatter.format(anyString(), anyInt())).thenAnswer(returnsFirstArg())
+    when(formatter.format(Matchers.eq(message), Matchers.eq(Output.OutputNormal)))
+      .thenReturn(message.concat("normal"))
+
+    when(formatter.format(Matchers.eq(message), Matchers.eq(Output.OutputPlain)))
+      .thenReturn(message.concat("plain"))
+
+    when(formatter.format(Matchers.eq(message), Matchers.eq(Output.OutputRaw)))
+      .thenReturn(message.concat("raw"))
   }
 
   describe("eidolon.console.output.ConsoleOutput") {
@@ -96,80 +108,118 @@ class ConsoleOutputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
     describe("writeln()") {
       it("should write a message") {
         val output = new ConsoleOutput(formatter, errOutput)
-        val stream = new ByteArrayOutputStream()
-        val message = "Hello world"
 
-        Console.withOut(stream) {
+        Console.withOut(outputStream) {
           output.writeln(message)
         }
 
-        assert(stream.toString.contains(message))
+        assert(outputStream.toString.contains(message))
       }
 
       it("should write a message with a new line at the end") {
         val output = new ConsoleOutput(formatter, errOutput)
-        val stream = new ByteArrayOutputStream()
-        val message = "Hello world"
 
-        Console.withOut(stream) {
+        Console.withOut(outputStream) {
           output.writeln(message)
         }
 
-        assert(!message.contains(sys.props("line.separator")))
-        assert(stream.toString.endsWith(sys.props("line.separator")))
+        assert(!message.contains(lineSeparator))
+        assert(outputStream.toString.endsWith(lineSeparator))
       }
 
-      it("should not write a message if the given verbosity is lower than the output's verbosity") {
-        val output = new ConsoleOutput(formatter, errOutput, Output.OutputNormal)
-        val stream = new ByteArrayOutputStream()
-        val message = "Hello world"
-        val verbosity = Output.VerbosityQuiet
+      it("should not write a message if the given verbosity is higher than the output's verbosity") {
+        val output = new ConsoleOutput(formatter, errOutput)
+        val verbosity = Output.VerbosityVerbose
 
-        Console.withOut(stream) {
+        Console.withOut(outputStream) {
           output.writeln(message, verbosity = verbosity)
         }
 
-        assert(stream.size() == 0)
+        assert(outputStream.toString == "")
+      }
+
+      it("should use a normal output mode by default") {
+        val output = new ConsoleOutput(formatter, errOutput)
+
+        Console.withOut(outputStream) {
+          output.writeln(message)
+        }
+
+        assert(outputStream.toString == (message + "normal" + lineSeparator))
+      }
+
+      it("should pass the output mode to the formatter") {
+        val output = new ConsoleOutput(formatter, errOutput)
+
+        Console.withOut(outputStream) {
+          output.writeln(message, mode = Output.OutputRaw)
+        }
+
+        assert(outputStream.toString == (message + "raw" + lineSeparator))
       }
     }
 
     describe("write()") {
       it("should write a message") {
         val output = new ConsoleOutput(formatter, errOutput)
-        val stream = new ByteArrayOutputStream()
-        val message = "Hello world"
 
-        Console.withOut(stream) {
+        Console.withOut(outputStream) {
           output.write(message)
         }
 
-        assert(stream.toString.contains(message))
+        assert(outputStream.toString.contains(message))
+      }
+
+      it("should not write a new line at the end of output by default") {
+        val output = new ConsoleOutput(formatter, errOutput)
+
+        Console.withOut(outputStream) {
+          output.write(message)
+        }
+
+        assert(!outputStream.toString.contains(lineSeparator))
       }
 
       it("should write a message with a new line at the end if newLine is set to true") {
         val output = new ConsoleOutput(formatter, errOutput)
-        val stream = new ByteArrayOutputStream()
-        val message = "Hello world"
 
-        Console.withOut(stream) {
+        Console.withOut(outputStream) {
           output.write(message, newLine = true)
         }
 
-        assert(!message.contains(sys.props("line.separator")))
-        assert(stream.toString.endsWith(sys.props("line.separator")))
+        assert(!message.contains(lineSeparator))
+        assert(outputStream.toString.endsWith(lineSeparator))
       }
 
-      it("should not write a message if the given verbosity is lower than the output's verbosity") {
-        val output = new ConsoleOutput(formatter, errOutput, Output.OutputNormal)
-        val stream = new ByteArrayOutputStream()
-        val message = "Hello world"
-        val verbosity = Output.VerbosityQuiet
+      it("should not write a message if the given verbosity is higher than the output's verbosity") {
+        val output = new ConsoleOutput(formatter, errOutput)
+        val verbosity = Output.VerbosityVerbose
 
-        Console.withOut(stream) {
+        Console.withOut(outputStream) {
           output.write(message, verbosity = verbosity)
         }
 
-        assert(stream.size() == 0)
+        assert(outputStream.toString == "")
+      }
+
+      it("should use a normal output mode by default") {
+        val output = new ConsoleOutput(formatter, errOutput)
+
+        Console.withOut(outputStream) {
+          output.write(message)
+        }
+
+        assert(outputStream.toString == (message + "normal"))
+      }
+
+      it("should pass the output mode to the formatter") {
+        val output = new ConsoleOutput(formatter, errOutput)
+
+        Console.withOut(outputStream) {
+          output.write(message, mode = Output.OutputRaw)
+        }
+
+        assert(outputStream.toString == (message + "raw"))
       }
     }
   }

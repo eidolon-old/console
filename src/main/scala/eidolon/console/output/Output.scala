@@ -106,11 +106,11 @@ trait Output {
 }
 
 object Output {
-  val VerbosityQuiet = 16;
-  val VerbosityNormal = 32;
-  val VerbosityVerbose = 64;
-  val VerbosityVeryVerbose = 128;
-  val VerbosityDebug = 256;
+  val VerbosityQuiet = 16
+  val VerbosityNormal = 32
+  val VerbosityVerbose = 64
+  val VerbosityVeryVerbose = 128
+  val VerbosityDebug = 256
 
   val OutputNormal = 1
   val OutputRaw = 2
