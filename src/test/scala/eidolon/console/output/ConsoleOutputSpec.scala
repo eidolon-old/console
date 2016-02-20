@@ -118,6 +118,19 @@ class ConsoleOutputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
         assert(!message.contains(sys.props("line.separator")))
         assert(stream.toString.endsWith(sys.props("line.separator")))
       }
+
+      it("should not write a message if the given verbosity is lower than the output's verbosity") {
+        val output = new ConsoleOutput(formatter, errOutput, Output.OutputNormal)
+        val stream = new ByteArrayOutputStream()
+        val message = "Hello world"
+        val verbosity = Output.VerbosityQuiet
+
+        Console.withOut(stream) {
+          output.writeln(message, verbosity = verbosity)
+        }
+
+        assert(stream.size() == 0)
+      }
     }
 
     describe("write()") {
@@ -131,6 +144,32 @@ class ConsoleOutputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
         }
 
         assert(stream.toString.contains(message))
+      }
+
+      it("should write a message with a new line at the end if newLine is set to true") {
+        val output = new ConsoleOutput(formatter, errOutput)
+        val stream = new ByteArrayOutputStream()
+        val message = "Hello world"
+
+        Console.withOut(stream) {
+          output.write(message, newLine = true)
+        }
+
+        assert(!message.contains(sys.props("line.separator")))
+        assert(stream.toString.endsWith(sys.props("line.separator")))
+      }
+
+      it("should not write a message if the given verbosity is lower than the output's verbosity") {
+        val output = new ConsoleOutput(formatter, errOutput, Output.OutputNormal)
+        val stream = new ByteArrayOutputStream()
+        val message = "Hello world"
+        val verbosity = Output.VerbosityQuiet
+
+        Console.withOut(stream) {
+          output.write(message, verbosity = verbosity)
+        }
+
+        assert(stream.size() == 0)
       }
     }
   }
