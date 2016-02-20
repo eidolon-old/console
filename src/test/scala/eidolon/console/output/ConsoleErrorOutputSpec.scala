@@ -46,7 +46,7 @@ class ConsoleErrorOutputSpec extends FunSpec with BeforeAndAfter with MockitoSug
       .thenReturn(message.concat("raw"))
   }
 
-  describe("eidolon.console.output.ConsoleOutput") {
+  describe("eidolon.console.output.ConsoleErrorOutput") {
     describe("isQuiet()") {
       it("should return true if the verbosity is quiet") {
         val output = new ConsoleErrorOutput(formatter, Output.VerbosityQuiet)
