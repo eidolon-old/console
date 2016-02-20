@@ -11,7 +11,12 @@
 
 package eidolon.console.output
 
+import java.io.ByteArrayOutputStream
+
 import eidolon.console.output.formatter.OutputFormatter
+import org.mockito.AdditionalAnswers._
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSpec}
 
@@ -21,8 +26,15 @@ import org.scalatest.{BeforeAndAfter, FunSpec}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class ConsoleOutputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
-  private val formatter = mock[OutputFormatter]
-  private val errOutput = mock[Output]
+  private var formatter: OutputFormatter = _
+  private var errOutput: Output = _
+
+  before {
+    formatter = mock[OutputFormatter]
+    errOutput = mock[Output]
+
+    when(formatter.format(anyString(), anyInt())).thenAnswer(returnsFirstArg())
+  }
 
   describe("eidolon.console.output.ConsoleOutput") {
     describe("isQuiet()") {
@@ -78,6 +90,47 @@ class ConsoleOutputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
         val output = new ConsoleOutput(formatter, errOutput, Output.VerbosityNormal)
 
         assert(!output.isDebug)
+      }
+    }
+
+    describe("writeln()") {
+      it("should write a message") {
+        val output = new ConsoleOutput(formatter, errOutput)
+        val stream = new ByteArrayOutputStream()
+        val message = "Hello world"
+
+        Console.withOut(stream) {
+          output.writeln(message)
+        }
+
+        assert(stream.toString.contains(message))
+      }
+
+      it("should write a message with a new line at the end") {
+        val output = new ConsoleOutput(formatter, errOutput)
+        val stream = new ByteArrayOutputStream()
+        val message = "Hello world"
+
+        Console.withOut(stream) {
+          output.writeln(message)
+        }
+
+        assert(!message.contains(sys.props("line.separator")))
+        assert(stream.toString.endsWith(sys.props("line.separator")))
+      }
+    }
+
+    describe("write()") {
+      it("should write a message") {
+        val output = new ConsoleOutput(formatter, errOutput)
+        val stream = new ByteArrayOutputStream()
+        val message = "Hello world"
+
+        Console.withOut(stream) {
+          output.write(message)
+        }
+
+        assert(stream.toString.contains(message))
       }
     }
   }
