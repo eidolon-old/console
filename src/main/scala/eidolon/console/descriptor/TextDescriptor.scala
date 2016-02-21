@@ -16,6 +16,7 @@ import eidolon.console.command.Command
 import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.output.Output
+import eidolon.console.output.writer.OutputWriter
 
 /**
  * Text Descriptor
@@ -33,19 +34,19 @@ class TextDescriptor extends Descriptor {
 
     val commands = application.commands.values.toList.distinct
 
-    output.writeln("<comment>Usage:</comment>")
-    output.writeln("")
-    output.writeln("  command [options] [arguments]")
-    output.writeln("")
+    output.out.writeln("<comment>Usage:</comment>")
+    output.out.writeln("")
+    output.out.writeln("  command [options] [arguments]")
+    output.out.writeln("")
     describeInputDefinition(output, new InputDefinition(options = application.definition.options))
-    output.writeln("")
+    output.out.writeln("")
 
     val totalWidth = calculateCommandWidths(commands).reduce((a, b) => {
       if (a >= b) a else b
     })
 
-    output.writeln("<comment>Available commands:</comment>")
-    output.writeln("")
+    output.out.writeln("<comment>Available commands:</comment>")
+    output.out.writeln("")
 
     val globalCommands = getGlobalCommands(commands).sortBy(_.name)
     val namespacedCommands = getNamespacedCommands(commands).sortBy(_.name)
@@ -54,7 +55,7 @@ class TextDescriptor extends Descriptor {
       val padding = if (namespacedCommands.nonEmpty) 4 else 2
       val spacing = totalWidth - command.name.length + padding
 
-      output.writeln("  <info>%s</info>%s%s".format(
+      output.out.writeln("  <info>%s</info>%s%s".format(
         command.name,
         " " * spacing,
         command.description.getOrElse("")
@@ -67,10 +68,10 @@ class TextDescriptor extends Descriptor {
         val spacing = totalWidth - command.name.length + 2
 
         if (commandNamespace != namespace) {
-          output.writeln(s"  <comment>$commandNamespace</comment>")
+          output.out.writeln(s"  <comment>$commandNamespace</comment>")
         }
 
-        output.writeln("    <info>%s</info>%s%s".format(
+        output.out.writeln("    <info>%s</info>%s%s".format(
           command.name,
           " " * spacing,
           command.description.getOrElse("")
@@ -80,7 +81,7 @@ class TextDescriptor extends Descriptor {
       })
     }
 
-    output.writeln("")
+    output.out.writeln("")
   }
 
   /**
@@ -92,15 +93,15 @@ class TextDescriptor extends Descriptor {
       command: Command)
     : Unit = {
 
-    output.writeln("<comment>Usage:</comment>")
-    output.writeln("")
-    output.writeln("  " + getCommandSynopsis(command, short = true), Output.OutputRaw)
+    output.out.writeln("<comment>Usage:</comment>")
+    output.out.writeln("")
+    output.out.writeln("  " + getCommandSynopsis(command, short = true), OutputWriter.ModeRaw)
 
     command.aliases.foreach((alias) => {
-      output.writeln("  " + alias)
+      output.out.writeln("  " + alias)
     })
 
-    output.writeln("")
+    output.out.writeln("")
 
     if (command.definition.options.nonEmpty || command.definition.arguments.nonEmpty) {
       val commandDefinition = new InputDefinition(
@@ -112,13 +113,13 @@ class TextDescriptor extends Descriptor {
     }
 
     if (command.help.nonEmpty) {
-      output.writeln("")
-      output.writeln("<comment>Help:</comment>")
-      output.writeln("")
-      output.writeln("  " + command.help.get.replace("\n", "\n  "))
+      output.out.writeln("")
+      output.out.writeln("<comment>Help:</comment>")
+      output.out.writeln("")
+      output.out.writeln("  " + command.help.get.replace("\n", "\n  "))
     }
 
-    output.writeln("")
+    output.out.writeln("")
   }
 
   /**
@@ -130,8 +131,8 @@ class TextDescriptor extends Descriptor {
     : Unit = {
 
     if (definition.arguments.nonEmpty) {
-      output.writeln("<comment>Arguments:</comment>")
-      output.writeln("")
+      output.out.writeln("<comment>Arguments:</comment>")
+      output.out.writeln("")
 
       definition.arguments.values.foreach((argument) => {
         describeInputArgument(output, definition, argument)
@@ -139,12 +140,12 @@ class TextDescriptor extends Descriptor {
     }
 
     if (definition.arguments.nonEmpty && definition.options.nonEmpty) {
-      output.writeln("")
+      output.out.writeln("")
     }
 
     if (definition.options.nonEmpty) {
-      output.writeln("<comment>Options:</comment>")
-      output.writeln("")
+      output.out.writeln("<comment>Options:</comment>")
+      output.out.writeln("")
 
       definition.options.values.foreach((option) => {
         describeInputOption(output, definition, option)
@@ -168,7 +169,7 @@ class TextDescriptor extends Descriptor {
 
     val spacing = calculateDefinitionWidth(definition) - argument.name.length + 2
 
-    output.writeln("  <info>%s</info>%s%s%s".format(
+    output.out.writeln("  <info>%s</info>%s%s%s".format(
       argument.name,
       " " * spacing,
       argument.description.getOrElse(""),
@@ -205,7 +206,7 @@ class TextDescriptor extends Descriptor {
     val synopsis = "%s%s%s".format(shortName, name, value)
     val spacing = calculateDefinitionWidth(definition) - synopsis.length + 2
 
-    output.writeln("  <info>%s</info>%s%s%s".format(
+    output.out.writeln("  <info>%s</info>%s%s%s".format(
       synopsis,
       " " * spacing,
       option.description.getOrElse(""),
@@ -396,7 +397,6 @@ class TextDescriptor extends Descriptor {
    *
    * @param command The command to get the namespace for
    * @return The namespace of the given command
-   *
    * @throws UnsupportedOperationException if the given command doesn't have a namespace
    */
   @throws[UnsupportedOperationException]

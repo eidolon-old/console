@@ -9,28 +9,31 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.output.builder
+package eidolon.console.output.factory
 
 import eidolon.chroma.Chroma
 import eidolon.console.output.formatter.ConsoleOutputFormatter
 import eidolon.console.output.formatter.style._
-import eidolon.console.output.{ConsoleErrorOutput, ConsoleOutput, Output}
+import eidolon.console.output.Output
+import eidolon.console.output.writer.PrintStreamOutputWriter
 
 /**
- * Console Output Builder
+ * Output Factory
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-final class ConsoleOutputBuilder extends OutputBuilder {
+final class OutputFactory {
   private val chroma = Chroma()
 
   /**
-   * @inheritdoc
+   * Build output
    */
-  override def build(): Output = {
+  def build(): Output = {
     val formatter = new ConsoleOutputFormatter(chroma, buildStyleGroup())
+    val outWriter = new PrintStreamOutputWriter(formatter, Console.out)
+    val errWriter = new PrintStreamOutputWriter(formatter, Console.err)
 
-    new ConsoleOutput(formatter, new ConsoleErrorOutput(formatter))
+    new Output(outWriter, errWriter)
   }
 
   private def buildStyleGroup(): OutputFormatterStyleGroup = {

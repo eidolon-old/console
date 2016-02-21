@@ -14,18 +14,17 @@ package eidolon.console.input.factory
 import eidolon.console.input.Input
 
 /**
- * Input Factory
- *
- * Builds the final representation of the input parameters from the validated input parameters (this
- * includes the optional parameters with default values)
+ * Console Input Factory
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait InputFactory {
+class InputFactory {
   /**
    * Build an input instance
    *
    * @return the built input
    */
-  def build(): Input
+  def build(): Input = {
+    new Input()
+  }
 }

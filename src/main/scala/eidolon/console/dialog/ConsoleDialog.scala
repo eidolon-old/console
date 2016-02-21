@@ -12,6 +12,7 @@
 package eidolon.console.dialog
 
 import eidolon.console.output.Output
+import eidolon.console.output.writer.OutputWriter
 
 /**
  * Console Dialog
@@ -28,13 +29,13 @@ class ConsoleDialog extends Dialog {
       output: Output,
       question: String,
       default: Option[String],
-      mode: Int = Output.OutputNormal)
+      mode: Int = OutputWriter.ModeNormal)
     : String = {
 
-    output.write(question + " ", mode = mode)
+    output.out.write(question + " ", mode = mode)
 
     if (default.nonEmpty) {
-      output.write(s"[<info>${default.get}</info>] ")
+      output.out.write(s"[<info>${default.get}</info>] ")
     }
 
     console.readLine()
@@ -47,15 +48,15 @@ class ConsoleDialog extends Dialog {
       output: Output,
       question: String,
       default: Boolean,
-      mode: Int = Output.OutputNormal)
+      mode: Int = OutputWriter.ModeNormal)
     : Boolean = {
 
-    output.write(question + " ", mode = mode)
+    output.out.write(question + " ", mode = mode)
 
     if (default) {
-      output.write("[<info>Yn</info>] ")
+      output.out.write("[<info>Yn</info>] ")
     } else {
-      output.write("[<info>yN</info>] ")
+      output.out.write("[<info>yN</info>] ")
     }
 
     val result = console.readLine()
@@ -73,10 +74,10 @@ class ConsoleDialog extends Dialog {
   override def askSensitive(
       output: Output,
       question: String,
-      mode: Int = Output.OutputNormal)
+      mode: Int = OutputWriter.ModeNormal)
     : String = {
 
-    output.write(question + " ", mode = mode)
+    output.out.write(question + " ", mode = mode)
 
     console.readPassword().mkString
   }

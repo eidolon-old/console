@@ -11,33 +11,32 @@
 
 package eidolon.console.input
 
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{BeforeAndAfter, FunSpec}
+import org.scalatest.FunSpec
 
 /**
- * ConsoleInput Spec
+ * Input Spec
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class ConsoleInputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
-  describe("eidolon.console.input.ConsoleInputSpec") {
+class InputSpec extends FunSpec {
+  describe("eidolon.console.input.InputSpec") {
     describe("withArgument()") {
-      it("should return a ConsoleInput") {
-        val input = new ConsoleInput()
+      it("should return a Input") {
+        val input = new Input()
         val result = input.withArgument("testName", "testValue")
 
-        assert(result.isInstanceOf[ConsoleInput])
+        assert(result.isInstanceOf[Input])
       }
 
-      it("should return a new instance of ConsoleInput") {
-        val input = new ConsoleInput()
+      it("should return a new instance of Input") {
+        val input = new Input()
         val result = input.withArgument("testName", "testValue")
 
         assert(!input.equals(result))
       }
 
-      it("should return a ConsoleInput with the passed argument") {
-        val input = new ConsoleInput()
+      it("should return a Input with the passed argument") {
+        val input = new Input()
         val result = input.withArgument("testName", "testValue")
 
         assert(!input.arguments.exists(_ == ("testName" -> "testValue")))
@@ -46,22 +45,22 @@ class ConsoleInputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
     }
 
     describe("withArguments()") {
-      it("should return a ConsoleInput") {
-        val input = new ConsoleInput()
+      it("should return a Input") {
+        val input = new Input()
         val result = input.withArguments(Map())
 
-        assert(result.isInstanceOf[ConsoleInput])
+        assert(result.isInstanceOf[Input])
       }
 
-      it("should return a new instance of ConsoleInput") {
-        val input = new ConsoleInput()
+      it("should return a new instance of Input") {
+        val input = new Input()
         val result = input.withArguments(Map())
 
         assert(!input.equals(result))
       }
 
-      it("should return a ConsoleInput with the passed arguments") {
-        val input = new ConsoleInput()
+      it("should return a Input with the passed arguments") {
+        val input = new Input()
         val result = input.withArguments(Map("key" -> "value", "key2" -> "value2"))
 
         assert(!input.arguments.exists(_ == ("key" -> "value")))
@@ -72,22 +71,22 @@ class ConsoleInputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
     }
 
     describe("withOption()") {
-      it("should return a ConsoleInput") {
-        val input = new ConsoleInput()
+      it("should return a Input") {
+        val input = new Input()
         val result = input.withOption("testName", Some("testValue"))
 
-        assert(result.isInstanceOf[ConsoleInput])
+        assert(result.isInstanceOf[Input])
       }
 
-      it("should return a new instance of ConsoleInput") {
-        val input = new ConsoleInput()
+      it("should return a new instance of Input") {
+        val input = new Input()
         val result = input.withOption("testName", Some("testValue"))
 
         assert(!input.equals(result))
       }
 
-      it("should return a ConsoleInput with the passed option") {
-        val input = new ConsoleInput()
+      it("should return a Input with the passed option") {
+        val input = new Input()
         val result = input.withOption("testName", Some("testValue"))
 
         assert(!input.options.exists(_ == ("testName" -> Some("testValue"))))
@@ -96,22 +95,22 @@ class ConsoleInputSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
     }
 
     describe("withOptions()") {
-      it("should return a ConsoleInput") {
-        val input = new ConsoleInput()
+      it("should return a Input") {
+        val input = new Input()
         val result = input.withOptions(Map())
 
-        assert(result.isInstanceOf[ConsoleInput])
+        assert(result.isInstanceOf[Input])
       }
 
-      it("should return a new instance of ConsoleInput") {
-        val input = new ConsoleInput()
+      it("should return a new instance of Input") {
+        val input = new Input()
         val result = input.withOptions(Map())
 
         assert(!input.equals(result))
       }
 
-      it("should return a ConsoleInput with the passed options") {
-        val input = new ConsoleInput()
+      it("should return a Input with the passed options") {
+        val input = new Input()
         val result = input.withOptions(Map("key" -> Some("value"), "key2" -> Some("value2")))
 
         assert(!input.options.exists(_ == ("key" -> Some("value"))))

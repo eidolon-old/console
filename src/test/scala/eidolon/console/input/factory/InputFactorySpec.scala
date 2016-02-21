@@ -9,25 +9,25 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.command
+package eidolon.console.input.factory
 
-import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
-import eidolon.console.output.Output
+import org.scalatest.FunSpec
 
 /**
- * CacheClearCommand
+ * InputFactory Spec
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class CacheClearCommand extends Command {
-  override val name = "eidola:cache:clear"
-  override val description = Some("Clears the local cache")
+class InputFactorySpec extends FunSpec {
+  describe("eidolon.console.input.factory.InputFactory") {
+    describe("build()") {
+      it("should return an instance of Input") {
+        val factory = new InputFactory()
+        val input = factory.build()
 
-  /**
-   * @inheritdoc
-   */
-  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-
+        assert(input.isInstanceOf[Input])
+      }
+    }
   }
 }

@@ -14,13 +14,13 @@ package eidolon.console
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
 import eidolon.console.descriptor.TextDescriptor
 import eidolon.console.dialog.builder.{ConsoleDialogBuilder, DialogBuilder}
-import eidolon.console.input.factory.{ConsoleInputFactory, InputFactory}
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+import eidolon.console.input.factory.InputFactory
 import eidolon.console.input.parser.InputParser
 import eidolon.console.input.parser.parameter.{ParsedInputParameter, ParsedInputArgument}
 import eidolon.console.input.validation.InputValidator
-import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
+import eidolon.console.output.factory.OutputFactory
 
 /**
  * Application
@@ -42,7 +42,7 @@ import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
  * @param inputParser An input parser
  * @param inputValidator An input validator
  * @param inputFactory An input factory
- * @param outputBuilder An output builder
+ * @param outputFactory An output factory
  * @param dialogBuilder A dialog builder
  * @param userCommands A map of user commands
  */
@@ -52,7 +52,7 @@ class Application(
     val inputParser: InputParser,
     val inputValidator: InputValidator,
     val inputFactory: InputFactory,
-    val outputBuilder: OutputBuilder,
+    val outputFactory: OutputFactory,
     val dialogBuilder: DialogBuilder,
     val userCommands: Map[String, Command] = Map()) {
 
@@ -109,7 +109,7 @@ class Application(
       val input = inputFactory.build()
         .withArguments(arguments.toMap)
         .withOptions(options.toMap)
-      val output = outputBuilder.build()
+      val output = outputFactory.build()
       val dialog = dialogBuilder.build()
 
       command.execute(input, output, dialog)
@@ -190,7 +190,7 @@ class Application(
       inputParser,
       inputValidator,
       inputFactory,
-      outputBuilder,
+      outputFactory,
       dialogBuilder,
       userCommands
     )
@@ -211,8 +211,8 @@ object Application {
       version,
       new InputParser(),
       new InputValidator(),
-      new ConsoleInputFactory(),
-      new ConsoleOutputBuilder(),
+      new InputFactory(),
+      new OutputFactory(),
       new ConsoleDialogBuilder()
     )
   }

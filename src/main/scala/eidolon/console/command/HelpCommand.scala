@@ -49,17 +49,17 @@ class HelpCommand(
     val commandName = input.arguments.getOrElse("command_name", "")
     val commandOpt = application.commands.get(commandName)
 
-    output.writeln(application.logo)
-    output.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
-    output.writeln("")
+    output.out.writeln(application.logo)
+    output.out.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
+    output.out.writeln("")
 
     if (commandOpt.nonEmpty) {
       val command = commandOpt.get
 
       descriptor.describeCommand(output, application, command)
     } else {
-      output.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
-      output.writeln("");
+      output.out.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
+      output.out.writeln("")
     }
   }
 }

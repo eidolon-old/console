@@ -10,7 +10,7 @@
  */
 
 import eidolon.console.Application
-import eidolon.console.command.{GlobalTestCommand, TestCommand, CacheClearCommand, CloneCommand}
+import eidolon.console.command.CloneCommand
 
 /**
  * Main
@@ -29,10 +29,7 @@ object ApplicationMain extends App {
 
   time {
     val app = Application("eidolon/console", "0.1.0-SNAPSHOT")
-      .withCommand(new CacheClearCommand())
       .withCommand(new CloneCommand())
-      .withCommand(new TestCommand())
-      .withCommand(new GlobalTestCommand())
 
     app.run(args.toList)
   }

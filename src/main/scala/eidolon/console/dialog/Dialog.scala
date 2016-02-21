@@ -12,6 +12,7 @@
 package eidolon.console.dialog
 
 import eidolon.console.output.Output
+import eidolon.console.output.writer.OutputWriter
 
 /**
  * Dialog
@@ -32,7 +33,7 @@ trait Dialog {
       output: Output,
       question: String,
       default: Option[String] = None,
-      mode: Int = Output.OutputNormal)
+      mode: Int = OutputWriter.ModeNormal)
     : String
 
   /**
@@ -48,7 +49,7 @@ trait Dialog {
       output: Output,
       question: String,
       default: Boolean = false,
-      mode: Int = Output.OutputNormal)
+      mode: Int = OutputWriter.ModeNormal)
     : Boolean
 
   /**
@@ -63,6 +64,6 @@ trait Dialog {
   def askSensitive(
       output: Output,
       question: String,
-      mode: Int = Output.OutputNormal)
+      mode: Int = OutputWriter.ModeNormal)
     : String
 }
