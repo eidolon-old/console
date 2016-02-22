@@ -54,7 +54,7 @@ trait OutputWriter {
    * @return true if verbosity level is quiet
    */
   def isQuiet: Boolean = {
-    OutputWriter.VerbosityQuiet == verbosity
+    verbosity >= OutputWriter.VerbosityQuiet
   }
 
   /**
@@ -63,7 +63,7 @@ trait OutputWriter {
    * @return true if verbosity level is verbose
    */
   def isVerbose: Boolean = {
-    OutputWriter.VerbosityVerbose <= verbosity
+    verbosity >= OutputWriter.VerbosityVerbose
   }
 
   /**
@@ -72,7 +72,7 @@ trait OutputWriter {
    * @return true if verbosity level is very verbose
    */
   def isVeryVerbose: Boolean = {
-    OutputWriter.VerbosityVeryVerbose <= verbosity
+    verbosity >= OutputWriter.VerbosityVeryVerbose
   }
 
   /**
@@ -81,7 +81,7 @@ trait OutputWriter {
    * @return true if verbosity level is debug
    */
   def isDebug: Boolean = {
-    OutputWriter.VerbosityDebug <= verbosity
+    verbosity >= OutputWriter.VerbosityDebug
   }
 }
 
