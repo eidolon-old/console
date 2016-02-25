@@ -35,7 +35,7 @@ final class PrintStreamOutputWriter (
       verbosity: Int = OutputWriter.VerbosityNormal)
     : Unit = {
 
-    if (this.verbosity <= verbosity) {
+    if (verbosity <= this.verbosity) {
       stream.print(formatter.format(message, mode))
     }
   }
@@ -49,8 +49,8 @@ final class PrintStreamOutputWriter (
       verbosity: Int = OutputWriter.VerbosityNormal)
     : Unit = {
 
-    if (this.verbosity <= verbosity) {
-      stream.println(formatter.format(message, mode))
+    if (verbosity <= this.verbosity) {
+      stream.print(formatter.format(message, mode) + sys.props("line.separator"))
     }
   }
 }
