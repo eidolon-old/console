@@ -111,6 +111,7 @@ class InputValidator {
    * @param parsedOption The parsed input long option to validate
    * @return an input validator result
    */
+  @throws[RuntimeException]("If an unexpected InputOption mode is encountered")
   private def validateLongOption(
       definition: InputDefinition,
       aggregate: InputValidatorResult,
