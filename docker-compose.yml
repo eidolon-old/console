@@ -2,7 +2,7 @@ sbt_build:
   image: seeruk/docker-sbt:latest
   volumes:
     - .:/app
-  command: sbt -Dsbt.ivy.home=./.ivy2/ clean coverage test coverageReport publish
+  command: sbt -Dfile.encoding=utf-8 -Dsbt.ivy.home=./.ivy2/ clean coverage test coverageReport publish
 
 project_version:
   image: ubuntu:trusty
