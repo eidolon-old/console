@@ -11,21 +11,17 @@
 
 package eidolon.console.output.formatter
 
-import eidolon.chroma.Chroma
 import eidolon.console.output.formatter.style._
 import eidolon.console.output.writer.OutputWriter
-
 import scala.xml.{Elem, Text, XML}
 
 /**
  * Console Output Formatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
- * @param chroma An instance of Chroma
  * @param styles A map of output format styles
  */
 case class ConsoleOutputFormatter(
-    private val chroma: Chroma,
     override val styles: OutputFormatterStyleGroup)
   extends OutputFormatter {
 
@@ -44,14 +40,14 @@ case class ConsoleOutputFormatter(
    * @inheritdoc
    */
   override def withStyle(style: OutputFormatterStyle): OutputFormatter = {
-    copy(chroma, styles.withStyle(style))
+    copy(styles.withStyle(style))
   }
 
   /**
    * @inheritdoc
    */
   override def withStyles(styles: List[OutputFormatterStyle]): OutputFormatter = {
-    copy(chroma, this.styles.withStyles(styles))
+    copy(this.styles.withStyles(styles))
   }
 
   /**

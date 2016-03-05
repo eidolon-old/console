@@ -32,7 +32,7 @@ object Build extends BaseBuild {
     resolvers ++= Dependencies.repositories,
     scalaVersion := "2.11.7",
     version := projectVersion,
-    testOptions in Test += Tests.Argument("-oD")
+    testOptions in Test += Tests.Argument("-oDI")
   )
 
   lazy val console = (project in file("."))

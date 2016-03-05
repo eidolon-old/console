@@ -29,7 +29,7 @@ final class OutputFactory {
    * Build output
    */
   def build(): Output = {
-    val formatter = new ConsoleOutputFormatter(chroma, buildStyleGroup())
+    val formatter = new ConsoleOutputFormatter(buildStyleGroup())
     val outWriter = new PrintStreamOutputWriter(formatter, Console.out)
     val errWriter = new PrintStreamOutputWriter(formatter, Console.err)
 
