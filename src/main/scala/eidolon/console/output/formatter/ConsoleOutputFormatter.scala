@@ -19,6 +19,7 @@ import scala.xml.{Elem, Text, XML}
  * Console Output Formatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
  * @param styles A map of output format styles
  */
 case class ConsoleOutputFormatter(

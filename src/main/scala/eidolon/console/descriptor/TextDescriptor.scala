@@ -186,7 +186,7 @@ class TextDescriptor extends Descriptor {
       option: InputOption)
     : Unit = {
 
-    val default = option.acceptValue && option.defaultValue.nonEmpty match {
+    val default = option.acceptsValue && option.defaultValue.nonEmpty match {
       case true => "<comment> [default: %s]</comment>".format(option.defaultValue.get)
       case false => ""
     }
@@ -197,7 +197,7 @@ class TextDescriptor extends Descriptor {
       case false => "    "
     }
 
-    val value = option.acceptValue match {
+    val value = option.acceptsValue match {
       case true if option.isOptionalValue => "[=%s]".format(option.name.toUpperCase)
       case true if !option.isOptionalValue => "=%s".format(option.name.toUpperCase)
       case false => ""
@@ -263,7 +263,7 @@ class TextDescriptor extends Descriptor {
     options.map((option) => {
       // "-" + shortName + ", --" + name
       val nameLength = 1 + math.max(option.shortName.getOrElse("").length, 1) + 4 + option.name.length
-      val valueLength = option.acceptValue match {
+      val valueLength = option.acceptsValue match {
         case true if option.isOptionalValue => 3 + option.name.length
         case true if !option.isOptionalValue => 1 + option.name.length
         case false => 0
@@ -349,7 +349,7 @@ class TextDescriptor extends Descriptor {
    * @return An input definitions' option synopsis
    */
   private def getInputDefinitionOptionSynopsis(option: InputOption): String = {
-    val value = option.acceptValue match {
+    val value = option.acceptsValue match {
       case true => {
         "%s=%s%s".format(
           if (option.isOptionalValue) "[" else "",

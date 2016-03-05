@@ -28,6 +28,7 @@ case class InputArgument(
     default: Option[String] = None)
   extends InputParameter {
 
+  require(isValidName, "Argument name \"%s\" is not valid.".format(name))
   require(isValidMode, "Argument mode \"%d\" is not valid.".format(mode))
   require(isValidDefault, "Argument default is not valid.")
 
@@ -56,6 +57,15 @@ case class InputArgument(
    */
   def isRequired: Boolean = {
     InputArgument.REQUIRED == (InputArgument.REQUIRED & mode)
+  }
+
+  /**
+   * Check if this input argument's name is valid
+   *
+   * @return true if the name is valid
+   */
+  private def isValidName: Boolean = {
+    name.length > 0
   }
 
   /**

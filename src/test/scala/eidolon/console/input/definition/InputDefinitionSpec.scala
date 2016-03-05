@@ -9,28 +9,15 @@
  * file that was distributed with this source code.
  */
 
-import eidolon.console.Application
-import eidolon.console.command.CloneCommand
+package eidolon.console.input.definition
+
+import org.scalatest.FunSpec
 
 /**
- * Main
+ * InputDefinitionSpec
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-object ApplicationMain extends App {
-  def time[A](f: => A) = {
-    val s = System.nanoTime
-    val ret = f
+class InputDefinitionSpec extends FunSpec {
 
-    println("Time taken: " + (System.nanoTime - s) / 1e6 + "ms")
-
-    ret
-  }
-
-  time {
-    val app = Application("eidolon/console", "0.1.0-SNAPSHOT")
-      .withCommand(new CloneCommand())
-
-    app.run(args.toList)
-  }
 }
