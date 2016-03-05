@@ -30,10 +30,10 @@ case class OutputFormatterStyleGroup(val styles: Map[String, OutputFormatterStyl
   /**
    * Create a copy of this output formatter style group with the given styles
    *
-   * @param styles A map of styles to add
+   * @param styles A list of styles to add
    * @return a copy of the output formatter style group
    */
-  def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatterStyleGroup = {
-    copy(this.styles ++ styles)
+  def withStyles(styles: List[OutputFormatterStyle]): OutputFormatterStyleGroup = {
+    copy(this.styles ++ styles.map(style => style.name -> style))
   }
 }

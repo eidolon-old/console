@@ -50,7 +50,7 @@ case class ConsoleOutputFormatter(
   /**
    * @inheritdoc
    */
-  override def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatter = {
+  override def withStyles(styles: List[OutputFormatterStyle]): OutputFormatter = {
     copy(chroma, this.styles.withStyles(styles))
   }
 

@@ -40,10 +40,10 @@ trait OutputFormatter {
   def withStyle(style: OutputFormatterStyle): OutputFormatter
 
   /**
-   * Create a copy of this output formatter with the given style
+   * Create a copy of this output formatter with the given styles
    *
-   * @param styles A style to add
+   * @param styles A list of styles to add
    * @return a copy of the output formatter
    */
-  def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatter
+  def withStyles(styles: List[OutputFormatterStyle]): OutputFormatter
 }
