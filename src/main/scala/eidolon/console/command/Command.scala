@@ -11,7 +11,6 @@
 
 package eidolon.console.command
 
-import eidolon.console.dialog.Dialog
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.Input
 import eidolon.console.output.Output
@@ -33,7 +32,6 @@ trait Command {
    *
    * @param input Input passed to the application
    * @param output Output interface for displaying formatted text
-   * @param dialog Dialog interface for prompting for user input mid-execution
    */
-  def execute(input: Input, output: Output, dialog: Dialog): Unit
+  def execute(input: Input, output: Output): Unit
 }

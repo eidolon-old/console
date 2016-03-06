@@ -13,7 +13,6 @@ package eidolon.console.command
 
 import eidolon.console.Application
 import eidolon.console.descriptor.Descriptor
-import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.definition.parameter.InputArgument
@@ -44,7 +43,7 @@ class ListCommand(
   /**
    * @inheritdoc
    */
-  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+  override def execute(input: Input, output: Output): Unit = {
     output.out.writeln(application.logo)
     output.out.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
     output.out.writeln("")

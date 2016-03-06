@@ -11,7 +11,6 @@
 
 package eidolon.console.command
 
-import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
 import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
 import eidolon.console.input.definition.InputDefinition
@@ -55,7 +54,7 @@ class CloneCommand extends Command {
   /**
    * @inheritdoc
    */
-  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+  override def execute(input: Input, output: Output): Unit = {
     output.out.writeln("<question>Is this thing on?</question>")
     output.out.writeln("<comment>Looks like it is...</comment>")
     output.out.writeln("<info>Cloning some stuff...</info>")

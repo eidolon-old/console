@@ -13,7 +13,6 @@ package eidolon.console.command
 
 import eidolon.console.Application
 import eidolon.console.descriptor.Descriptor
-import eidolon.console.dialog.Dialog
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.Input
 import eidolon.console.input.definition.parameter.InputArgument
@@ -45,7 +44,7 @@ class HelpCommand(
   /**
    * @inheritdoc
    */
-  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+  override def execute(input: Input, output: Output): Unit = {
     val commandName = input.arguments.getOrElse("command_name", "")
     val commandOpt = application.commands.get(commandName)
 
