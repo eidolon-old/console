@@ -61,4 +61,3 @@ class HelpCommand(
       output.out.writeln("")
     }
   }
-}
