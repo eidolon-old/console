@@ -18,12 +18,12 @@ import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  *
- * @param arguments A map of input arguments
- * @param options A map of input options
+ * @param arguments A list of input arguments
+ * @param options A list of input options
  */
 final case class InputDefinition(
-    arguments: Map[String, InputArgument] = Map(),
-    options: Map[String, InputOption] = Map()) {
+    arguments: List[InputArgument] = List(),
+    options: List[InputOption] = List()) {
 
   private val shortOptions = getShortOptionsFromOptions(options)
 
@@ -41,13 +41,33 @@ final case class InputDefinition(
   }
 
   /**
+   * Get an input argument with the given name
+   *
+   * @param name The name of the input argument to get
+   * @return an input argument, if it exists
+   */
+  def getArgument(name: String): Option[InputArgument] = {
+    arguments.find(_.name == name)
+  }
+
+  /**
    * Get an input argument at the given index
    *
    * @param index The index of the input argument to get
    * @return an input argument, if it exists
    */
-  def getArgument(index: Int): Option[InputArgument] = {
-    arguments.values.toList.lift(index)
+  def getArgumentAtIndex(index: Int): Option[InputArgument] = {
+    arguments.lift(index)
+  }
+
+  /**
+   * Check if an input argument exists in this input definition with the given name
+   *
+   * @param name The name of the input argument to check
+   * @return true if the input argument exists
+   */
+  def hasArgument(name: String): Boolean = {
+    getArgument(name).nonEmpty
   }
 
   /**
@@ -56,8 +76,8 @@ final case class InputDefinition(
    * @param index The index of the input argument to check
    * @return true if the input argument exists
    */
-  def hasArgument(index: Int): Boolean = {
-    arguments.values.toList.lift(index).isDefined
+  def hasArgumentAtIndex(index: Int): Boolean = {
+    getArgumentAtIndex(index).nonEmpty
   }
 
   /**
@@ -67,7 +87,7 @@ final case class InputDefinition(
    * @return an input option, if it exists
    */
   def getOption(name: String): Option[InputOption] = {
-    options.get(name)
+    options.find(_.name == name)
   }
 
   /**
@@ -90,7 +110,7 @@ final case class InputDefinition(
    * @return true if the input option exists
    */
   def hasOption(name: String): Boolean = {
-    options.contains(name)
+    getOption(name).nonEmpty
   }
 
   /**
@@ -100,7 +120,7 @@ final case class InputDefinition(
    * @return a new input definition
    */
   def withArgument(argument: InputArgument): InputDefinition = {
-    new InputDefinition(arguments + (argument.name -> argument), options)
+    new InputDefinition(arguments :+ argument, options)
   }
 
   /**
@@ -129,7 +149,7 @@ final case class InputDefinition(
    * @return a new input definition
    */
   def withOption(option: InputOption): InputDefinition = {
-    new InputDefinition(arguments, options + (option.name -> option))
+    new InputDefinition(arguments, options :+ option)
   }
 
   /**
@@ -156,12 +176,13 @@ final case class InputDefinition(
   /**
    * Get a map of input option short names to input option names
    *
-   * @param input The input options to map
+   * @param input A list of input options to map
    * @return a map of input options short names to input option names
    */
-  private def getShortOptionsFromOptions(input: Map[String, InputOption]): Map[String, String] = {
+  private def getShortOptionsFromOptions(input: List[InputOption]): Map[String, String] = {
     input
-      .filter({ case (_, option) => option.shortName.nonEmpty })
-      .map({ case (_, option) => option.shortName.get -> option.name })
+      .filter({ case (option) => option.shortName.nonEmpty })
+      .map({ case (option) => option.shortName.get -> option.name })
+      .toMap
   }
 }

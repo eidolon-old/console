@@ -97,7 +97,7 @@ class InputValidator {
       parsedArgument: ParsedInputArgument)
     : Either[InvalidParameter, ValidParameter] = {
 
-    definition.getArgument(aggregate.argumentCount) match {
+    definition.getArgumentAtIndex(aggregate.argumentCount) match {
       case Some(argument) => Right(new ValidArgument(argument.name, parsedArgument.token))
       case _ => Left(new InvalidArgument(parsedArgument.token))
     }
@@ -190,8 +190,7 @@ class InputValidator {
       parsedArgs: InputValidatorResult)
     : List[InputArgument] = {
 
-    definition.arguments.values
+    definition.arguments
       .filter((argument) => { !parsedArgs.argumentNames.contains(argument.name) })
-      .toList
   }
 }

@@ -134,7 +134,7 @@ class TextDescriptor extends Descriptor {
       output.out.writeln("<comment>Arguments:</comment>")
       output.out.writeln("")
 
-      definition.arguments.values.foreach((argument) => {
+      definition.arguments.foreach((argument) => {
         describeInputArgument(output, definition, argument)
       })
     }
@@ -147,7 +147,7 @@ class TextDescriptor extends Descriptor {
       output.out.writeln("<comment>Options:</comment>")
       output.out.writeln("")
 
-      definition.options.values.foreach((option) => {
+      definition.options.foreach((option) => {
         describeInputOption(output, definition, option)
       })
     }
@@ -245,8 +245,8 @@ class TextDescriptor extends Descriptor {
    * @return The width
    */
   private def calculateDefinitionWidth(definition: InputDefinition): Int = {
-    val argumentWidths = calculateArgumentWidths(definition.arguments.values.toList)
-    val optionWidths = calculateOptionWidths(definition.options.values.toList)
+    val argumentWidths = calculateArgumentWidths(definition.arguments.toList)
+    val optionWidths = calculateOptionWidths(definition.options.toList)
 
     (argumentWidths ++ optionWidths).reduce((a, b) => {
       if (a >= b) a else b
@@ -305,7 +305,7 @@ class TextDescriptor extends Descriptor {
    * @return An input definitions' arguments synopsis
    */
   private def getInputDefinitionArgumentsSynopsis(definition: InputDefinition): String = {
-    definition.arguments.foldLeft("")({ case (synopsis, (name, argument)) => {
+    definition.arguments.foldLeft("")({ case (synopsis, argument) => {
       synopsis + getInputDefinitionArgumentSynopsis(argument)
     }})
   }
@@ -335,7 +335,7 @@ class TextDescriptor extends Descriptor {
   private def getInputDefinitionOptionsSynopsis(definition: InputDefinition, short: Boolean): String = {
     short match {
       case true if definition.options.nonEmpty => " [options]"
-      case false => definition.options.foldLeft("")({ case (synopsis, (name, option)) => {
+      case false => definition.options.foldLeft("")({ case (synopsis, option) => {
         synopsis + getInputDefinitionOptionSynopsis(option)
       }})
       case _ => ""

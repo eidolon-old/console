@@ -13,7 +13,7 @@ package eidolon.console
 
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
 import eidolon.console.descriptor.TextDescriptor
-import eidolon.console.dialog.builder.{ConsoleDialogBuilder, DialogBuilder}
+import eidolon.console.dialog.factory.DialogFactory
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
 import eidolon.console.input.factory.InputFactory
@@ -36,14 +36,13 @@ import eidolon.console.output.factory.OutputFactory
  *    app.run(args.toList)
  *
  * @author Elliot Wright <elliot@elliotwright.co>
- *
  * @param name An application name
  * @param version An application version
  * @param inputParser An input parser
  * @param inputValidator An input validator
  * @param inputFactory An input factory
  * @param outputFactory An output factory
- * @param dialogBuilder A dialog builder
+ * @param dialogFactory A dialog factory
  * @param userCommands A map of user commands
  */
 class Application(
@@ -53,7 +52,7 @@ class Application(
     val inputValidator: InputValidator,
     val inputFactory: InputFactory,
     val outputFactory: OutputFactory,
-    val dialogBuilder: DialogBuilder,
+    val dialogFactory: DialogFactory,
     val userCommands: Map[String, Command] = Map()) {
 
   private val appCommands = buildAppCommands()
@@ -110,7 +109,7 @@ class Application(
         .withArguments(arguments.toMap)
         .withOptions(options.toMap)
       val output = outputFactory.build()
-      val dialog = dialogBuilder.build()
+      val dialog = dialogFactory.build()
 
       command.execute(input, output, dialog)
     } else {
@@ -191,7 +190,7 @@ class Application(
       inputValidator,
       inputFactory,
       outputFactory,
-      dialogBuilder,
+      dialogFactory,
       userCommands
     )
   }
@@ -213,7 +212,7 @@ object Application {
       new InputValidator(),
       new InputFactory(),
       new OutputFactory(),
-      new ConsoleDialogBuilder()
+      new DialogFactory()
     )
   }
 }

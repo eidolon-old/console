@@ -29,9 +29,9 @@ class InputValidatorSpec extends FunSpec {
         it("should set arguments that exist in the result as valid arguments") {
           val validator = new InputValidator()
 
-          val definition = new InputDefinition(arguments = Map(
-            "arg1" -> new InputArgument("arg1"),
-            "arg2" -> new InputArgument("arg2")
+          val definition = new InputDefinition(arguments = List(
+            new InputArgument("arg1"),
+            new InputArgument("arg2")
           ))
 
           val result = validator.validate(definition, List(
@@ -52,9 +52,9 @@ class InputValidatorSpec extends FunSpec {
         it("should not set arguments that don't exist in the result") {
           val validator = new InputValidator()
 
-          val definition = new InputDefinition(arguments = Map(
-            "arg1" -> new InputArgument("arg1"),
-            "arg2" -> new InputArgument("arg2")
+          val definition = new InputDefinition(arguments = List(
+            new InputArgument("arg1"),
+            new InputArgument("arg2")
           ))
 
           val result = validator.validate(definition, List())
@@ -66,8 +66,8 @@ class InputValidatorSpec extends FunSpec {
         it("should set missing required arguments in the result as invalid arguments") {
           val validator = new InputValidator()
 
-          val definition = new InputDefinition(arguments = Map(
-            "arg1" -> new InputArgument("arg1", mode = InputArgument.REQUIRED)
+          val definition = new InputDefinition(arguments = List(
+            new InputArgument("arg1", mode = InputArgument.REQUIRED)
           ))
 
           val result = validator.validate(definition, List())
@@ -81,8 +81,8 @@ class InputValidatorSpec extends FunSpec {
         it("should set missing arguments with default values in the result as valid arguments") {
           val validator = new InputValidator()
 
-          val definition = new InputDefinition(arguments = Map(
-            "arg1" -> new InputArgument("arg1", mode = InputArgument.OPTIONAL, default = Some("val1"))
+          val definition = new InputDefinition(arguments = List(
+            new InputArgument("arg1", mode = InputArgument.OPTIONAL, default = Some("val1"))
           ))
 
           val result = validator.validate(definition, List())
@@ -99,8 +99,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them in the result as valid options") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption("opt1", mode = InputOption.VALUE_NONE)
+            val definition = new InputDefinition(options = List(
+              new InputOption("opt1", mode = InputOption.VALUE_NONE)
             ))
 
             val result = validator.validate(definition, List(
@@ -118,8 +118,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as valid options in the result with the given value if one is provided") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 mode = InputOption.VALUE_OPTIONAL
               )
@@ -138,8 +138,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as valid options in the result with the default value if one is set and no value is given") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 mode = InputOption.VALUE_OPTIONAL,
                 defaultValue = Some("val1")
@@ -159,8 +159,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as valid options in the result with no value if there is no value provided, and no default value") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 mode = InputOption.VALUE_OPTIONAL
               )
@@ -181,8 +181,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as valid options in the result with the given value if one is provided") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 mode = InputOption.VALUE_REQUIRED
               )
@@ -201,8 +201,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as invalid options in the result if no value is provided") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 mode = InputOption.VALUE_REQUIRED
               )
@@ -222,7 +222,7 @@ class InputValidatorSpec extends FunSpec {
         describe("that are not defined but were given") {
           it("should set them as invalid options in the result") {
             val validator = new InputValidator()
-            val definition = new InputDefinition(options = Map())
+            val definition = new InputDefinition(options = List())
 
             val result = validator.validate(definition, List(
               new ParsedInputLongOption("opt1", None)
@@ -239,8 +239,8 @@ class InputValidatorSpec extends FunSpec {
           it("should throw throw an exception") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 mode = 3 // numbers not divisible by 2 aren't possible
               )
@@ -260,8 +260,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them in the result as valid options") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption("opt1", Some("o"), mode = InputOption.VALUE_NONE)
+            val definition = new InputDefinition(options = List(
+              new InputOption("opt1", Some("o"), mode = InputOption.VALUE_NONE)
             ))
 
             val result = validator.validate(definition, List(
@@ -279,8 +279,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as valid options in the result with the given value if one is provided") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 shortName = Some("o"),
                 mode = InputOption.VALUE_OPTIONAL
@@ -300,8 +300,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as valid options in the result with the default value if one is set and no value is given") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 shortName = Some("o"),
                 mode = InputOption.VALUE_OPTIONAL,
@@ -322,8 +322,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as valid options in the result with no value if there is no value provided, and no default value") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 shortName = Some("o"),
                 mode = InputOption.VALUE_OPTIONAL
@@ -345,8 +345,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as valid options in the result with the given value if one is provided") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 shortName = Some("o"),
                 mode = InputOption.VALUE_REQUIRED
@@ -366,8 +366,8 @@ class InputValidatorSpec extends FunSpec {
           it("should set them as invalid options in the result if no value is provided") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 shortName = Some("o"),
                 mode = InputOption.VALUE_REQUIRED
@@ -388,7 +388,7 @@ class InputValidatorSpec extends FunSpec {
         describe("that are not defined but were given") {
           it("should set them as invalid options in the result") {
             val validator = new InputValidator()
-            val definition = new InputDefinition(options = Map())
+            val definition = new InputDefinition(options = List())
 
             val result = validator.validate(definition, List(
               new ParsedInputShortOption("o", None)
@@ -405,8 +405,8 @@ class InputValidatorSpec extends FunSpec {
           it("should throw throw an exception") {
             val validator = new InputValidator()
 
-            val definition = new InputDefinition(options = Map(
-              "opt1" -> new InputOption(
+            val definition = new InputDefinition(options = List(
+              new InputOption(
                 name = "opt1",
                 shortName = Some("o"),
                 mode = 3 // numbers not divisible by 2 aren't possible

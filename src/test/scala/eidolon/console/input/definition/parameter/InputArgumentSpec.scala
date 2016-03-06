@@ -15,7 +15,7 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers._
 
 /**
- * InputArgumentSpec
+ * InputArgument Spec
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */

@@ -23,7 +23,7 @@ import org.scalatest.mock.MockitoSugar
 class OutputFormatterStyleGroupSpec extends FunSpec with MockitoSugar {
   describe("eidolon.console.output.formatter.style.OutputFormatterStyleGroup") {
     describe("withStyle()") {
-      it("should create a new instance of the style group with the given style added") {
+      it("should return a new instance of the style group with the given style added") {
         val group = new OutputFormatterStyleGroup()
         val style1 = mock[OutputFormatterStyle]
 
@@ -39,7 +39,7 @@ class OutputFormatterStyleGroupSpec extends FunSpec with MockitoSugar {
     }
 
     describe("withStyles()") {
-      it("should create a new instance of the style group with the given styles added") {
+      it("should return a new instance of the style group with the given styles added") {
         val group = new OutputFormatterStyleGroup()
         val style1 = mock[OutputFormatterStyle]
         val style2 = mock[OutputFormatterStyle]
