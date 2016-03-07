@@ -12,6 +12,7 @@
 package eidolon.console.dialog.factory
 
 import eidolon.console.dialog.Dialog
+import eidolon.console.output.formatter.OutputFormatter
 import jline.console.ConsoleReader
 import jline.Terminal
 import jline.TerminalFactory
@@ -21,7 +22,7 @@ import jline.TerminalFactory
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-final class DialogFactory {
+class DialogFactory(formatter: OutputFormatter) {
   /**
    * Build a dialog instance
    *
@@ -29,7 +30,13 @@ final class DialogFactory {
    */
   def build(): Dialog = {
     usingTerminal { _ =>
-      new Dialog(new ConsoleReader())
+      new Dialog(
+        formatter,
+        new ConsoleReader(
+          System.in,
+          System.out
+        )
+      )
     }
   }
 

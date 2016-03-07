@@ -9,27 +9,20 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.output.factory
+package eidolon.console.output.formatter.factory
 
-import eidolon.console.output.Output
 import eidolon.console.output.formatter.OutputFormatter
-import eidolon.console.output.writer.PrintStreamOutputWriter
 
 /**
- * Output Factory
+ * OutputFormatterFactory
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class OutputFactory(formatter: OutputFormatter) {
+trait OutputFormatterFactory {
   /**
-   * Build output
+   * Build the console output formatter
    *
-   * @return an output instance
+   * @return a console output formatter
    */
-  def build(): Output = {
-    val outWriter = new PrintStreamOutputWriter(formatter, System.out)
-    val errWriter = new PrintStreamOutputWriter(formatter, System.err)
-
-    new Output(outWriter, errWriter)
-  }
+  def build(): OutputFormatter
 }

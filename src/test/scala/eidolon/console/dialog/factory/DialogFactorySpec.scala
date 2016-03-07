@@ -9,32 +9,32 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.output.factory
+package eidolon.console.dialog.factory
 
-import eidolon.console.output.Output
+import eidolon.console.dialog.Dialog
 import eidolon.console.output.formatter.OutputFormatter
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSpec}
 
 /**
- * OutputFactory Spec
+ * DialogFactory Spec
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class OutputFactorySpec extends FunSpec with BeforeAndAfter with MockitoSugar {
+class DialogFactorySpec extends FunSpec with BeforeAndAfter with MockitoSugar {
   var formatter: OutputFormatter = _
 
   before {
     formatter = mock[OutputFormatter]
   }
 
-  describe("eidolon.console.output.factory.OutputFactory") {
+  describe("eidolon.console.dialog.factory.DialogFactory") {
     describe("build()") {
-      it("should return an instance of Output") {
-        val factory = new OutputFactory(formatter)
-        val output = factory.build()
+      it("should return an instance of Dialog") {
+        val factory = new DialogFactory(formatter)
+        val result = factory.build()
 
-        assert(output.isInstanceOf[Output])
+        assert(result.isInstanceOf[Dialog])
       }
     }
   }

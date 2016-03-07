@@ -11,6 +11,7 @@
 
 package eidolon.console
 
+import eidolon.chroma.Chroma
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
 import eidolon.console.descriptor.TextDescriptor
 import eidolon.console.dialog.factory.DialogFactory
@@ -21,6 +22,7 @@ import eidolon.console.input.parser.InputParser
 import eidolon.console.input.parser.parameter.{ParsedInputParameter, ParsedInputArgument}
 import eidolon.console.input.validation.InputValidator
 import eidolon.console.output.factory.OutputFactory
+import eidolon.console.output.formatter.factory.ConsoleOutputFormatterFactory
 
 /**
  * Application
@@ -205,14 +207,17 @@ object Application {
    * @return an application
    */
   def apply(name: String, version: String): Application = {
+    val formatterFactory = new ConsoleOutputFormatterFactory(Chroma())
+    val formatter = formatterFactory.build()
+
     new Application(
       name,
       version,
       new InputParser(),
       new InputValidator(),
       new InputFactory(),
-      new OutputFactory(),
-      new DialogFactory()
+      new OutputFactory(formatter),
+      new DialogFactory(formatter)
     )
   }
 }
