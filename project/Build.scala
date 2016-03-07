@@ -39,7 +39,7 @@ object Build extends BaseBuild {
     .settings(commonSettings: _*)
     .settings(name := "console")
     .settings(libraryDependencies ++=
-      compile(chroma, scalaXml) ++
+      compile(chroma, jLine, scalaXml) ++
       test(mockito, scalaTest)
     )
 }
