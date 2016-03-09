@@ -13,21 +13,37 @@ package eidolon.console.descriptor
 
 import eidolon.console.Application
 import eidolon.console.input.definition.InputDefinition
+import eidolon.console.input.definition.parameter.InputArgument
 
 /**
- * Entity Descriptor
+ * Input Argument Descriptor
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait Descriptor[E] {
+class InputArgumentDescriptor
+  extends Descriptor[InputArgument]
+  with DescriptorWidthCalculator {
+
   /**
-   * Describe the entity
-   *
-   * @return the description
+   * @inheritdoc
    */
-  def describe(
+  override def describe(
       application: Application,
       definition: InputDefinition,
-      entity: E)
-    : String
+      entity: InputArgument)
+    : String = {
+
+    val spacing = calculateDefinitionWidth(definition) - entity.name.length + 2
+    val default = entity.default.nonEmpty match {
+      case true => "<comment> [default: %s]</comment>".format(entity.default.get)
+      case _ => ""
+    }
+
+    "  <info>%s</info>%s%s%s".format(
+      entity.name,
+      " " * spacing,
+      entity.description.getOrElse(""),
+      default
+    )
+  }
 }

@@ -13,7 +13,7 @@ package eidolon.console
 
 import eidolon.chroma.Chroma
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
-import eidolon.console.descriptor.TextDescriptor
+import eidolon.console.descriptor._
 import eidolon.console.dialog.factory.DialogFactory
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
@@ -143,10 +143,14 @@ class Application(
    * @return a map of commands
    */
   protected def buildAppCommands(): Map[String, Command] = {
-    val descriptor = new TextDescriptor()
+    val argumentDescriptor = new InputArgumentDescriptor()
+    val optionDescriptor = new InputOptionDescriptor()
+    val definitionDescriptor = new InputDefinitionDescriptor(argumentDescriptor, optionDescriptor)
+    val commandDescriptor = new CommandDescriptor(definitionDescriptor)
+    val applicationDescriptor = new ApplicationDescriptor(definitionDescriptor)
 
-    val helpCommand = new HelpCommand(this, descriptor)
-    val listCommand = new ListCommand(this, descriptor)
+    val helpCommand = new HelpCommand(this, commandDescriptor)
+    val listCommand = new ListCommand(this, applicationDescriptor)
 
     Map(
       helpCommand.name -> helpCommand,

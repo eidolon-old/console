@@ -12,7 +12,7 @@
 package eidolon.console.command
 
 import eidolon.console.Application
-import eidolon.console.descriptor.Descriptor
+import eidolon.console.descriptor.CommandDescriptor
 import eidolon.console.dialog.Dialog
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.Input
@@ -28,7 +28,7 @@ import eidolon.console.output.Output
  */
 class HelpCommand(
     application: Application,
-    descriptor: Descriptor)
+    descriptor: CommandDescriptor)
   extends Command {
 
   override val name = "help"
@@ -53,7 +53,7 @@ class HelpCommand(
     output.out.writeln("")
 
     if (commandOpt.nonEmpty) {
-      output.out.write(descriptor.describeCommand(application, commandOpt.get))
+      output.out.write(descriptor.describe(application, application.definition, commandOpt.get))
     } else {
       output.out.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
       output.out.writeln("")

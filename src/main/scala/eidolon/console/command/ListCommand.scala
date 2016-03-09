@@ -12,7 +12,7 @@
 package eidolon.console.command
 
 import eidolon.console.Application
-import eidolon.console.descriptor.Descriptor
+import eidolon.console.descriptor.ApplicationDescriptor
 import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
 import eidolon.console.input.definition.InputDefinition
@@ -28,7 +28,7 @@ import eidolon.console.output.Output
  */
 class ListCommand(
     application: Application,
-    descriptor: Descriptor)
+    descriptor: ApplicationDescriptor)
   extends Command {
 
   override val name = "list"
@@ -47,6 +47,6 @@ class ListCommand(
     output.out.writeln(application.logo)
     output.out.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
     output.out.writeln("")
-    output.out.write(descriptor.describeApplication(application))
+    output.out.write(descriptor.describe(application, application.definition, application))
   }
 }

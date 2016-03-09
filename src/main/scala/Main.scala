@@ -1,3 +1,5 @@
+import eidolon.console.Application
+
 /**
  * This file is part of the "eidolon/console" project.
  *
@@ -9,35 +11,14 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.descriptor
-
-import org.scalatest.FunSpec
 
 /**
- * TextDescriptorSpec
+ * Main
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class TextDescriptorSpec extends FunSpec {
-  describe("eidolon.console.descriptor.TextDescriptor") {
-    describe("describeApplication()") {
+object Main extends App {
+  val application = Application("eidolon/console", "0.2.0-SNAPSHOT")
 
-    }
-
-    describe("describeCommand()") {
-
-    }
-
-    describe("describeInputDefinition()") {
-
-    }
-
-    describe("describeInputArgument()") {
-
-    }
-
-    describe("describeInputOption()") {
-
-    }
-  }
+  application.run(args)
 }
