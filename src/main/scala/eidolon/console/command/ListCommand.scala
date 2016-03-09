@@ -47,7 +47,6 @@ class ListCommand(
     output.out.writeln(application.logo)
     output.out.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
     output.out.writeln("")
-
-    descriptor.describeApplication(output, application)
+    output.out.write(descriptor.describeApplication(application))
   }
 }

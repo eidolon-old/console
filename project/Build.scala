@@ -30,7 +30,7 @@ object Build extends BaseBuild {
     publishMavenStyle := true,
     publishTo := Some(Resolver.file("release", new File("./release"))),
     resolvers ++= Dependencies.repositories,
-    scalaVersion := "2.11.7",
+    scalaVersion := "2.11.8",
     version := projectVersion,
     testOptions in Test += Tests.Argument("-oDI")
   )

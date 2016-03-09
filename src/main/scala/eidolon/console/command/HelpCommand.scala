@@ -53,9 +53,7 @@ class HelpCommand(
     output.out.writeln("")
 
     if (commandOpt.nonEmpty) {
-      val command = commandOpt.get
-
-      descriptor.describeCommand(output, application, command)
+      output.out.write(descriptor.describeCommand(application, commandOpt.get))
     } else {
       output.out.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
       output.out.writeln("")

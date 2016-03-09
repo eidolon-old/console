@@ -15,8 +15,6 @@ import eidolon.console.Application
 import eidolon.console.command.Command
 import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
 import eidolon.console.input.definition.InputDefinition
-import eidolon.console.output.Output
-import eidolon.console.output.writer.OutputWriter
 
 /**
  * Text Descriptor
@@ -27,164 +25,146 @@ class TextDescriptor extends Descriptor {
   /**
    * @inheritdoc
    */
-  override def describeApplication(
-      output: Output,
-      application: Application)
-    : Unit = {
-
+  override def describeApplication(application: Application): String = {
     val commands = application.commands.values.toList.distinct
-
-    output.out.writeln("<comment>Usage:</comment>")
-    output.out.writeln("")
-    output.out.writeln("  command [options] [arguments]")
-    output.out.writeln("")
-    describeInputDefinition(output, new InputDefinition(options = application.definition.options))
-    output.out.writeln("")
+    val globalCommands = getGlobalCommands(commands).sortBy(_.name)
+    val namespacedCommands = getNamespacedCommands(commands).sortBy(_.name)
 
     val totalWidth = calculateCommandWidths(commands).reduce((a, b) => {
       if (a >= b) a else b
     })
 
-    output.out.writeln("<comment>Available commands:</comment>")
-    output.out.writeln("")
+    val inputDefinitionDescription = describeInputDefinition(new InputDefinition(
+      options = application.definition.options
+    ))
 
-    val globalCommands = getGlobalCommands(commands).sortBy(_.name)
-    val namespacedCommands = getNamespacedCommands(commands).sortBy(_.name)
+    val globalCommandsDescription = describeApplicationGlobalCommands(globalCommands, namespacedCommands, totalWidth)
+    val namespacedCommandsDescription = describeApplicationNamespacedCommands(globalCommands, namespacedCommands, totalWidth)
 
-    globalCommands.foreach((command) => {
-      val padding = if (namespacedCommands.nonEmpty) 4 else 2
-      val spacing = totalWidth - command.name.length + padding
-
-      output.out.writeln("  <info>%s</info>%s%s".format(
-        command.name,
-        " " * spacing,
-        command.description.getOrElse("")
-      ))
-    })
-
-    if (namespacedCommands.nonEmpty) {
-      namespacedCommands.foldLeft("")((namespace, command) => {
-        val commandNamespace = getCommandRootNamespace(command)
-        val spacing = totalWidth - command.name.length + 2
-
-        if (commandNamespace != namespace) {
-          output.out.writeln(s"  <comment>$commandNamespace</comment>")
-        }
-
-        output.out.writeln("    <info>%s</info>%s%s".format(
-          command.name,
-          " " * spacing,
-          command.description.getOrElse("")
-        ))
-
-        commandNamespace
-      })
-    }
-
-    output.out.writeln("")
+    s"""
+       |<comment>Usage:</comment>
+       |
+       |  command [options] [arguments]
+       |
+       |$inputDefinitionDescription
+       |<comment>Available commands:</comment>
+       |
+       |$globalCommandsDescription
+       |$namespacedCommandsDescription""".stripMargin
   }
 
   /**
    * @inheritdoc
    */
   override def describeCommand(
-      output: Output,
       application: Application,
       command: Command)
-    : Unit = {
+    : String = {
 
-    output.out.writeln("<comment>Usage:</comment>")
-    output.out.writeln("")
-    output.out.writeln("  " + getCommandSynopsis(command, short = true), OutputWriter.ModeRaw)
-
-    command.aliases.foreach((alias) => {
-      output.out.writeln("  " + alias)
+    val synopsis = getCommandSynopsis(command, short = true)
+    val aliases = command.aliases.foldLeft("")((aggregate, alias) => {
+      aggregate + s"  $alias\n"
     })
 
-    output.out.writeln("")
+    val argumentsDescription =
+      command.definition.options.nonEmpty ||
+      command.definition.arguments.nonEmpty match {
+        case true =>
+          val commandDefinition = new InputDefinition(
+            command.definition.arguments,
+            application.definition.options ++ command.definition.options
+          )
 
-    if (command.definition.options.nonEmpty || command.definition.arguments.nonEmpty) {
-      val commandDefinition = new InputDefinition(
-        command.definition.arguments,
-        application.definition.options ++ command.definition.options
-      )
+          describeInputDefinition(commandDefinition)
+        case _ => ""
+      }
 
-      describeInputDefinition(output, commandDefinition)
+    val helpDescription = command.help.nonEmpty match {
+      case true =>
+        val commandHelp = command.help.get.replace("\n", "\n  ")
+
+        s"""<comment>Help:</comment>
+           |
+           |  $commandHelp
+           |
+           |""".stripMargin
+      case _ => ""
     }
 
-    if (command.help.nonEmpty) {
-      output.out.writeln("")
-      output.out.writeln("<comment>Help:</comment>")
-      output.out.writeln("")
-      output.out.writeln("  " + command.help.get.replace("\n", "\n  "))
-    }
-
-    output.out.writeln("")
+    s"""<comment>Usage:</comment>
+       |
+       |  $synopsis
+       |$aliases
+       |$argumentsDescription
+       |$helpDescription""".stripMargin
   }
 
   /**
    * @inheritdoc
    */
-  override def describeInputDefinition(
-      output: Output,
-      definition: InputDefinition)
-    : Unit = {
+  override def describeInputDefinition(definition: InputDefinition): String = {
+    val argumentsDescription: String = definition.arguments.nonEmpty match {
+      case true =>
+        val description = definition.arguments.foldLeft("")((aggregate, argument) => {
+          aggregate + describeInputArgument(definition, argument) + "\n"
+        })
 
-    if (definition.arguments.nonEmpty) {
-      output.out.writeln("<comment>Arguments:</comment>")
-      output.out.writeln("")
-
-      definition.arguments.foreach((argument) => {
-        describeInputArgument(output, definition, argument)
-      })
+        s"""<comment>Arguments:</comment>
+           |
+           |$description""".stripMargin
+      case _ => ""
     }
 
-    if (definition.arguments.nonEmpty && definition.options.nonEmpty) {
-      output.out.writeln("")
+    val spacer = definition.arguments.nonEmpty && definition.options.nonEmpty match {
+      case true => "\n"
+      case _ => ""
     }
 
-    if (definition.options.nonEmpty) {
-      output.out.writeln("<comment>Options:</comment>")
-      output.out.writeln("")
+    val optionsDescription = definition.options.nonEmpty match {
+      case true =>
+        val description = definition.options.foldLeft("")((aggregate, option) => {
+          aggregate + describeInputOption(definition, option) + "\n"
+        })
 
-      definition.options.foreach((option) => {
-        describeInputOption(output, definition, option)
-      })
+        s"""<comment>Options:</comment>
+           |
+           |$description""".stripMargin
+      case _ => ""
     }
+
+    argumentsDescription + spacer + optionsDescription
   }
 
   /**
    * @inheritdoc
    */
   override def describeInputArgument(
-      output: Output,
       definition: InputDefinition,
       argument: InputArgument)
-    : Unit = {
+    : String = {
 
     val default = argument.default.nonEmpty match {
       case true => "<comment> [default: %s]</comment>".format(argument.default.get)
-      case false => ""
+      case _ => ""
     }
 
     val spacing = calculateDefinitionWidth(definition) - argument.name.length + 2
 
-    output.out.writeln("  <info>%s</info>%s%s%s".format(
+    "  <info>%s</info>%s%s%s".format(
       argument.name,
       " " * spacing,
       argument.description.getOrElse(""),
       default
-    ))
+    )
   }
 
   /**
    * @inheritdoc
    */
   override def describeInputOption(
-      output: Output,
       definition: InputDefinition,
       option: InputOption)
-    : Unit = {
+    : String = {
 
     val default = option.acceptsValue && option.defaultValue.nonEmpty match {
       case true => "<comment> [default: %s]</comment>".format(option.defaultValue.get)
@@ -206,12 +186,12 @@ class TextDescriptor extends Descriptor {
     val synopsis = "%s%s%s".format(shortName, name, value)
     val spacing = calculateDefinitionWidth(definition) - synopsis.length + 2
 
-    output.out.writeln("  <info>%s</info>%s%s%s".format(
+    "  <info>%s</info>%s%s%s".format(
       synopsis,
       " " * spacing,
       option.description.getOrElse(""),
       default
-    ))
+    )
   }
 
   /**
@@ -245,8 +225,8 @@ class TextDescriptor extends Descriptor {
    * @return The width
    */
   private def calculateDefinitionWidth(definition: InputDefinition): Int = {
-    val argumentWidths = calculateArgumentWidths(definition.arguments.toList)
-    val optionWidths = calculateOptionWidths(definition.options.toList)
+    val argumentWidths = calculateArgumentWidths(definition.arguments)
+    val optionWidths = calculateOptionWidths(definition.options)
 
     (argumentWidths ++ optionWidths).reduce((a, b) => {
       if (a >= b) a else b
@@ -271,6 +251,64 @@ class TextDescriptor extends Descriptor {
 
       nameLength + valueLength
     })
+  }
+
+  /**
+   * Describe the global commands within an application. Global commands are commands that are not
+   * in any namespace.
+   *
+   * @return the description
+   */
+  private def describeApplicationGlobalCommands(
+    globalCommands: List[Command],
+    namespacedCommands: List[Command],
+    totalWidth: Int
+  ): String = {
+
+    globalCommands.foldLeft("")((aggregate, command) => {
+      val padding = if (namespacedCommands.nonEmpty) 4 else 2
+      val spacing = totalWidth - command.name.length + padding
+
+      aggregate + "  <info>%s</info>%s%s\n".format(
+        command.name,
+        " " * spacing,
+        command.description.getOrElse("")
+      )
+    })
+  }
+
+  /**
+   * Describe the namespaced commands within an application.
+   *
+   * @return the description
+   */
+  private def describeApplicationNamespacedCommands(
+    globalCommands: List[Command],
+    namespacedCommands: List[Command],
+    totalWidth: Int
+  ): String = {
+
+    val (_, result) = namespacedCommands.foldLeft("" -> "")((aggregate, command) => {
+      val namespace = aggregate._1
+      val description = aggregate._2
+
+      val commandNamespace = getCommandRootNamespace(command)
+      val spacing = totalWidth - command.name.length + 2
+
+      val namespaceDescription = if (commandNamespace != namespace) {
+        s"  <comment>$commandNamespace</comment>\n"
+      } else {
+        ""
+      }
+
+      (commandNamespace, description + namespaceDescription + "    <info>%s</info>%s%s\n".format(
+        command.name,
+        " " * spacing,
+        command.description.getOrElse("")
+      ))
+    })
+
+    result
   }
 
   /**
@@ -305,9 +343,9 @@ class TextDescriptor extends Descriptor {
    * @return An input definitions' arguments synopsis
    */
   private def getInputDefinitionArgumentsSynopsis(definition: InputDefinition): String = {
-    definition.arguments.foldLeft("")({ case (synopsis, argument) => {
+    definition.arguments.foldLeft("")({ case (synopsis, argument) =>
       synopsis + getInputDefinitionArgumentSynopsis(argument)
-    }})
+    })
   }
 
   /**
@@ -317,7 +355,7 @@ class TextDescriptor extends Descriptor {
    * @return An input definitions' argument synopsis
    */
   private def getInputDefinitionArgumentSynopsis(argument: InputArgument): String = {
-    val synopsis = s"<${argument.name}>"
+    val synopsis = s"${argument.name}"
 
     argument.isRequired match {
       case true => s" $synopsis"
@@ -335,9 +373,9 @@ class TextDescriptor extends Descriptor {
   private def getInputDefinitionOptionsSynopsis(definition: InputDefinition, short: Boolean): String = {
     short match {
       case true if definition.options.nonEmpty => " [options]"
-      case false => definition.options.foldLeft("")({ case (synopsis, option) => {
+      case false => definition.options.foldLeft("")({ case (synopsis, option) =>
         synopsis + getInputDefinitionOptionSynopsis(option)
-      }})
+      })
       case _ => ""
     }
   }
@@ -350,13 +388,12 @@ class TextDescriptor extends Descriptor {
    */
   private def getInputDefinitionOptionSynopsis(option: InputOption): String = {
     val value = option.acceptsValue match {
-      case true => {
+      case true =>
         "%s=%s%s".format(
           if (option.isOptionalValue) "[" else "",
           option.name.toUpperCase,
           if (option.isOptionalValue) "]" else ""
         )
-      }
       case false => ""
     }
 

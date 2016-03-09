@@ -76,7 +76,7 @@ class Application(
   /**
    * Run the application
    *
-   * @param args A set of raw input parameters
+   * @param args A list of raw input parameters
    * @return the resulting exit code
    */
   def run(args: List[String]): Int = {
@@ -90,6 +90,16 @@ class Application(
     } else {
       doRunCommand(commands.get("list").get, List(new ParsedInputArgument("list")))
     }
+  }
+
+  /**
+   * Run the application
+   *
+   * @param args An array of raw input parameters
+   * @return the resulting exit code
+   */
+  def run(args: Array[String]): Int = {
+    run(args.toList)
   }
 
   /**
