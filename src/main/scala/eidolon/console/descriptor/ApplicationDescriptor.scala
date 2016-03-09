@@ -34,7 +34,7 @@ class ApplicationDescriptor(
       entity: Application)
     : String = {
 
-    val commands = application.commands.values.toList.distinct
+    val commands = entity.commands.values.toList.distinct
     val globalCommands = getGlobalCommands(commands).sortBy(_.name)
     val namespacedCommands = getNamespacedCommands(commands).sortBy(_.name)
 
@@ -46,7 +46,7 @@ class ApplicationDescriptor(
       application,
       definition,
       new InputDefinition(
-        options = application.definition.options
+        options = entity.definition.options
       )
     )
 
@@ -72,6 +72,9 @@ class ApplicationDescriptor(
    * Describe the global commands within an application. Global commands are commands that are not
    * in any namespace.
    *
+   * @param globalCommands a list of commands without namespaces
+   * @param namespacedCommands a list of commands with namespaces
+   * @param totalWidth the total width of all commands (for spacing)
    * @return the description
    */
   private def describeApplicationGlobalCommands(
@@ -95,6 +98,9 @@ class ApplicationDescriptor(
   /**
    * Describe the namespaced commands within an application.
    *
+   * @param globalCommands a list of commands without namespaces
+   * @param namespacedCommands a list of commands with namespaces
+   * @param totalWidth the total width of all commands (for spacing)
    * @return the description
    */
   private def describeApplicationNamespacedCommands(
