@@ -14,7 +14,7 @@ package eidolon.console.descriptor
 import eidolon.console.Application
 import eidolon.console.command.Command
 import eidolon.console.input.definition.InputDefinition
-import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+import eidolon.console.input.definition.parameter.InputArgument
 
 /**
  * Command Descriptor
@@ -35,14 +35,14 @@ class CommandDescriptor(
       entity: Command)
     : String = {
 
-    val synopsis = getCommandSynopsis(entity, short = true)
+    val synopsis = getCommandSynopsis(entity)
     val aliases = entity.aliases.foldLeft("")((aggregate, alias) => {
       aggregate + s"  $alias\n"
     })
 
     val argumentsDescription =
       entity.definition.options.nonEmpty ||
-        entity.definition.arguments.nonEmpty match {
+      entity.definition.arguments.nonEmpty match {
         case true =>
           val commandDefinition = new InputDefinition(
             entity.definition.arguments,
@@ -77,11 +77,10 @@ class CommandDescriptor(
    * Get the synopsis of a given command
    *
    * @param command The command to get the synopsis for
-   * @param short Whether or not to show a short synopsis (less info about options in synopsis)
    * @return A command synopsis
    */
-  private def getCommandSynopsis(command: Command, short: Boolean = false): String = {
-    command.name + getInputDefinitionSynopsis(command.definition, short)
+  private def getCommandSynopsis(command: Command): String = {
+    command.name + getInputDefinitionSynopsis(command.definition)
   }
 
   /**
@@ -91,8 +90,8 @@ class CommandDescriptor(
    * @param short Whether or not to show a short synopsis (less info about options in synopsis)
    * @return An input definition synopsis
    */
-  private def getInputDefinitionSynopsis(definition: InputDefinition, short: Boolean = false): String = {
-    val options = getInputDefinitionOptionsSynopsis(definition, short)
+  private def getInputDefinitionSynopsis(definition: InputDefinition): String = {
+    val options = getInputDefinitionOptionsSynopsis(definition)
     val arguments = getInputDefinitionArgumentsSynopsis(definition)
 
     options + arguments
@@ -129,34 +128,9 @@ class CommandDescriptor(
    * Get the synopsis of the input options in the given input definition
    *
    * @param definition The input definition to get the options from
-   * @param short Whether or not to show a short synopsis (less info about options in synopsis)
    * @return An input definitions' options synopsis
    */
-  private def getInputDefinitionOptionsSynopsis(definition: InputDefinition, short: Boolean): String = {
-    short match {
-      case true if definition.options.nonEmpty => " [options]"
-      case false => definition.options.foldLeft("")({ case (synopsis, option) =>
-        synopsis + getInputDefinitionOptionSynopsis(option)
-      })
-      case _ => ""
-    }
-  }
-
-  /**
-   * Get the synopsis of the given input option for the input definitions' options synopsis
-   *
-   * @param option The option to get the synopsis for
-   * @return An input definitions' option synopsis
-   */
-  private def getInputDefinitionOptionSynopsis(option: InputOption): String = {
-    option.acceptsValue match {
-      case true =>
-        "%s=%s%s".format(
-          if (option.isOptionalValue) "[" else "",
-          option.name.toUpperCase,
-          if (option.isOptionalValue) "]" else ""
-        )
-      case false => ""
-    }
+  private def getInputDefinitionOptionsSynopsis(definition: InputDefinition): String = {
+    if (definition.options.nonEmpty) { " [options]" } else { "" }
   }
 }

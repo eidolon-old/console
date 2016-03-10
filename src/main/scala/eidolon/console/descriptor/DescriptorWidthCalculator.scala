@@ -43,9 +43,7 @@ trait DescriptorWidthCalculator {
     val argumentWidths = calculateArgumentWidths(definition.arguments)
     val optionWidths = calculateOptionWidths(definition.options)
 
-    (argumentWidths ++ optionWidths).reduce((a, b) => {
-      if (a >= b) a else b
-    })
+    (argumentWidths ++ optionWidths).max
   }
 
   /**

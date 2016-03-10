@@ -38,9 +38,7 @@ class ApplicationDescriptor(
     val globalCommands = getGlobalCommands(commands).sortBy(_.name)
     val namespacedCommands = getNamespacedCommands(commands).sortBy(_.name)
 
-    val totalWidth = calculateCommandWidths(commands).reduce((a, b) => {
-      if (a >= b) a else b
-    })
+    val totalWidth = calculateCommandWidths(commands).max
 
     val inputDefinitionDescription = inputDefinitionDescriptor.describe(
       application,
@@ -56,8 +54,7 @@ class ApplicationDescriptor(
     val namespacedCommandsDescription =
       describeApplicationNamespacedCommands(globalCommands, namespacedCommands, totalWidth)
 
-    s"""
-       |<comment>Usage:</comment>
+    s"""<comment>Usage:</comment>
        |
        |  command [options] [arguments]
        |
@@ -78,10 +75,10 @@ class ApplicationDescriptor(
    * @return the description
    */
   private def describeApplicationGlobalCommands(
-    globalCommands: List[Command],
-    namespacedCommands: List[Command],
-    totalWidth: Int
-  ): String = {
+      globalCommands: List[Command],
+      namespacedCommands: List[Command],
+      totalWidth: Int
+    ): String = {
 
     globalCommands.foldLeft("")((aggregate, command) => {
       val padding = if (namespacedCommands.nonEmpty) 4 else 2
@@ -104,10 +101,10 @@ class ApplicationDescriptor(
    * @return the description
    */
   private def describeApplicationNamespacedCommands(
-    globalCommands: List[Command],
-    namespacedCommands: List[Command],
-    totalWidth: Int
-  ): String = {
+      globalCommands: List[Command],
+      namespacedCommands: List[Command],
+      totalWidth: Int
+    ): String = {
 
     val (_, result) = namespacedCommands.foldLeft("" -> "")((aggregate, command) => {
       val namespace = aggregate._1
@@ -137,17 +134,14 @@ class ApplicationDescriptor(
    *
    * @param command The command to get the namespace for
    * @return The namespace of the given command
-   * @throws UnsupportedOperationException if the given command doesn't have a namespace
    */
-  @throws[UnsupportedOperationException]
   private def getCommandRootNamespace(command: Command): String = {
-    val pattern = "^([A-Za-z0-9_-]+):(.+)$".r.unanchored
+    val pattern = "^(.*):(.*)$".r.unanchored
 
     command.name match {
       case pattern(namespace, _) => namespace
-      case _ => throw new UnsupportedOperationException(
-        "Cannot get namespace for command with name '%s'".format(command.name)
-      )
+      // If something doesn't get into the above case, this function is being mis-used, and whoever
+      // is doing so deserves whatever error they get!
     }
   }
 
