@@ -35,7 +35,7 @@ import eidolon.console.output.formatter.factory.ConsoleOutputFormatterFactory
  *    val app = Application("myapp", "0.1.0-SNAPSHOT")
  *      .withCommand(new ExampleCommand())
  *
- *    app.run(args.toList)
+ *    app.run(args)
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  * @param name An application name
