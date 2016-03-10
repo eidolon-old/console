@@ -21,7 +21,7 @@ import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
  * @param arguments A list of input arguments
  * @param options A list of input options
  */
-final case class InputDefinition(
+case class InputDefinition(
     arguments: List[InputArgument] = List(),
     options: List[InputOption] = List()) {
 
