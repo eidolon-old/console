@@ -15,10 +15,13 @@ package eidolon.console.input
  * Input
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ *
+ * @param arguments A map of input arguments
+ * @param options A map of input options
  */
-trait Input {
-  val arguments: Map[String, String]
-  val options: Map[String, Option[String]]
+class Input(
+    val arguments: Map[String, String] = Map(),
+    val options: Map[String, Option[String]] = Map()) {
 
   /**
    * Create a copy of this input with the given input argument
@@ -27,7 +30,19 @@ trait Input {
    * @param value The input argument value
    * @return a copy of the input
    */
-  def withArgument(name: String, value: String): Input
+  def withArgument(name: String, value: String): Input = {
+    copy(arguments + (name -> value), options)
+  }
+
+  /**
+   * Create a copy of this input with the given input arguments
+   *
+   * @param arguments The input arguments
+   * @return a copy of the input
+   */
+  def withArguments(arguments: Map[String, String]): Input = {
+    copy(this.arguments ++ arguments, options)
+  }
 
   /**
    * Create a copy of this input with the given input option
@@ -36,15 +51,9 @@ trait Input {
    * @param value The input option value
    * @return a copy of the input
    */
-  def withOption(name: String, value: Option[String]): Input
-
-  /**
-   * Create a copy of this input with the given input arguments
-   *
-   * @param arguments The input arguments
-   * @return a copy of the input
-   */
-  def withArguments(arguments: Map[String, String]): Input
+  def withOption(name: String, value: Option[String]): Input = {
+    copy(arguments, options + (name -> value))
+  }
 
   /**
    * Create a copy of this input with the given input options
@@ -52,5 +61,22 @@ trait Input {
    * @param options The input options
    * @return a copy of the input
    */
-  def withOptions(options: Map[String, Option[String]]): Input
+  def withOptions(options: Map[String, Option[String]]): Input = {
+    copy(arguments, this.options ++ options)
+  }
+
+  /**
+   * Create a copy of this console input with the given arguments and options
+   *
+   * @param arguments A map of input arguments
+   * @param options A map of input options
+   * @return a copy of this console input
+   */
+  private def copy(
+      arguments: Map[String, String],
+      options: Map[String, Option[String]])
+    : Input = {
+
+    new Input(arguments, options)
+  }
 }

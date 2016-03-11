@@ -33,11 +33,8 @@ case class InputValidatorResult(
   lazy val argumentCount = invalidArguments.size + validArguments.size
   lazy val optionCount = invalidOptions.size + validOptions.size
 
-  lazy val invalidCount = invalidArguments.size + invalidOptions.size
-  lazy val validCount = validArguments.size + validOptions.size
-
   lazy val argumentNames = validArguments.map(_.name) ++: invalidArguments.map(_.token)
-  lazy val optionNames = validOptions.map(_.name) ++: invalidArguments.map(_.token)
+  lazy val optionNames = validOptions.map(_.name) ++: invalidOptions.map(_.token)
 
   /**
    * Check if this input validator result reports valid input or not

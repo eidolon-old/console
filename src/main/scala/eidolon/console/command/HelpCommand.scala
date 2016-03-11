@@ -12,7 +12,7 @@
 package eidolon.console.command
 
 import eidolon.console.Application
-import eidolon.console.descriptor.Descriptor
+import eidolon.console.descriptor.CommandDescriptor
 import eidolon.console.dialog.Dialog
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.Input
@@ -20,16 +20,15 @@ import eidolon.console.input.definition.parameter.InputArgument
 import eidolon.console.output.Output
 
 /**
- * HelpCommand
+ * Help Command
  *
  * @author Elliot Wright <elliot@elliotwright.co>
- *
  * @param application An application
  * @param descriptor A console descriptor
  */
 class HelpCommand(
     application: Application,
-    descriptor: Descriptor)
+    descriptor: CommandDescriptor)
   extends Command {
 
   override val name = "help"
@@ -47,19 +46,19 @@ class HelpCommand(
    */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
     val commandName = input.arguments.getOrElse("command_name", "")
-    val commandOpt = application.commands.get(commandName)
+    val commandOpt = application.commands.find(command => {
+      command.name == commandName || command.aliases.contains(commandName)
+    })
 
-    output.writeln(application.logo)
-    output.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
-    output.writeln("")
+    output.out.writeln(application.logo)
+    output.out.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
+    output.out.writeln("")
 
     if (commandOpt.nonEmpty) {
-      val command = commandOpt.get
-
-      descriptor.describeCommand(output, application, command)
+      output.out.write(descriptor.describe(application, application.definition, commandOpt.get))
     } else {
-      output.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
-      output.writeln("");
+      output.out.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
+      output.out.writeln("")
     }
   }
 }

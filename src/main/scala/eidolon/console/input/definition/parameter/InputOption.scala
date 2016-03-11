@@ -36,11 +36,20 @@ case class InputOption(
   require(isValidDefaultValue, "Option defaultValue is not valid.")
 
   /**
+   * Check if this input option has a default value
+   *
+   * @return true if a default value is set
+   */
+  def hasDefaultValue: Boolean = {
+    defaultValue.nonEmpty
+  }
+
+  /**
    * Check if this input option accepts a value
    *
    * @return true if a value is accepted
    */
-  def acceptValue: Boolean = {
+  def acceptsValue: Boolean = {
     isRequiredValue || isOptionalValue
   }
 
@@ -72,15 +81,6 @@ case class InputOption(
   }
 
   /**
-   * Check if this input option's mode is valid
-   *
-   * @return true if the mode is valid
-   */
-  private def isValidMode: Boolean = {
-    (1 to 7).contains(mode)
-  }
-
-  /**
    * Check if this input option's name is valid
    *
    * @return true if the name is valid
@@ -99,6 +99,15 @@ case class InputOption(
   }
 
   /**
+   * Check if this input option's mode is valid
+   *
+   * @return true if the mode is valid
+   */
+  private def isValidMode: Boolean = {
+    (1 to 7).contains(mode)
+  }
+
+  /**
    * Check if this input option's default value is valid
    *
    * @return true if the default value is valid
@@ -114,21 +123,6 @@ case class InputOption(
 
     validateNoneDefaultValue && validateRequiredDefaultValue
   }
-
-  /**
-   * Check if the given "copy" has the same values as this input option
-   *
-   * @return true if the values are the same
-   */
-  override def equals(copy: Any): Boolean = { copy match {
-    case copy: InputOption =>
-      name == copy.name &&
-      shortName == copy.shortName &&
-      mode == copy.mode &&
-      description == copy.description &&
-      defaultValue == copy.defaultValue
-    case _ => false
-  }}
 }
 
 object InputOption {

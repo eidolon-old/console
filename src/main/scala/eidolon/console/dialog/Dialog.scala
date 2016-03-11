@@ -11,58 +11,118 @@
 
 package eidolon.console.dialog
 
-import eidolon.console.output.Output
+import eidolon.console.output.formatter.OutputFormatter
+import eidolon.console.output.writer.OutputWriter
+import jline.console.ConsoleReader
 
 /**
- * Dialog
+ * Console Dialog
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait Dialog {
+class Dialog(formatter: OutputFormatter, reader: ConsoleReader) {
   /**
    * Ask a question to get some kind of input during command execution
    *
-   * @param output The output to write to
    * @param question The question to ask to prompt user input
    * @param default The default value (if any)
    * @param mode The output mode
    * @return The value in response to the question
    */
   def ask(
-      output: Output,
       question: String,
       default: Option[String] = None,
-      mode: Int = Output.OutputNormal)
-    : String
+      mode: Int = OutputWriter.ModeNormal)
+    : String = {
+
+    val questionPrompt = formatter.format(
+      message = "<question>" + question + "</question> ",
+      mode = mode
+    )
+
+    val prompt = questionPrompt.concat(if (default.nonEmpty) {
+      formatter.format(s"[<info>${default.get}</info>] ", mode = mode)
+    } else {
+      ""
+    })
+
+    val result = reader.readLine(prompt)
+
+    if (default.nonEmpty && result.isEmpty) {
+      default.get
+    } else {
+      result
+    }
+  }
 
   /**
    * Ask a question to get some kind of confirmation during command execution
    *
-   * @param output The output to write to
    * @param question The question to ask to prompt user input
    * @param default The default value
    * @param mode The output mode
    * @return The value in response to the question
    */
   def askConfirmation(
-      output: Output,
       question: String,
       default: Boolean = false,
-      mode: Int = Output.OutputNormal)
-    : Boolean
+      mode: Int = OutputWriter.ModeNormal)
+    : Boolean = {
+
+    val questionPrompt = formatter.format(
+      message = "<question>" + question + "</question> ",
+      mode = mode
+    )
+
+    val prompt = questionPrompt.concat(if (default) {
+      formatter.format("[<info>Yn</info>] ", mode = mode)
+    } else {
+      formatter.format("[<info>yN</info>] ", mode = mode)
+    })
+
+    val result = reader.readLine(prompt).toLowerCase
+
+    if (default) {
+      result == "y" || result == ""
+    } else {
+      result == "y"
+    }
+  }
 
   /**
    * Ask a question to get some kind of sensitive information during command execution. User input
    * is hidden.
    *
-   * @param output The output to write to
    * @param question The question to ask to prompt user input
    * @param mode The output mode
    * @return The value in response to the question
    */
   def askSensitive(
-      output: Output,
       question: String,
-      mode: Int = Output.OutputNormal)
-    : String
+      default: Option[String] = None,
+      mode: Int = OutputWriter.ModeNormal)
+    : String = {
+
+    val questionPrompt = formatter.format(
+      message = "<question>" + question + "</question> ",
+      mode = mode
+    )
+
+    val prompt = questionPrompt.concat(if (default.nonEmpty) {
+      formatter.format(s"[<info>${default.get}</info>] ", mode = mode)
+    } else {
+      ""
+    })
+
+    val result = reader.readLine(
+      prompt,
+      new Character('*')
+    )
+
+    if (default.nonEmpty && result.isEmpty) {
+      default.get
+    } else {
+      result
+    }
+  }
 }

@@ -30,16 +30,16 @@ object Build extends BaseBuild {
     publishMavenStyle := true,
     publishTo := Some(Resolver.file("release", new File("./release"))),
     resolvers ++= Dependencies.repositories,
-    scalaVersion := "2.11.7",
+    scalaVersion := "2.11.8",
     version := projectVersion,
-    testOptions in Test += Tests.Argument("-oD")
+    testOptions in Test += Tests.Argument("-oDI")
   )
 
   lazy val console = (project in file("."))
     .settings(commonSettings: _*)
     .settings(name := "console")
     .settings(libraryDependencies ++=
-      compile(chroma, scalaXml) ++
+      compile(chroma, jLine, scalaXml) ++
       test(mockito, scalaTest)
     )
 }

@@ -12,7 +12,7 @@
 package eidolon.console.output.formatter
 
 import eidolon.console.output.formatter.style._
-import eidolon.console.output.Output
+import eidolon.console.output.writer.OutputWriter
 
 /**
  * Output Formatter
@@ -29,7 +29,7 @@ trait OutputFormatter {
    * @param mode The output mode
    * @return a formatted message
    */
-  def format(message: String, mode: Int = Output.OutputNormal): String
+  def format(message: String, mode: Int = OutputWriter.ModeNormal): String
 
   /**
    * Create a copy of this output formatter with the given style
@@ -40,10 +40,10 @@ trait OutputFormatter {
   def withStyle(style: OutputFormatterStyle): OutputFormatter
 
   /**
-   * Create a copy of this output formatter with the given style
+   * Create a copy of this output formatter with the given styles
    *
-   * @param styles A style to add
+   * @param styles A list of styles to add
    * @return a copy of the output formatter
    */
-  def withStyles(styles: Map[String, OutputFormatterStyle]): OutputFormatter
+  def withStyles(styles: List[OutputFormatterStyle]): OutputFormatter
 }

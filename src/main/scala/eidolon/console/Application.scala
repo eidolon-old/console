@@ -11,16 +11,18 @@
 
 package eidolon.console
 
+import eidolon.chroma.Chroma
 import eidolon.console.command.{ListCommand, Command, HelpCommand}
-import eidolon.console.descriptor.TextDescriptor
-import eidolon.console.dialog.builder.{ConsoleDialogBuilder, DialogBuilder}
-import eidolon.console.input.builder.{ConsoleInputBuilder, InputBuilder}
+import eidolon.console.descriptor._
+import eidolon.console.dialog.factory.DialogFactory
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+import eidolon.console.input.factory.InputFactory
 import eidolon.console.input.parser.InputParser
 import eidolon.console.input.parser.parameter.{ParsedInputParameter, ParsedInputArgument}
 import eidolon.console.input.validation.InputValidator
-import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
+import eidolon.console.output.factory.OutputFactory
+import eidolon.console.output.formatter.factory.ConsoleOutputFormatterFactory
 
 /**
  * Application
@@ -33,28 +35,27 @@ import eidolon.console.output.builder.{ConsoleOutputBuilder, OutputBuilder}
  *    val app = Application("myapp", "0.1.0-SNAPSHOT")
  *      .withCommand(new ExampleCommand())
  *
- *    app.run(args.toList)
+ *    app.run(args)
  *
  * @author Elliot Wright <elliot@elliotwright.co>
- *
  * @param name An application name
  * @param version An application version
  * @param inputParser An input parser
  * @param inputValidator An input validator
- * @param inputBuilder An input builder
- * @param outputBuilder An output builder
- * @param dialogBuilder A dialog builder
- * @param userCommands A map of user commands
+ * @param inputFactory An input factory
+ * @param outputFactory An output factory
+ * @param dialogFactory A dialog factory
+ * @param userCommands A list of user commands
  */
 class Application(
     val name: String,
     val version: String,
     val inputParser: InputParser,
     val inputValidator: InputValidator,
-    val inputBuilder: InputBuilder,
-    val outputBuilder: OutputBuilder,
-    val dialogBuilder: DialogBuilder,
-    val userCommands: Map[String, Command] = Map()) {
+    val inputFactory: InputFactory,
+    val outputFactory: OutputFactory,
+    val dialogFactory: DialogFactory,
+    val userCommands: List[Command] = List()) {
 
   private val appCommands = buildAppCommands()
 
@@ -75,20 +76,34 @@ class Application(
   /**
    * Run the application
    *
-   * @param args A set of raw input parameters
+   * @param args A list of raw input parameters
    * @return the resulting exit code
    */
   def run(args: List[String]): Int = {
     val parsedInput = inputParser.parse(args)
     val arguments = parsedInput.filter(_.isInstanceOf[ParsedInputArgument])
 
-    if (arguments.nonEmpty && commands.contains(arguments.head.token)) {
-      val command = commands.get(arguments.head.token).get
+    if (arguments.nonEmpty && commands.exists(_.name == arguments.head.token)) {
+      val command = commands.find(_.name == arguments.head.token).get
+
+      doRunCommand(command, parsedInput)
+    } else if (arguments.nonEmpty && commands.exists(_.aliases.contains(arguments.head.token))) {
+      val command = commands.find(_.aliases.contains(arguments.head.token)).get
 
       doRunCommand(command, parsedInput)
     } else {
-      doRunCommand(commands.get("list").get, List(new ParsedInputArgument("list")))
+      doRunCommand(commands.find(_.name == "list").get, List(new ParsedInputArgument("list")))
     }
+  }
+
+  /**
+   * Run the application
+   *
+   * @param args An array of raw input parameters
+   * @return the resulting exit code
+   */
+  def run(args: Array[String]): Int = {
+    run(args.toList)
   }
 
   /**
@@ -106,16 +121,16 @@ class Application(
       val arguments = validated.validArguments.map(argument => argument.name -> argument.value)
       val options = validated.validOptions.map(option => option.name -> option.value)
 
-      val input = inputBuilder.build()
+      val input = inputFactory.build()
         .withArguments(arguments.toMap)
         .withOptions(options.toMap)
-      val output = outputBuilder.build()
-      val dialog = dialogBuilder.build()
+      val output = outputFactory.build()
+      val dialog = dialogFactory.build()
 
       command.execute(input, output, dialog)
     } else {
       doRunCommand(
-        commands.get("help").get,
+        commands.find(_.name == "help").get,
         List(
           new ParsedInputArgument("help"),
           new ParsedInputArgument(command.name)
@@ -129,17 +144,21 @@ class Application(
   /**
    * Build the built-in app commands
    *
-   * @return a map of commands
+   * @return a list of commands
    */
-  protected def buildAppCommands(): Map[String, Command] = {
-    val descriptor = new TextDescriptor()
+  protected def buildAppCommands(): List[Command] = {
+    val argumentDescriptor = new InputArgumentDescriptor()
+    val optionDescriptor = new InputOptionDescriptor()
+    val definitionDescriptor = new InputDefinitionDescriptor(argumentDescriptor, optionDescriptor)
+    val commandDescriptor = new CommandDescriptor(definitionDescriptor)
+    val applicationDescriptor = new ApplicationDescriptor(definitionDescriptor)
 
-    val helpCommand = new HelpCommand(this, descriptor)
-    val listCommand = new ListCommand(this, descriptor)
+    val helpCommand = new HelpCommand(this, commandDescriptor)
+    val listCommand = new ListCommand(this, applicationDescriptor)
 
-    Map(
-      helpCommand.name -> helpCommand,
-      listCommand.name -> listCommand
+    List(
+      helpCommand,
+      listCommand
     )
   }
 
@@ -162,7 +181,7 @@ class Application(
    * @return a copy of the application
    */
   def withCommand(command: Command): Application = {
-    copy(userCommands ++ command.aliases.map(_ -> command) + (command.name -> command))
+    copy(userCommands :+ command)
   }
 
   /**
@@ -180,18 +199,18 @@ class Application(
   /**
    * Create a copy of this application with the given user commands
    *
-   * @param userCommands A map of user commands
+   * @param userCommands A list of user commands
    * @return a copy of this application
    */
-  private def copy(userCommands: Map[String, Command]): Application = {
+  private def copy(userCommands: List[Command]): Application = {
     new Application(
       name,
       version,
       inputParser,
       inputValidator,
-      inputBuilder,
-      outputBuilder,
-      dialogBuilder,
+      inputFactory,
+      outputFactory,
+      dialogFactory,
       userCommands
     )
   }
@@ -206,14 +225,17 @@ object Application {
    * @return an application
    */
   def apply(name: String, version: String): Application = {
+    val formatterFactory = new ConsoleOutputFormatterFactory(Chroma())
+    val formatter = formatterFactory.build()
+
     new Application(
       name,
       version,
       new InputParser(),
       new InputValidator(),
-      new ConsoleInputBuilder(),
-      new ConsoleOutputBuilder(),
-      new ConsoleDialogBuilder()
+      new InputFactory(),
+      new OutputFactory(formatter),
+      new DialogFactory(formatter)
     )
   }
 }
