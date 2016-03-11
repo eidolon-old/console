@@ -38,7 +38,7 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
       }
     })
 
-    styles = new OutputFormatterStyleGroup(Map(style.name -> style))
+    styles = new OutputFormatterStyleGroup(List(style))
   }
 
   describe("eidolon.console.output.formatter.ConsoleOutputFormatter") {
@@ -90,9 +90,7 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
         val result = formatter.withStyle(style1)
 
         assert(formatter != result)
-        assert(result.styles.styles.exists({
-          case (name, style) => name == "s1" && style == style1
-        }))
+        assert(result.styles.styles.contains(style1))
       }
     }
 
@@ -108,14 +106,8 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
         val result = formatter.withStyles(List(style1, style2))
 
         assert(formatter != result)
-
-        assert(result.styles.styles.exists({
-          case (name, style) => name == "s1" && style == style1
-        }))
-
-        assert(result.styles.styles.exists({
-          case (name, style) => name == "s2" && style == style2
-        }))
+        assert(result.styles.styles.contains(style1))
+        assert(result.styles.styles.contains(style2))
       }
     }
   }

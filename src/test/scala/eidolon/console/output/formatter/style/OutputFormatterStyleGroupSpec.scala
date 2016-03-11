@@ -32,9 +32,7 @@ class OutputFormatterStyleGroupSpec extends FunSpec with MockitoSugar {
         val result = group.withStyle(style1)
 
         assert(group != result)
-        assert(result.styles.exists({
-          case (name, style) => name == "s1" && style == style1
-        }))
+        assert(result.styles.contains(style1))
       }
     }
 
@@ -50,14 +48,8 @@ class OutputFormatterStyleGroupSpec extends FunSpec with MockitoSugar {
         val result = group.withStyles(List(style1, style2))
 
         assert(group != result)
-
-        assert(result.styles.exists({
-          case (name, style) => name == "s1" && style == style1
-        }))
-
-        assert(result.styles.exists({
-          case (name, style) => name == "s2" && style == style2
-        }))
+        assert(result.styles.contains(style1))
+        assert(result.styles.contains(style2))
       }
     }
   }
