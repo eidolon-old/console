@@ -34,7 +34,7 @@ class ApplicationDescriptor(
       entity: Application)
     : String = {
 
-    val commands = entity.commands.values.toList.distinct
+    val commands = entity.commands.distinct
     val globalCommands = getGlobalCommands(commands).sortBy(_.name)
     val namespacedCommands = getNamespacedCommands(commands).sortBy(_.name)
 

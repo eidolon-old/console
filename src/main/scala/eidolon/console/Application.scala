@@ -45,7 +45,7 @@ import eidolon.console.output.formatter.factory.ConsoleOutputFormatterFactory
  * @param inputFactory An input factory
  * @param outputFactory An output factory
  * @param dialogFactory A dialog factory
- * @param userCommands A map of user commands
+ * @param userCommands A list of user commands
  */
 class Application(
     val name: String,
@@ -55,7 +55,7 @@ class Application(
     val inputFactory: InputFactory,
     val outputFactory: OutputFactory,
     val dialogFactory: DialogFactory,
-    val userCommands: Map[String, Command] = Map()) {
+    val userCommands: List[Command] = List()) {
 
   private val appCommands = buildAppCommands()
 
@@ -83,12 +83,16 @@ class Application(
     val parsedInput = inputParser.parse(args)
     val arguments = parsedInput.filter(_.isInstanceOf[ParsedInputArgument])
 
-    if (arguments.nonEmpty && commands.contains(arguments.head.token)) {
-      val command = commands.get(arguments.head.token).get
+    if (arguments.nonEmpty && commands.exists(_.name == arguments.head.token)) {
+      val command = commands.find(_.name == arguments.head.token).get
+
+      doRunCommand(command, parsedInput)
+    } else if (arguments.nonEmpty && commands.exists(_.aliases.contains(arguments.head.token))) {
+      val command = commands.find(_.aliases.contains(arguments.head.token)).get
 
       doRunCommand(command, parsedInput)
     } else {
-      doRunCommand(commands.get("list").get, List(new ParsedInputArgument("list")))
+      doRunCommand(commands.find(_.name == "list").get, List(new ParsedInputArgument("list")))
     }
   }
 
@@ -126,7 +130,7 @@ class Application(
       command.execute(input, output, dialog)
     } else {
       doRunCommand(
-        commands.get("help").get,
+        commands.find(_.name == "help").get,
         List(
           new ParsedInputArgument("help"),
           new ParsedInputArgument(command.name)
@@ -140,9 +144,9 @@ class Application(
   /**
    * Build the built-in app commands
    *
-   * @return a map of commands
+   * @return a list of commands
    */
-  protected def buildAppCommands(): Map[String, Command] = {
+  protected def buildAppCommands(): List[Command] = {
     val argumentDescriptor = new InputArgumentDescriptor()
     val optionDescriptor = new InputOptionDescriptor()
     val definitionDescriptor = new InputDefinitionDescriptor(argumentDescriptor, optionDescriptor)
@@ -152,9 +156,9 @@ class Application(
     val helpCommand = new HelpCommand(this, commandDescriptor)
     val listCommand = new ListCommand(this, applicationDescriptor)
 
-    Map(
-      helpCommand.name -> helpCommand,
-      listCommand.name -> listCommand
+    List(
+      helpCommand,
+      listCommand
     )
   }
 
@@ -177,7 +181,7 @@ class Application(
    * @return a copy of the application
    */
   def withCommand(command: Command): Application = {
-    copy(userCommands ++ command.aliases.map(_ -> command) + (command.name -> command))
+    copy(userCommands :+ command)
   }
 
   /**
@@ -195,10 +199,10 @@ class Application(
   /**
    * Create a copy of this application with the given user commands
    *
-   * @param userCommands A map of user commands
+   * @param userCommands A list of user commands
    * @return a copy of this application
    */
-  private def copy(userCommands: Map[String, Command]): Application = {
+  private def copy(userCommands: List[Command]): Application = {
     new Application(
       name,
       version,

@@ -91,6 +91,6 @@ case class ConsoleOutputFormatter(
    * @return The styled message
    */
   private def applyStyle(styleName: String, message: String): String = {
-    styles.styles.get(styleName).get.applyStyle(message)
+    styles.styles.find(_.name == styleName).get.applyStyle(message)
   }
 }

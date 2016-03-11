@@ -46,7 +46,9 @@ class HelpCommand(
    */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
     val commandName = input.arguments.getOrElse("command_name", "")
-    val commandOpt = application.commands.get(commandName)
+    val commandOpt = application.commands.find(command => {
+      command.name == commandName || command.aliases.contains(commandName)
+    })
 
     output.out.writeln(application.logo)
     output.out.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
