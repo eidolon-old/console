@@ -20,7 +20,7 @@ import eidolon.console.input.definition.parameter.InputArgument
 import eidolon.console.output.Output
 
 /**
- * HelpCommand
+ * Help Command
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  * @param application An application
