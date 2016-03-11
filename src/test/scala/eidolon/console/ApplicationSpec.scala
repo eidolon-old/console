@@ -126,6 +126,28 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
         assert(result.contains("bazqux"))
       }
 
+      it("should output command help if it is requested via the global option") {
+        val application = baseApplication
+          .withCommand(new Command {
+            override val name: String = "test"
+            override val definition: InputDefinition = new InputDefinition()
+              .withArgument("reqArg", description = Some("foobar"))
+              .withOption("reqOpt", description = Some("bazqux"))
+
+            override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
+          })
+
+        application.run(List("test", "--help"))
+
+        val result = outputBuffer.toString
+
+        assert(result.contains("Usage:"))
+        assert(result.contains("reqArg"))
+        assert(result.contains("reqOpt"))
+        assert(result.contains("foobar"))
+        assert(result.contains("bazqux"))
+      }
+
       it("should run a command if it exists and is valid") {
         val application = baseApplication
           .withCommand(new Command {

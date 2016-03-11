@@ -92,7 +92,10 @@ class Application(
 
       doRunCommand(command, parsedInput)
     } else {
-      doRunCommand(commands.find(_.name == "list").get, List(new ParsedInputArgument("list")))
+      doRunCommand(
+        commands.find(_.name == "list").get,
+        List(new ParsedInputArgument("list")) ++ parsedInput
+      )
     }
   }
 
@@ -116,26 +119,29 @@ class Application(
   private def doRunCommand(command: Command, parsedInput: List[ParsedInputParameter]): Int = {
     val inputDefinition = definition ++ command.definition
     val validated = inputValidator.validate(inputDefinition, parsedInput)
+    val input = inputFactory.build()
+    val output = outputFactory.build()
+    val dialog = dialogFactory.build()
 
-    if (validated.isValid) {
-      val arguments = validated.validArguments.map(argument => argument.name -> argument.value)
-      val options = validated.validOptions.map(option => option.name -> option.value)
+    val wantsHelp = validated.validOptions.exists(_.name == "help")
 
-      val input = inputFactory.build()
-        .withArguments(arguments.toMap)
-        .withOptions(options.toMap)
-      val output = outputFactory.build()
-      val dialog = dialogFactory.build()
+    validated.isValid match {
+      case true if !wantsHelp => {
+        val arguments = validated.validArguments.map(argument => argument.name -> argument.value)
+        val options = validated.validOptions.map(option => option.name -> option.value)
 
-      command.execute(input, output, dialog)
-    } else {
-      doRunCommand(
-        commands.find(_.name == "help").get,
-        List(
-          new ParsedInputArgument("help"),
-          new ParsedInputArgument(command.name)
-        )
-      )
+        val commandInput = input
+          .withArguments(arguments.toMap)
+          .withOptions(options.toMap)
+
+        command.execute(commandInput, output, dialog)
+      }
+      case _ => {
+        val helpCommand = commands.find(_.name == "help").get
+        val commandInput = input.withArgument("command_name", command.name)
+
+        helpCommand.execute(commandInput, output, dialog)
+      }
     }
 
     0
