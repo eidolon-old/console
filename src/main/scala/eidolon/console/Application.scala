@@ -23,6 +23,8 @@ import eidolon.console.input.parser.parameter.{ParsedInputParameter, ParsedInput
 import eidolon.console.input.validation.InputValidator
 import eidolon.console.output.factory.OutputFactory
 import eidolon.console.output.formatter.factory.ConsoleOutputFormatterFactory
+import eidolon.console.output.writer.OutputWriter
+import eidolon.console.output.writer.factory.PrintStreamOutputWriterFactory
 
 /**
  * Application
@@ -119,11 +121,27 @@ class Application(
   private def doRunCommand(command: Command, parsedInput: List[ParsedInputParameter]): Int = {
     val inputDefinition = definition ++ command.definition
     val validated = inputValidator.validate(inputDefinition, parsedInput)
-    val input = inputFactory.build()
-    val output = outputFactory.build()
-    val dialog = dialogFactory.build()
-
     val wantsHelp = validated.validOptions.exists(_.name == "help")
+    val wantsQuiet = validated.validOptions.exists(_.name == "quiet")
+    val wantsVerbose = validated.validOptions.exists(_.name == "verbose")
+
+    val verbosity = if (wantsQuiet) {
+      OutputWriter.VerbosityQuiet
+    } else if (wantsVerbose) {
+      val verbosityOption = validated.validOptions.find(_.name == "verbose").get
+
+      verbosityOption.value match {
+        case Some("3") => OutputWriter.VerbosityDebug
+        case Some("2") => OutputWriter.VerbosityVeryVerbose
+        case _ => OutputWriter.VerbosityVerbose
+      }
+    } else {
+      OutputWriter.VerbosityNormal
+    }
+
+    val input = inputFactory.build()
+    val output = outputFactory.build(verbosity)
+    val dialog = dialogFactory.build()
 
     validated.isValid match {
       case true if !wantsHelp => {
@@ -175,9 +193,29 @@ class Application(
    */
   protected def buildAppDefinition(): InputDefinition = {
     new InputDefinition()
-      .withArgument(new InputArgument("command", InputArgument.REQUIRED))
-      .withOption(new InputOption("help", Some("h"), InputOption.VALUE_NONE, Some("Displays this help message")))
-      .withOption(new InputOption("quiet", Some("q"), InputOption.VALUE_NONE, Some("Silence output")))
+      .withArgument(new InputArgument(
+        "command",
+        InputArgument.REQUIRED
+      ))
+      .withOption(new InputOption(
+        "help",
+        Some("h"),
+        InputOption.VALUE_NONE,
+        Some("Displays command help")
+      ))
+      .withOption(new InputOption(
+        "quiet",
+        Some("q"),
+        InputOption.VALUE_NONE,
+        Some("Reduces output")
+      ))
+      .withOption(new InputOption(
+        "verbose",
+        Some("v"),
+        InputOption.VALUE_OPTIONAL,
+        Some("Increases output, levels range from 1 to 3"),
+        defaultValue = Some("1")
+      ))
   }
 
   /**
@@ -234,13 +272,16 @@ object Application {
     val formatterFactory = new ConsoleOutputFormatterFactory(Chroma())
     val formatter = formatterFactory.build()
 
+    val outWriterFactory = new PrintStreamOutputWriterFactory(formatter, System.out)
+    val errWriterFactory = new PrintStreamOutputWriterFactory(formatter, System.err)
+
     new Application(
       name,
       version,
       new InputParser(),
       new InputValidator(),
       new InputFactory(),
-      new OutputFactory(formatter),
+      new OutputFactory(outWriterFactory, errWriterFactory),
       new DialogFactory(formatter)
     )
   }

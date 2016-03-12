@@ -11,6 +11,8 @@
 
 package eidolon.console
 
+import java.io.PrintStream
+
 import eidolon.console.command.Command
 import eidolon.console.dialog.Dialog
 import eidolon.console.dialog.factory.DialogFactory
@@ -22,7 +24,10 @@ import eidolon.console.input.parser.InputParser
 import eidolon.console.input.validation.InputValidator
 import eidolon.console.output.Output
 import eidolon.console.output.factory.OutputFactory
-import eidolon.console.output.writer.OutputWriter
+import eidolon.console.output.formatter.OutputFormatter
+import eidolon.console.output.writer.factory.OutputWriterFactory
+import eidolon.console.output.writer.{PrintStreamOutputWriter, OutputWriter}
+import org.mockito.AdditionalAnswers._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
@@ -46,39 +51,44 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
   var outputFactory: OutputFactory = _
   var dialogFactory: DialogFactory = _
   var input: Input = _
-  var output: Output = _
   var dialog: Dialog = _
-  var writer: OutputWriter = _
+  var outputFormatter: OutputFormatter = _
+  var outputWriterFactory: OutputWriterFactory = _
+  var outputWriterStream: PrintStream = _
 
   before {
     outputBuffer = new StringBuilder()
     inputParser = new InputParser()
     inputValidator = new InputValidator()
     inputFactory = new InputFactory()
-    outputFactory = mock[OutputFactory]
     dialogFactory = mock[DialogFactory]
-    output = mock[Output]
     dialog = mock[Dialog]
-    writer = mock[OutputWriter]
+    outputFormatter = mock[OutputFormatter]
+    outputWriterFactory = mock[OutputWriterFactory]
+    outputWriterStream = mock[PrintStream]
 
-    when(output.out).thenReturn(writer)
-    when(outputFactory.build()).thenReturn(output)
-    when(dialogFactory.build()).thenReturn(dialog)
-
-    when(writer.writeln(anyString(), anyInt(), anyInt()))
-      .thenAnswer(new Answer[Unit] {
-        override def answer(invocation: InvocationOnMock): Unit = {
-          outputBuffer.append(invocation.getArgumentAt(0, classOf[String]) + "\n")
-        }
-      })
-
-    when(writer.write(anyString(), anyInt(), anyInt()))
+    when(outputFormatter.format(anyString(), anyInt())).thenAnswer(returnsFirstArg())
+    when(outputWriterStream.print(anyString()))
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           outputBuffer.append(invocation.getArgumentAt(0, classOf[String]))
         }
       })
 
+    when(outputWriterFactory.build(anyInt()))
+      .thenAnswer(new Answer[OutputWriter] {
+        override def answer(invocation: InvocationOnMock): OutputWriter = {
+          new PrintStreamOutputWriter(
+            outputFormatter,
+            outputWriterStream,
+            invocation.getArgumentAt(0, classOf[Int])
+          )
+        }
+      })
+
+    when(dialogFactory.build()).thenReturn(dialog)
+
+    outputFactory = new OutputFactory(outputWriterFactory, outputWriterFactory)
     baseApplication = new Application(
       name,
       version,
@@ -187,6 +197,108 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
         val result = outputBuffer.toString
 
         assert(result.contains("this command ran successfully"))
+      }
+
+      it("should show quiet messages if the quiet option is set") {
+        val application = baseApplication
+          .withCommand(new Command {
+            override val name: String = "test"
+
+            override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityQuiet)
+            }
+          })
+
+        application.run(List("test", "--quiet"))
+
+        val result = outputBuffer.toString
+
+        assert(result.contains("this message is visible"))
+      }
+
+      it("should show quiet messages if the quiet option is not set") {
+        val application = baseApplication
+          .withCommand(new Command {
+            override val name: String = "test"
+
+            override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityQuiet)
+            }
+          })
+
+        application.run(List("test"))
+
+        val result = outputBuffer.toString
+
+        assert(result.contains("this message is visible"))
+      }
+
+      it("should show debug messages if the verbose option is set to 3") {
+        val application = baseApplication
+          .withCommand(new Command {
+            override val name: String = "test"
+
+            override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityDebug)
+            }
+          })
+
+        application.run(List("test", "--verbose=3"))
+
+        val result = outputBuffer.toString
+
+        assert(result.contains("this message is visible"))
+      }
+
+      it("should show very verbose messages if the verbose option is set to 2") {
+        val application = baseApplication
+          .withCommand(new Command {
+            override val name: String = "test"
+
+            override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityVeryVerbose)
+            }
+          })
+
+        application.run(List("test", "--verbose=2"))
+
+        val result = outputBuffer.toString
+
+        assert(result.contains("this message is visible"))
+      }
+
+      it("should show verbose messages if the verbose option is set to 1") {
+        val application = baseApplication
+          .withCommand(new Command {
+            override val name: String = "test"
+
+            override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityVerbose)
+            }
+          })
+
+        application.run(List("test", "--verbose=1"))
+
+        val result = outputBuffer.toString
+
+        assert(result.contains("this message is visible"))
+      }
+
+      it("should not show verbose messages if the verbose option is not set") {
+        val application = baseApplication
+          .withCommand(new Command {
+            override val name: String = "test"
+
+            override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityVerbose)
+            }
+          })
+
+        application.run(List("test"))
+
+        val result = outputBuffer.toString
+
+        assert(!result.contains("this message is visible"))
       }
     }
 

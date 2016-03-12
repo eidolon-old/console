@@ -9,20 +9,27 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.output.formatter.factory
+package eidolon.console.output.writer.factory
+
+import java.io.PrintStream
 
 import eidolon.console.output.formatter.OutputFormatter
+import eidolon.console.output.writer.{PrintStreamOutputWriter, OutputWriter}
 
 /**
- * OutputFormatter Factory
+ * PrintStreamOutputWriter Factory
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait OutputFormatterFactory {
+class PrintStreamOutputWriterFactory(
+    formatter: OutputFormatter,
+    stream: PrintStream)
+  extends OutputWriterFactory {
+
   /**
-   * Build an output formatter
-   *
-   * @return an output formatter
+   * @inheritdoc
    */
-  def build(): OutputFormatter
+  override def build(verbosity: Int): OutputWriter = {
+    new PrintStreamOutputWriter(formatter, stream, verbosity)
+  }
 }

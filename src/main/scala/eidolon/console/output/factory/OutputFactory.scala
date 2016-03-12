@@ -12,24 +12,26 @@
 package eidolon.console.output.factory
 
 import eidolon.console.output.Output
-import eidolon.console.output.formatter.OutputFormatter
-import eidolon.console.output.writer.PrintStreamOutputWriter
+import eidolon.console.output.writer.factory.OutputWriterFactory
 
 /**
  * Output Factory
  *
  * @author Elliot Wright <elliot@elliotwright.co>
+ * @param outWriterFactory a writer factory for standard output
+ * @param errWriterFactory a writer factory for error output
  */
-class OutputFactory(formatter: OutputFormatter) {
+class OutputFactory(outWriterFactory: OutputWriterFactory, errWriterFactory: OutputWriterFactory) {
   /**
-   * Build output
+   * Build Output
    *
-   * @return an output instance
+   * @param verbosity a verbosity level
+   * @return an Output instance
    */
-  def build(): Output = {
-    val outWriter = new PrintStreamOutputWriter(formatter, System.out)
-    val errWriter = new PrintStreamOutputWriter(formatter, System.err)
-
-    new Output(outWriter, errWriter)
+  def build(verbosity: Int): Output = {
+    new Output(
+      outWriterFactory.build(verbosity),
+      errWriterFactory.build(verbosity)
+    )
   }
 }

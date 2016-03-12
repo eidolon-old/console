@@ -9,20 +9,21 @@
  * file that was distributed with this source code.
  */
 
-package eidolon.console.output.formatter.factory
+package eidolon.console.output.writer.factory
 
-import eidolon.console.output.formatter.OutputFormatter
+import eidolon.console.output.writer.OutputWriter
 
 /**
- * OutputFormatter Factory
+ * OutputWriter Factory
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait OutputFormatterFactory {
+trait OutputWriterFactory {
   /**
-   * Build an output formatter
+   * Build an output writer
    *
-   * @return an output formatter
+   * @param verbosity a verbosity level
+   * @return an output writer
    */
-  def build(): OutputFormatter
+  def build(verbosity: Int): OutputWriter
 }
