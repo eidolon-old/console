@@ -175,9 +175,29 @@ class Application(
    */
   protected def buildAppDefinition(): InputDefinition = {
     new InputDefinition()
-      .withArgument(new InputArgument("command", InputArgument.REQUIRED))
-      .withOption(new InputOption("help", Some("h"), InputOption.VALUE_NONE, Some("Displays this help message")))
-      .withOption(new InputOption("quiet", Some("q"), InputOption.VALUE_NONE, Some("Silence output")))
+      .withArgument(new InputArgument(
+        "command",
+        InputArgument.REQUIRED
+      ))
+      .withOption(new InputOption(
+        "help",
+        Some("h"),
+        InputOption.VALUE_NONE,
+        Some("Displays command help")
+      ))
+      .withOption(new InputOption(
+        "quiet",
+        Some("q"),
+        InputOption.VALUE_NONE,
+        Some("Reduces output")
+      ))
+      .withOption(new InputOption(
+        "verbose",
+        Some("v"),
+        InputOption.VALUE_OPTIONAL,
+        Some("Increases output, levels range from 1 to 3"),
+        defaultValue = Some("1")
+      ))
   }
 
   /**

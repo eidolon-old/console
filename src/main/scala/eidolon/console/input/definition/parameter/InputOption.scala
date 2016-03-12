@@ -95,7 +95,7 @@ case class InputOption(
    * @return true if the short name is valid
    */
   private def isValidShortName: Boolean = {
-    shortName.isEmpty || shortName.getOrElse("").length == 1
+    shortName.isEmpty || shortName.getOrElse("").length > 0
   }
 
   /**
