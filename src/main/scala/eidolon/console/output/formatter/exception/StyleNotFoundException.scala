@@ -20,4 +20,7 @@ package eidolon.console.output.formatter.exception
  */
 class StyleNotFoundException(
     style: String)
-  extends Exception("Style '%s' not found.".format(style))
+  extends Exception(
+    ("Style '%s' not found. If you're trying to output XML-like strings via the formatter " +
+      "remember to use the raw output mode.").format(style)
+  )

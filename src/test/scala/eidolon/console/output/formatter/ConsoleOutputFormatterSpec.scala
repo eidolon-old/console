@@ -11,6 +11,7 @@
 
 package eidolon.console.output.formatter
 
+import eidolon.console.output.formatter.exception.StyleNotFoundException
 import eidolon.console.output.formatter.style.{OutputFormatterStyleGroup, OutputFormatterStyle}
 import eidolon.console.output.writer.OutputWriter
 import org.mockito.Matchers._
@@ -77,6 +78,15 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
         val result = formatter.format(message, OutputWriter.ModeNormal)
 
         assert(result == "(ss)foo (ss)bar(se) baz (ss)qux(se)(se)")
+      }
+
+      it("should throw an exception if style-like string contains a nonexistent style") {
+        val formatter = new ConsoleOutputFormatter(styles)
+        val message = "<nonexistentstyle>should throw</nonexistentstyle>"
+
+        intercept[StyleNotFoundException] {
+          formatter.format(message, OutputWriter.ModeNormal)
+        }
       }
     }
 
