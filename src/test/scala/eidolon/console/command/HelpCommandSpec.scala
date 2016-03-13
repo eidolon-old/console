@@ -66,28 +66,48 @@ class HelpCommandSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
     describe("execute()") {
       it("should describe the given command if it exists") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
           })
 
         val command = new HelpCommand(application, descriptor)
 
-        command.execute(input, output, dialog)
+        command.run(input, output, dialog)
 
         val result = buffer.toString()
 
-        verify(descriptor).describe(any[Application](), any[InputDefinition](), any[Command]())
+        verify(descriptor).describe(any[Application](), any[InputDefinition](), any[Command[_]]())
+      }
+
+      it("should have an exit status code of 0 if the given command exists") {
+        val application = baseApplication
+          .withCommand(new AmbiguousCommand {
+            override val name: String = "test"
+            override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
+          })
+
+        val command = new HelpCommand(application, descriptor)
+        val result = command.run(input, output, dialog)
+
+        assert(result == 0)
       }
 
       it("should show an error message if the given command doesn't exist") {
         val command = new HelpCommand(baseApplication, descriptor)
 
-        command.execute(input, output, dialog)
+        command.run(input, output, dialog)
 
         val result = buffer.toString()
 
         assert(result.contains("Command 'test' does not exist."))
+      }
+
+      it("should have an exit status code of 1 if the given command doesn't exist") {
+        val command = new HelpCommand(baseApplication, descriptor)
+        val result = command.run(input, output, dialog)
+
+        assert(result == 1)
       }
     }
   }

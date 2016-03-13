@@ -63,7 +63,7 @@ class ListCommandSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
       it("should describe the application") {
         val command = new ListCommand(application, descriptor)
 
-        command.execute(input, output, dialog)
+        command.run(input, output, dialog)
 
         val result = buffer.toString()
 

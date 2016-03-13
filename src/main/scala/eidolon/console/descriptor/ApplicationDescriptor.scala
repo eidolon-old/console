@@ -75,8 +75,8 @@ class ApplicationDescriptor(
    * @return the description
    */
   private def describeApplicationGlobalCommands(
-      globalCommands: List[Command],
-      namespacedCommands: List[Command],
+      globalCommands: List[Command[_]],
+      namespacedCommands: List[Command[_]],
       totalWidth: Int
     ): String = {
 
@@ -101,8 +101,8 @@ class ApplicationDescriptor(
    * @return the description
    */
   private def describeApplicationNamespacedCommands(
-      globalCommands: List[Command],
-      namespacedCommands: List[Command],
+      globalCommands: List[Command[_]],
+      namespacedCommands: List[Command[_]],
       totalWidth: Int
     ): String = {
 
@@ -135,7 +135,7 @@ class ApplicationDescriptor(
    * @param command The command to get the namespace for
    * @return The namespace of the given command
    */
-  private def getCommandRootNamespace(command: Command): String = {
+  private def getCommandRootNamespace(command: Command[_]): String = {
     val pattern = "^(.*):(.*)$".r.unanchored
 
     command.name match {
@@ -151,7 +151,7 @@ class ApplicationDescriptor(
    * @param commands A list of commands
    * @return A list of commands without a namespace
    */
-  private def getGlobalCommands(commands: List[Command]): List[Command] = {
+  private def getGlobalCommands(commands: List[Command[_]]): List[Command[_]] = {
     commands.filter((command) => {
       !isNamespacedCommand(command)
     })
@@ -163,7 +163,7 @@ class ApplicationDescriptor(
    * @param commands A list of commands
    * @return A list of commands with a namespace
    */
-  private def getNamespacedCommands(commands: List[Command]): List[Command] = {
+  private def getNamespacedCommands(commands: List[Command[_]]): List[Command[_]] = {
     commands.filter((command) => {
       isNamespacedCommand(command)
     })
@@ -175,7 +175,7 @@ class ApplicationDescriptor(
    * @param command The command to check
    * @return True if the command has a namespace
    */
-  private def isNamespacedCommand(command: Command): Boolean = {
+  private def isNamespacedCommand(command: Command[_]): Boolean = {
     command.name.matches("^(.*):(.*)$")
   }
 }

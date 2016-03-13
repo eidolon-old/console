@@ -12,7 +12,7 @@
 package eidolon.console.descriptor
 
 import eidolon.console.Application
-import eidolon.console.command.Command
+import eidolon.console.command.AmbiguousCommand
 import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
 import eidolon.console.input.definition.InputDefinition
@@ -48,7 +48,7 @@ class CommandDescriptorSpec extends FunSpec with BeforeAndAfter with MockitoSuga
   describe("eidolon.console.descriptor.CommandDescriptor") {
     describe("describe()") {
       it("should include a section for usage") {
-        val command = new {} with Command {
+        val command = new AmbiguousCommand {
           override val name = "test"
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
         }
@@ -60,7 +60,7 @@ class CommandDescriptorSpec extends FunSpec with BeforeAndAfter with MockitoSuga
       }
 
       it("should include the command name") {
-        val command = new {} with Command {
+        val command = new AmbiguousCommand {
           override val name = "foobarbaz"
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
         }
@@ -72,7 +72,7 @@ class CommandDescriptorSpec extends FunSpec with BeforeAndAfter with MockitoSuga
       }
 
       it("should include the command's alias(es)") {
-        val command = new {} with Command {
+        val command = new AmbiguousCommand {
           override val name = "test"
           override val aliases = List("foo", "bar", "baz")
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
@@ -87,7 +87,7 @@ class CommandDescriptorSpec extends FunSpec with BeforeAndAfter with MockitoSuga
       }
 
       it("should include a section for help") {
-        val command = new {} with Command {
+        val command = new AmbiguousCommand {
           override val name = "test"
           override val help = Some("test command help text")
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
@@ -100,7 +100,7 @@ class CommandDescriptorSpec extends FunSpec with BeforeAndAfter with MockitoSuga
       }
 
       it("should describe the definition's arguments") {
-        val command = new {} with Command {
+        val command = new AmbiguousCommand {
           override val name = "test"
           override val definition = new InputDefinition(arguments = List(new InputArgument("foo")))
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
@@ -114,7 +114,7 @@ class CommandDescriptorSpec extends FunSpec with BeforeAndAfter with MockitoSuga
       }
 
       it("should indicate if an argument is optional") {
-        val command = new {} with Command {
+        val command = new AmbiguousCommand {
           override val name = "test"
           override val definition = new InputDefinition(arguments = List(new InputArgument("foo")))
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
@@ -127,7 +127,7 @@ class CommandDescriptorSpec extends FunSpec with BeforeAndAfter with MockitoSuga
       }
 
       it("should indicate if an argument is required") {
-        val command = new {} with Command {
+        val command = new AmbiguousCommand {
           override val name = "test"
           override val definition = new InputDefinition(
             arguments = List(new InputArgument("foo", mode = InputArgument.REQUIRED))
@@ -143,7 +143,7 @@ class CommandDescriptorSpec extends FunSpec with BeforeAndAfter with MockitoSuga
       }
 
       it("should describe the command's options") {
-        val command = new {} with Command {
+        val command = new AmbiguousCommand {
           override val name = "test"
           override val definition = new InputDefinition(options = List(new InputOption("foo")))
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}

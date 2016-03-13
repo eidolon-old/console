@@ -29,7 +29,7 @@ import eidolon.console.output.Output
 class HelpCommand(
     application: Application,
     descriptor: CommandDescriptor)
-  extends Command {
+  extends UnambiguousCommand {
 
   override val name = "help"
   override val description = Some("Displays help for a command")
@@ -44,7 +44,7 @@ class HelpCommand(
   /**
    * @inheritdoc
    */
-  override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
+  override def execute(input: Input, output: Output, dialog: Dialog): Int = {
     val commandName = input.arguments.getOrElse("command_name", "")
     val commandOpt = application.commands.find(command => {
       command.name == commandName || command.aliases.contains(commandName)
@@ -56,9 +56,13 @@ class HelpCommand(
 
     if (commandOpt.nonEmpty) {
       output.out.write(descriptor.describe(application, application.definition, commandOpt.get))
+
+      0
     } else {
       output.out.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
       output.out.writeln("")
+
+      1
     }
   }
 }

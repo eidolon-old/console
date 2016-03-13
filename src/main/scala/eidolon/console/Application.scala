@@ -34,7 +34,7 @@ import eidolon.console.output.writer.factory.PrintStreamOutputWriterFactory
  *
  * Usage (e.g. in main):
  *
- *    val app = Application("myapp", "0.1.0-SNAPSHOT")
+ *    val app = Application("myapp", "0.2.0-SNAPSHOT")
  *      .withCommand(new ExampleCommand())
  *
  *    app.run(args)
@@ -57,7 +57,7 @@ class Application(
     val inputFactory: InputFactory,
     val outputFactory: OutputFactory,
     val dialogFactory: DialogFactory,
-    val userCommands: List[Command] = List()) {
+    val userCommands: List[Command[_]] = List()) {
 
   private val appCommands = buildAppCommands()
 
@@ -118,7 +118,7 @@ class Application(
    * @param parsedInput Parsed input to run the command with
    * @return the resulting exit code
    */
-  private def doRunCommand(command: Command, parsedInput: List[ParsedInputParameter]): Int = {
+  private def doRunCommand(command: Command[_], parsedInput: List[ParsedInputParameter]): Int = {
     val inputDefinition = definition ++ command.definition
     val validated = inputValidator.validate(inputDefinition, parsedInput)
     val wantsHelp = validated.validOptions.exists(_.name == "help")
@@ -152,17 +152,15 @@ class Application(
           .withArguments(arguments.toMap)
           .withOptions(options.toMap)
 
-        command.execute(commandInput, output, dialog)
+        command.run(commandInput, output, dialog)
       }
       case _ => {
         val helpCommand = commands.find(_.name == "help").get
         val commandInput = input.withArgument("command_name", command.name)
 
-        helpCommand.execute(commandInput, output, dialog)
+        helpCommand.run(commandInput, output, dialog)
       }
     }
-
-    0
   }
 
   /**
@@ -170,7 +168,7 @@ class Application(
    *
    * @return a list of commands
    */
-  protected def buildAppCommands(): List[Command] = {
+  protected def buildAppCommands(): List[Command[_]] = {
     val argumentDescriptor = new InputArgumentDescriptor()
     val optionDescriptor = new InputOptionDescriptor()
     val definitionDescriptor = new InputDefinitionDescriptor(argumentDescriptor, optionDescriptor)
@@ -224,7 +222,7 @@ class Application(
    * @param command The command
    * @return a copy of the application
    */
-  def withCommand(command: Command): Application = {
+  def withCommand(command: Command[_]): Application = {
     copy(userCommands :+ command)
   }
 
@@ -234,7 +232,7 @@ class Application(
    * @param commands The commands
    * @return a copy of the application
    */
-  def withCommands(commands: List[Command]): Application = {
+  def withCommands(commands: List[Command[_]]): Application = {
     commands.foldLeft(this)((app, command) => {
       app.withCommand(command)
     })
@@ -246,7 +244,7 @@ class Application(
    * @param userCommands A list of user commands
    * @return a copy of this application
    */
-  private def copy(userCommands: List[Command]): Application = {
+  private def copy(userCommands: List[Command[_]]): Application = {
     new Application(
       name,
       version,

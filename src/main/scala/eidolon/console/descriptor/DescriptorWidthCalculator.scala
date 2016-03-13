@@ -27,7 +27,7 @@ trait DescriptorWidthCalculator {
    * @param commands The commands to calculate the widths of
    * @return A list of command widths
    */
-  protected def calculateCommandWidths(commands: List[Command]): List[Int] = {
+  protected def calculateCommandWidths(commands: List[Command[_]]): List[Int] = {
     commands.map((command) => {
       command.name.length
     })

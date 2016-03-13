@@ -17,11 +17,55 @@ import eidolon.console.input.Input
 import eidolon.console.output.Output
 
 /**
- * Command, the base class for all other commands.
+ * A command where the execution always returns a status code of 0, regardless of what actually
+ * happened. This is useful to help make some code more concise, without having to return a value.
+ * This may however lead to some command's success being seen as ambiguous.
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-trait Command {
+trait AmbiguousCommand extends Command[Unit] {
+  /**
+   * @inheritdoc
+   */
+  override def execute(input: Input, output: Output, dialog: Dialog): Unit
+
+  /**
+   * @inheritdoc
+   */
+  final override def run(input: Input, output: Output, dialog: Dialog): Int = {
+    execute(input, output, dialog)
+
+    0
+  }
+}
+
+/**
+ * A command where the execution always returns what happened, i.e. a return status code is given,
+ * that clearly indicates whether the command succeeded or not (i.e. 0 is success, anything else is
+ * failure). The result is unambiguous, and not up for interpretation.
+ *
+ * @author Elliot Wright <elliot@elliotwright.co>
+ */
+trait UnambiguousCommand extends Command[Int] {
+  /**
+   * @inheritdoc
+   */
+  override def execute(input: Input, output: Output, dialog: Dialog): Int
+
+  /**
+   * @inheritdoc
+   */
+  final override def run(input: Input, output: Output, dialog: Dialog): Int = {
+    execute(input, output, dialog)
+  }
+}
+
+/**
+ * Command, the base trait for all other commands.
+ *
+ * @author Elliot Wright <elliot@elliotwright.co>
+ */
+sealed trait Command[T] {
   val name: String
   val description: Option[String] = None
   val aliases: List[String] = List()
@@ -31,8 +75,20 @@ trait Command {
   /**
    * Execute this command
    *
-   * @param input Input passed to the application
-   * @param output Output interface for displaying formatted text
+   * @param input Input for the command to use
+   * @param output Output for the command to use
+   * @param dialog Dialog for commmand to use
+   * @return some indication of success (probably)
    */
-  def execute(input: Input, output: Output, dialog: Dialog): Unit
+  def execute(input: Input, output: Output, dialog: Dialog): T
+
+  /**
+   * Run a command, always returning an exit code
+   *
+   * @param input Input for the command to use
+   * @param output Output for the command to use
+   * @param dialog Dialog for commmand to use
+   * @return an exit code
+   */
+  def run(input: Input, output: Output, dialog: Dialog): Int
 }
