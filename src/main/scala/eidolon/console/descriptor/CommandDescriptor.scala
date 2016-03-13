@@ -131,6 +131,6 @@ class CommandDescriptor(
    * @return An input definitions' options synopsis
    */
   private def getInputDefinitionOptionsSynopsis(definition: InputDefinition): String = {
-    if (definition.options.nonEmpty) { " [options]" } else { "" }
+    if (definition.options.nonEmpty) " [options]" else ""
   }
 }
