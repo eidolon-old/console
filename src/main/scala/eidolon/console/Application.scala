@@ -34,7 +34,7 @@ import eidolon.console.output.writer.factory.PrintStreamOutputWriterFactory
  *
  * Usage (e.g. in main):
  *
- *    val app = Application("myapp", "0.2.0")
+ *    val app = Application("myapp", "0.3.0-SNAPSHOT")
  *      .withCommand(new ExampleCommand())
  *
  *    app.run(args)
