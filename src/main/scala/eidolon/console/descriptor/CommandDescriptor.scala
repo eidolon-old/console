@@ -23,7 +23,7 @@ import eidolon.console.input.definition.parameter.InputArgument
  */
 class CommandDescriptor(
     inputDefinitionDescriptor: InputDefinitionDescriptor)
-  extends Descriptor[Command]
+  extends Descriptor[Command[_]]
   with DescriptorWidthCalculator {
 
   /**
@@ -32,7 +32,7 @@ class CommandDescriptor(
   override def describe(
       application: Application,
       definition: InputDefinition,
-      entity: Command)
+      entity: Command[_])
     : String = {
 
     val synopsis = getCommandSynopsis(entity)
@@ -79,7 +79,7 @@ class CommandDescriptor(
    * @param command The command to get the synopsis for
    * @return A command synopsis
    */
-  private def getCommandSynopsis(command: Command): String = {
+  private def getCommandSynopsis(command: Command[_]): String = {
     command.name + getInputDefinitionSynopsis(command.definition)
   }
 

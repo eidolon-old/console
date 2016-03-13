@@ -12,7 +12,7 @@
 package eidolon.console.descriptor
 
 import eidolon.console.Application
-import eidolon.console.command.Command
+import eidolon.console.command.AmbiguousCommand
 import eidolon.console.dialog.Dialog
 import eidolon.console.dialog.factory.DialogFactory
 import eidolon.console.input.Input
@@ -74,19 +74,19 @@ class ApplicationDescriptorSpec extends FunSpec with BeforeAndAfter with Mockito
 
       it("should show all commands in the application") {
         val application = baseApplication
-          .withCommand(new {} with Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "foo"
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
           })
-          .withCommand(new {} with Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "bar:a"
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
           })
-          .withCommand(new {} with Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "bar:b"
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
           })
-          .withCommand(new {} with Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "baz:a"
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
           })

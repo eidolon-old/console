@@ -29,7 +29,7 @@ import eidolon.console.output.Output
 class ListCommand(
     application: Application,
     descriptor: ApplicationDescriptor)
-  extends Command {
+  extends AmbiguousCommand {
 
   override val name = "list"
   override val description = Some("Lists commands")

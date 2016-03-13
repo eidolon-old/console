@@ -13,7 +13,7 @@ package eidolon.console
 
 import java.io.PrintStream
 
-import eidolon.console.command.Command
+import eidolon.console.command.AmbiguousCommand
 import eidolon.console.dialog.Dialog
 import eidolon.console.dialog.factory.DialogFactory
 import eidolon.console.input.Input
@@ -116,7 +116,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should output command help if a command is misused") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
             override val definition: InputDefinition = new InputDefinition()
               .withArgument("reqArg", mode = InputArgument.REQUIRED, description = Some("foobar"))
@@ -138,7 +138,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should output command help if it is requested via the global option") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
             override val definition: InputDefinition = new InputDefinition()
               .withArgument("reqArg", description = Some("foobar"))
@@ -160,7 +160,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should run a command if it exists and is valid") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
             override val definition: InputDefinition = new InputDefinition()
               .withArgument("reqArg", mode = InputArgument.REQUIRED)
@@ -180,7 +180,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should run a command if it exists and is valid by one of it's aliases") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
             override val aliases: List[String] = List("testalias")
             override val definition: InputDefinition = new InputDefinition()
@@ -201,7 +201,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should show quiet messages if the quiet option is set") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
@@ -218,7 +218,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should show quiet messages if the quiet option is not set") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
@@ -235,7 +235,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should show debug messages if the verbose option is set to 3") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
@@ -252,7 +252,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should show very verbose messages if the verbose option is set to 2") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
@@ -269,7 +269,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should show verbose messages if the verbose option is set to 1") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
@@ -286,7 +286,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
       it("should not show verbose messages if the verbose option is not set") {
         val application = baseApplication
-          .withCommand(new Command {
+          .withCommand(new AmbiguousCommand {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
@@ -304,7 +304,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
     describe("withCommand()") {
       it("should add a command to the application") {
-        val command = new Command {
+        val command = new AmbiguousCommand {
           override val name: String = "test"
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
         }
@@ -319,7 +319,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
 
     describe("withCommands()") {
       it("should add several commands to the application") {
-        val command1 = new Command {
+        val command1 = new AmbiguousCommand {
           override val name: String = "test1"
 
           /**
@@ -331,7 +331,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
         }
 
-        val command2 = new Command {
+        val command2 = new AmbiguousCommand {
           override val name: String = "test2"
           override def execute(input: Input, output: Output, dialog: Dialog): Unit = {}
         }
