@@ -11,6 +11,7 @@
 
 package eidolon.console.output.formatter
 
+import eidolon.console.output.formatter.exception.StyleNotFoundException
 import eidolon.console.output.formatter.style._
 import eidolon.console.output.writer.OutputWriter
 import scala.xml.{Elem, Text, XML}
@@ -19,7 +20,6 @@ import scala.xml.{Elem, Text, XML}
  * Console Output Formatter
  *
  * @author Elliot Wright <elliot@elliotwright.co>
- *
  * @param styles A map of output format styles
  */
 case class ConsoleOutputFormatter(
@@ -91,6 +91,10 @@ case class ConsoleOutputFormatter(
    * @return The styled message
    */
   private def applyStyle(styleName: String, message: String): String = {
-    styles.styles.find(_.name == styleName).get.applyStyle(message)
+    try {
+      styles.styles.find(_.name == styleName).get.applyStyle(message)
+    } catch {
+      case e: NoSuchElementException => throw new StyleNotFoundException(styleName)
+    }
   }
 }
