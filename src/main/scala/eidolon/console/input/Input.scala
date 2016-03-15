@@ -15,7 +15,6 @@ package eidolon.console.input
  * Input
  *
  * @author Elliot Wright <elliot@elliotwright.co>
- *
  * @param arguments A map of input arguments
  * @param options A map of input options
  */

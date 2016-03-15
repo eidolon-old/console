@@ -12,19 +12,18 @@
 package eidolon.console
 
 import eidolon.chroma.Chroma
-import eidolon.console.command.{ListCommand, Command, HelpCommand}
+import eidolon.console.command.{Command, HelpCommand, ListCommand}
 import eidolon.console.descriptor._
 import eidolon.console.dialog.factory.DialogFactory
 import eidolon.console.input.definition.InputDefinition
-import eidolon.console.input.definition.parameter.{InputOption, InputArgument}
+import eidolon.console.input.definition.parameter.{InputArgument, InputOption}
 import eidolon.console.input.factory.InputFactory
 import eidolon.console.input.parser.InputParser
-import eidolon.console.input.parser.parameter.{ParsedInputParameter, ParsedInputArgument}
+import eidolon.console.input.parser.parameter.{ParsedInputArgument, ParsedInputParameter}
 import eidolon.console.input.validation.InputValidator
+import eidolon.console.output.Output
 import eidolon.console.output.factory.OutputFactory
 import eidolon.console.output.formatter.factory.ConsoleOutputFormatterFactory
-import eidolon.console.output.writer.OutputWriter
-import eidolon.console.output.writer.factory.PrintStreamOutputWriterFactory
 
 /**
  * Application
@@ -126,17 +125,17 @@ class Application(
     val wantsVerbose = validated.validOptions.exists(_.name == "verbose")
 
     val verbosity = if (wantsQuiet) {
-      OutputWriter.VerbosityQuiet
+      Output.VerbosityQuiet
     } else if (wantsVerbose) {
       val verbosityOption = validated.validOptions.find(_.name == "verbose").get
 
       verbosityOption.value match {
-        case Some("3") => OutputWriter.VerbosityDebug
-        case Some("2") => OutputWriter.VerbosityVeryVerbose
-        case _ => OutputWriter.VerbosityVerbose
+        case Some("3") => Output.VerbosityDebug
+        case Some("2") => Output.VerbosityVeryVerbose
+        case _ => Output.VerbosityVerbose
       }
     } else {
-      OutputWriter.VerbosityNormal
+      Output.VerbosityNormal
     }
 
     val input = inputFactory.build()
@@ -258,6 +257,11 @@ class Application(
   }
 }
 
+/**
+ * Application Companion
+ *
+ * @author Elliot Wright <elliot@elliotwright.co>
+ */
 object Application {
   /**
    * Create an application with the given name and version, and some sensible defaults for internals
@@ -270,16 +274,13 @@ object Application {
     val formatterFactory = new ConsoleOutputFormatterFactory(Chroma())
     val formatter = formatterFactory.build()
 
-    val outWriterFactory = new PrintStreamOutputWriterFactory(formatter, System.out)
-    val errWriterFactory = new PrintStreamOutputWriterFactory(formatter, System.err)
-
     new Application(
       name,
       version,
       new InputParser(),
       new InputValidator(),
       new InputFactory(),
-      new OutputFactory(outWriterFactory, errWriterFactory),
+      new OutputFactory(System.out, System.err, formatter),
       new DialogFactory(formatter)
     )
   }

@@ -11,9 +11,9 @@
 
 package eidolon.console.output.formatter
 
+import eidolon.console.output.Output
 import eidolon.console.output.formatter.exception.StyleNotFoundException
-import eidolon.console.output.formatter.style.{OutputFormatterStyleGroup, OutputFormatterStyle}
-import eidolon.console.output.writer.OutputWriter
+import eidolon.console.output.formatter.style.{OutputFormatterStyle, OutputFormatterStyleGroup}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
@@ -48,7 +48,7 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
         val formatter = new ConsoleOutputFormatter(styles)
         val message = "<test>foo bar baz</test>"
 
-        val result = formatter.format(message, OutputWriter.ModeRaw)
+        val result = formatter.format(message, Output.ModeRaw)
 
         assert(result == message)
       }
@@ -57,7 +57,7 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
         val formatter = new ConsoleOutputFormatter(styles)
         val message = "<test>foo bar baz</test>"
 
-        val result = formatter.format(message, OutputWriter.ModePlain)
+        val result = formatter.format(message, Output.ModePlain)
 
         assert(result == "foo bar baz")
       }
@@ -66,7 +66,7 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
         val formatter = new ConsoleOutputFormatter(styles)
         val message = "<test>foo bar baz</test>"
 
-        val result = formatter.format(message, OutputWriter.ModeNormal)
+        val result = formatter.format(message, Output.ModeNormal)
 
         assert(result == "(ss)foo bar baz(se)")
       }
@@ -75,7 +75,7 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
         val formatter = new ConsoleOutputFormatter(styles)
         val message = "<test>foo <test>bar</test> baz <test>qux</test></test>"
 
-        val result = formatter.format(message, OutputWriter.ModeNormal)
+        val result = formatter.format(message, Output.ModeNormal)
 
         assert(result == "(ss)foo (ss)bar(se) baz (ss)qux(se)(se)")
       }
@@ -85,7 +85,7 @@ class ConsoleOutputFormatterSpec extends FunSpec with BeforeAndAfter with Mockit
         val message = "<nonexistentstyle>should throw</nonexistentstyle>"
 
         intercept[StyleNotFoundException] {
-          formatter.format(message, OutputWriter.ModeNormal)
+          formatter.format(message, Output.ModeNormal)
         }
       }
     }

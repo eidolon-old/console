@@ -25,8 +25,6 @@ import eidolon.console.input.validation.InputValidator
 import eidolon.console.output.Output
 import eidolon.console.output.factory.OutputFactory
 import eidolon.console.output.formatter.OutputFormatter
-import eidolon.console.output.writer.factory.OutputWriterFactory
-import eidolon.console.output.writer.{PrintStreamOutputWriter, OutputWriter}
 import org.mockito.AdditionalAnswers._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -53,8 +51,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
   var input: Input = _
   var dialog: Dialog = _
   var outputFormatter: OutputFormatter = _
-  var outputWriterFactory: OutputWriterFactory = _
-  var outputWriterStream: PrintStream = _
+  var outputStream: PrintStream = _
 
   before {
     outputBuffer = new StringBuilder()
@@ -64,31 +61,19 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
     dialogFactory = mock[DialogFactory]
     dialog = mock[Dialog]
     outputFormatter = mock[OutputFormatter]
-    outputWriterFactory = mock[OutputWriterFactory]
-    outputWriterStream = mock[PrintStream]
+    outputStream = mock[PrintStream]
 
     when(outputFormatter.format(anyString(), anyInt())).thenAnswer(returnsFirstArg())
-    when(outputWriterStream.print(anyString()))
+    when(outputStream.print(anyString()))
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           outputBuffer.append(invocation.getArgumentAt(0, classOf[String]))
         }
       })
 
-    when(outputWriterFactory.build(anyInt()))
-      .thenAnswer(new Answer[OutputWriter] {
-        override def answer(invocation: InvocationOnMock): OutputWriter = {
-          new PrintStreamOutputWriter(
-            outputFormatter,
-            outputWriterStream,
-            invocation.getArgumentAt(0, classOf[Int])
-          )
-        }
-      })
-
     when(dialogFactory.build()).thenReturn(dialog)
 
-    outputFactory = new OutputFactory(outputWriterFactory, outputWriterFactory)
+    outputFactory = new OutputFactory(outputStream, outputStream, outputFormatter)
     baseApplication = new Application(
       name,
       version,
@@ -167,7 +152,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
               .withOption("reqOpt", mode = InputOption.VALUE_NONE)
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-              output.out.writeln("this command ran successfully")
+              output.writeln("this command ran successfully")
             }
           })
 
@@ -188,7 +173,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
               .withOption("reqOpt", mode = InputOption.VALUE_NONE)
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-              output.out.writeln("this command ran successfully")
+              output.writeln("this command ran successfully")
             }
           })
 
@@ -205,7 +190,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityQuiet)
+              output.writeln("this message is visible", verbosity = Output.VerbosityQuiet)
             }
           })
 
@@ -222,7 +207,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityQuiet)
+              output.writeln("this message is visible", verbosity = Output.VerbosityQuiet)
             }
           })
 
@@ -239,7 +224,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityDebug)
+              output.writeln("this message is visible", verbosity = Output.VerbosityDebug)
             }
           })
 
@@ -256,7 +241,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityVeryVerbose)
+              output.writeln("this message is visible", verbosity = Output.VerbosityVeryVerbose)
             }
           })
 
@@ -273,7 +258,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityVerbose)
+              output.writeln("this message is visible", verbosity = Output.VerbosityVerbose)
             }
           })
 
@@ -290,7 +275,7 @@ class ApplicationSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
             override val name: String = "test"
 
             override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-              output.out.writeln("this message is visible", verbosity = OutputWriter.VerbosityVerbose)
+              output.writeln("this message is visible", verbosity = Output.VerbosityVerbose)
             }
           })
 

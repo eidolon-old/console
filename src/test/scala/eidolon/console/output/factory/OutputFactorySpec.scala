@@ -11,9 +11,10 @@
 
 package eidolon.console.output.factory
 
+import java.io.PrintStream
+
 import eidolon.console.output.Output
-import eidolon.console.output.writer.OutputWriter
-import eidolon.console.output.writer.factory.OutputWriterFactory
+import eidolon.console.output.formatter.OutputFormatter
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSpec}
 
@@ -23,17 +24,19 @@ import org.scalatest.{BeforeAndAfter, FunSpec}
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 class OutputFactorySpec extends FunSpec with BeforeAndAfter with MockitoSugar {
-  var writerFactory: OutputWriterFactory = _
+  var outputFormatter: OutputFormatter = _
+  var outputStream: PrintStream = _
 
   before {
-    writerFactory = mock[OutputWriterFactory]
+    outputFormatter = mock[OutputFormatter]
+    outputStream = mock[PrintStream]
   }
 
   describe("eidolon.console.output.factory.OutputFactory") {
     describe("build()") {
       it("should return an instance of Output") {
-        val factory = new OutputFactory(writerFactory, writerFactory)
-        val output = factory.build(OutputWriter.VerbosityNormal)
+        val factory = new OutputFactory(outputStream, outputStream, outputFormatter)
+        val output = factory.build(Output.VerbosityNormal)
 
         assert(output.isInstanceOf[Output])
       }

@@ -11,9 +11,9 @@
 
 package eidolon.console.output.formatter
 
+import eidolon.console.output.Output
 import eidolon.console.output.formatter.exception.StyleNotFoundException
 import eidolon.console.output.formatter.style._
-import eidolon.console.output.writer.OutputWriter
 import scala.xml.{Elem, Text, XML}
 
 /**
@@ -29,10 +29,10 @@ case class ConsoleOutputFormatter(
   /**
    * @inheritdoc
    */
-  override def format(message: String, mode: Int = OutputWriter.ModeNormal): String = {
+  override def format(message: String, mode: Int = Output.ModeNormal): String = {
     // @todo: Handle exceptions from XML parsing for things like missing styles
     mode match {
-      case OutputWriter.ModeRaw => message
+      case Output.ModeRaw => message
       case _ => renderString(message, mode)
     }
   }
@@ -75,8 +75,8 @@ case class ConsoleOutputFormatter(
     element.child.foldLeft("")((aggregate, child) => {
       val result = child match {
         case text: Text => text.text
-        case node: Elem if mode == OutputWriter.ModeNormal => applyStyle(node.label, renderNode(node, mode))
-        case node: Elem if mode == OutputWriter.ModePlain => renderNode(node, mode)
+        case node: Elem if mode == Output.ModeNormal => applyStyle(node.label, renderNode(node, mode))
+        case node: Elem if mode == Output.ModePlain => renderNode(node, mode)
       }
 
       aggregate + result
