@@ -54,8 +54,6 @@ class HelpCommand(
     output.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
     output.writeln("")
 
-    output.writeln("Hello err")
-
     if (commandOpt.nonEmpty) {
       output.write(descriptor.describe(application, application.definition, commandOpt.get))
 
