@@ -44,9 +44,9 @@ class ListCommand(
    * @inheritdoc
    */
   override def execute(input: Input, output: Output, dialog: Dialog): Unit = {
-    output.out.writeln(application.logo)
-    output.out.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
-    output.out.writeln("")
-    output.out.write(descriptor.describe(application, application.definition, application))
+    output.writeln(application.logo)
+    output.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
+    output.writeln("")
+    output.write(descriptor.describe(application, application.definition, application))
   }
 }

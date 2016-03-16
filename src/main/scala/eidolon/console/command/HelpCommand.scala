@@ -50,17 +50,19 @@ class HelpCommand(
       command.name == commandName || command.aliases.contains(commandName)
     })
 
-    output.out.writeln(application.logo)
-    output.out.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
-    output.out.writeln("")
+    output.writeln(application.logo)
+    output.writeln(s"<info>${application.name}</info> version <comment>${application.version}</comment>")
+    output.writeln("")
+
+    output.writeln("Hello err")
 
     if (commandOpt.nonEmpty) {
-      output.out.write(descriptor.describe(application, application.definition, commandOpt.get))
+      output.write(descriptor.describe(application, application.definition, commandOpt.get))
 
       0
     } else {
-      output.out.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
-      output.out.writeln("")
+      output.writeln("<error>Command '%s' does not exist.</error>".format(commandName))
+      output.writeln("")
 
       1
     }

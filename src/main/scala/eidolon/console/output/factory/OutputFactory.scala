@@ -12,16 +12,22 @@
 package eidolon.console.output.factory
 
 import eidolon.console.output.Output
-import eidolon.console.output.writer.factory.OutputWriterFactory
+import eidolon.console.output.formatter.OutputFormatter
+import java.io.PrintStream
 
 /**
  * Output Factory
  *
  * @author Elliot Wright <elliot@elliotwright.co>
- * @param outWriterFactory a writer factory for standard output
- * @param errWriterFactory a writer factory for error output
+ * @param outStream the standard output stream
+ * @param errStream the error output stream
+ * @param formatter the output formatter
  */
-class OutputFactory(outWriterFactory: OutputWriterFactory, errWriterFactory: OutputWriterFactory) {
+class OutputFactory(
+    outStream: PrintStream,
+    errStream: PrintStream,
+    formatter: OutputFormatter) {
+
   /**
    * Build Output
    *
@@ -30,8 +36,10 @@ class OutputFactory(outWriterFactory: OutputWriterFactory, errWriterFactory: Out
    */
   def build(verbosity: Int): Output = {
     new Output(
-      outWriterFactory.build(verbosity),
-      errWriterFactory.build(verbosity)
+      outStream,
+      errStream,
+      formatter,
+      verbosity
     )
   }
 }

@@ -17,7 +17,7 @@ import eidolon.console.dialog.Dialog
 import eidolon.console.input.Input
 import eidolon.console.input.definition.InputDefinition
 import eidolon.console.output.Output
-import eidolon.console.output.writer.OutputWriter
+import java.io.PrintStream
 import org.mockito.Mockito._
 import org.mockito.Matchers._
 import org.mockito.invocation.InvocationOnMock
@@ -37,7 +37,6 @@ class HelpCommandSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
   var input: Input = _
   var output: Output = _
   var dialog: Dialog = _
-  var writer: OutputWriter = _
 
   before {
     baseApplication = Application("test/console", "0.0.0")
@@ -46,15 +45,12 @@ class HelpCommandSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
     input = mock[Input]
     output = mock[Output]
     dialog = mock[Dialog]
-    writer = mock[OutputWriter]
 
     when(input.arguments).thenReturn(Map(
       "command_name" -> "test"
     ))
 
-    when(output.out).thenReturn(writer)
-
-    when(writer.writeln(anyString(), anyInt(), anyInt()))
+    when(output.writeln(anyString(), anyInt(), anyInt(), any[PrintStream]()))
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           buffer.append(invocation.getArgumentAt(0, classOf[String]))

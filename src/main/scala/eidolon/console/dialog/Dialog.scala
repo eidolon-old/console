@@ -11,8 +11,8 @@
 
 package eidolon.console.dialog
 
+import eidolon.console.output.Output
 import eidolon.console.output.formatter.OutputFormatter
-import eidolon.console.output.writer.OutputWriter
 import jline.console.ConsoleReader
 
 /**
@@ -32,7 +32,7 @@ class Dialog(formatter: OutputFormatter, reader: ConsoleReader) {
   def ask(
       question: String,
       default: Option[String] = None,
-      mode: Int = OutputWriter.ModeNormal)
+      mode: Int = Output.ModeNormal)
     : String = {
 
     val questionPrompt = formatter.format(
@@ -66,7 +66,7 @@ class Dialog(formatter: OutputFormatter, reader: ConsoleReader) {
   def askConfirmation(
       question: String,
       default: Boolean = false,
-      mode: Int = OutputWriter.ModeNormal)
+      mode: Int = Output.ModeNormal)
     : Boolean = {
 
     val questionPrompt = formatter.format(
@@ -100,7 +100,7 @@ class Dialog(formatter: OutputFormatter, reader: ConsoleReader) {
   def askSensitive(
       question: String,
       default: Option[String] = None,
-      mode: Int = OutputWriter.ModeNormal)
+      mode: Int = Output.ModeNormal)
     : String = {
 
     val questionPrompt = formatter.format(
