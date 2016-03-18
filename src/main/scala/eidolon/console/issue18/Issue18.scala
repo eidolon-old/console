@@ -11,7 +11,6 @@
 
 package eidolon.console.issue18
 
-
 /**
  * Input Model
  */
@@ -58,10 +57,22 @@ class ExampleInputModelBuilder
  * Input Definition
  */
 
-class InputDefinition[M <: InputModel, B <: InputModelBuider[M]](val options: List[InputOption[M, B]] = List()) {
-  def withOption(name: String, default: Option[String], mapper: (B, String) => Unit): InputDefinition[M, B] = {
+class InputDefinition[M <: InputModel, B <: InputModelBuider[M]](val options: List[InputOption[M, B, _]] = List()) {
+  def withBooleanOption(name: String, default: Option[Boolean], mapper: (B, Boolean) => Unit): InputDefinition[M, B] = {
     new InputDefinition[M, B] (
-      options :+ new InputOption[M, B](name, default, mapper)
+      options :+ new BooleanInputOption[M, B](name, default, mapper)
+    )
+  }
+
+  def withIntOption(name: String, default: Option[Int], mapper: (B, Int) => Unit): InputDefinition[M, B] = {
+    new InputDefinition[M, B] (
+      options :+ new IntInputOption[M, B](name, default, mapper)
+    )
+  }
+
+  def withStringOption(name: String, default: Option[String], mapper: (B, String) => Unit): InputDefinition[M, B] = {
+    new InputDefinition[M, B] (
+      options :+ new StringInputOption[M, B](name, default, mapper)
     )
   }
 }
@@ -71,15 +82,61 @@ class InputDefinition[M <: InputModel, B <: InputModelBuider[M]](val options: Li
  * Input Option
  */
 
-case class InputOption[M <: InputModel, B <: InputModelBuider[M]](
-    name: String,
-    default: Option[String],
-    mapper: (B, String) => Unit)
+trait InputOption[M <: InputModel, B <: InputModelBuider[M], V] {
+    val name: String
+    val default: Option[V]
+    val mapper: (B, V) => Unit
+}
 
+case class BooleanInputOption[M <: InputModel, B <: InputModelBuider[M]](
+    override val name: String,
+    override val default: Option[Boolean],
+    override val mapper: (B, Boolean) => Unit)
+  extends InputOption[M, B, Boolean]
+
+case class IntInputOption[M <: InputModel, B <: InputModelBuider[M]](
+    override val name: String,
+    override val default: Option[Int],
+    override val mapper: (B, Int) => Unit)
+  extends InputOption[M, B, Int]
+
+case class StringInputOption[M <: InputModel, B <: InputModelBuider[M]](
+    override val name: String,
+    override val default: Option[String],
+    override val mapper: (B, String) => Unit)
+  extends InputOption[M, B, String]
 
 /**
  * Input Readers
  */
+
+trait InputReader[V] {
+  val reads: String => V
+}
+
+object InputReader {
+  def reads[V](f: String => V): InputReader[V] = new InputReader[V] {
+    val reads = f
+  }
+
+  implicit val intRead: InputReader[Int] = reads[Int](_.toInt)
+  implicit val stringRead: InputReader[String] = reads[String](identity)
+  implicit val doubleRead: InputReader[Double] = reads[Double](_.toDouble)
+  implicit val booleanRead: InputReader[Boolean] = reads[Boolean]({
+    _.toLowerCase match {
+      case "true" => true
+      case "false" => false
+      case "y" => true
+      case "n" => false
+      case "yes" => true
+      case "no" => false
+      case "1" => true
+      case "0" => false
+      case invalidInput =>
+        throw new Exception(s"'$invalidInput' is not a boolean.")
+    }
+  })
+}
 
 object InputReaders {
   def readInt(input: String): Int = input.toInt
@@ -101,10 +158,99 @@ object InputReaders {
   }
 }
 
+trait ParameterReader
+class OptionReader extends ParameterReader {
+  def read[V](option: InputOption[_, _, V], value: String)(implicit reader: InputReader[V]): V = {
+    implicitly[InputReader[V]].reads(value)
+  }
+}
+
+/**
+ * Input Parameters
+ */
 
 case class ParsedInputLongOption(
     token: String,
-    value: String)
+    value: Option[String])
+
+
+/**
+ * Input Parser
+ */
+
+class InputParser[M <: InputModel, B <: InputModelBuider[M]](
+    builder: B,
+    definition: InputDefinition[M, B]) {
+
+  import InputReaders._
+
+  def parse(input: List[ParsedInputLongOption]): M = {
+    definition.options.foreach(defOpt => {
+      val maybeItem = input.find(_.token == defOpt.name)
+
+      maybeItem match {
+        case Some(item) => defOpt match {
+          case booleanOpt: BooleanInputOption[M, B] => item.value match {
+            // Input has value
+            case Some(y) =>
+              booleanOpt.mapper(builder, readBoolean(y))
+
+            // Input has no value
+            case _ => booleanOpt.default match {
+              case Some(z) => booleanOpt.mapper(builder, z)
+              case _ => // ???
+            }
+          }
+
+          case intOpt: IntInputOption[M, B] => item.value match {
+            // Input has value
+            case Some(y) =>
+              intOpt.mapper(builder, readInt(y))
+
+            // Input has no value
+            case _ => intOpt.default match {
+              case Some(z) => intOpt.mapper(builder, z)
+              case _ => // ???
+            }
+          }
+
+          case stringOpt: StringInputOption[M, B] => item.value match {
+            // Input has value
+            case Some(y) =>
+              stringOpt.mapper(builder, readString(y))
+
+            // Input has no value
+            case _ => stringOpt.default match {
+              case Some(z) => stringOpt.mapper(builder, z)
+              case _ => // ???
+            }
+          }
+
+          case _ =>
+            // @todo: Throw?
+        }
+        case _ => defOpt match {
+          case booleanOpt: BooleanInputOption[M, B] => booleanOpt.default match {
+            case Some(z) => booleanOpt.mapper(builder, z)
+            case _ => // ???
+          }
+
+          case intOpt: IntInputOption[M, B] => intOpt.default match {
+            case Some(z) => intOpt.mapper(builder, z)
+            case _ => // ???
+          }
+
+          case stringOpt: StringInputOption[M, B] => stringOpt.default match {
+            case Some(z) => stringOpt.mapper(builder, z)
+            case _ => // ???
+          }
+        }
+      }
+    })
+
+    builder.build()
+  }
+}
 
 
 /**
@@ -112,46 +258,21 @@ case class ParsedInputLongOption(
  */
 
 object Main {
-  import InputReaders._
-
   def apply(): Unit = {
     val builder = new ExampleInputModelBuilder()
     val definition = new InputDefinition[ExampleInputModel, ExampleInputModelBuilder]()
-      .withOption("source", None, (builder, input) => builder.source = readString(input))
-      .withOption("destination", Some("."), (builder, input) => builder.destination = readString(input))
-      .withOption("clean", Some("false"), (builder, input) => builder.clean = readBoolean(input))
+      .withStringOption("source", None, (builder, input) => builder.source = input)
+      .withStringOption("destination", Some("~/.tests"), (builder, input) => builder.destination = input)
+      .withBooleanOption("clean", Some(false), (builder, input) => builder.clean = input)
 
-    // What happens when you comment these out, and have empty input? We get null. That cannot
-    // happen. Default values are Options, and as such if they're None it implies there is no
-    // default value, not that the default value is None. How do we specify defaults for other
-    // types? Should there even be something that does that?
-    // Perhaps, if something can be left blank it should be wrapped in Option, and should default
-    // to None in the model? By blank, that would mean something that is optional, and has no
-    // default value.
-    // What do we do about simple flags with no values? How do we read those? This seems to me like
-    // it's also why we have the value of parsed options wrapped in Options, because they _can_ be
-    // None, i.e. no value.
-    // Simple flags should ideally be Booleans, that'd be Unit type ones here I guess?
-    // How do you specify a default value for a simple flag?
-    // Should the default values have to be strings? It'd be good for them to be typed properly to
-    // cater for these interesing problems.
     val input: List[ParsedInputLongOption] = List(
-      new ParsedInputLongOption("source", "gh:eidolon/console"),
-      new ParsedInputLongOption("destination", "."),
-      new ParsedInputLongOption("clean", "false")
+      new ParsedInputLongOption("source", Some("gh:eidolon/console"))
+//      new ParsedInputLongOption("destination", Some(".")),
+//      new ParsedInputLongOption("clean", Some("false"))
     )
 
-    definition.options.foreach { option =>
-      input.find(_.token == option.name) match {
-        case Some(opt) => option.mapper(builder, opt.value)
-        case _ => option.default match {
-          case Some(default) => option.mapper(builder, default)
-          case _ => // No value could be assigned, should we be throwing here?
-        }
-      }
-    }
-
-    val model = builder.build()
+    val parser = new InputParser[ExampleInputModel, ExampleInputModelBuilder](builder, definition)
+    val model = parser.parse(input)
 
     println(model)
   }
